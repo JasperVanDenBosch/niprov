@@ -7,5 +7,5 @@ setup(name='niprov',
       version='0.0',
       description='provenance for neuroimaging data',
       packages=find_packages(),
-      test_suite="",
+      test_suite="tests",
       )

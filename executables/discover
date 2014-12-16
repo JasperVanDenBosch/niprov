@@ -1,0 +1,9 @@
+import argparse
+import niprov
+
+parser = argparse.ArgumentParser(description='Find image files.')
+parser.add_argument('root', default='.', 
+                   help='Directory below which to search for files.')
+
+args = parser.parse_args()
+niprov.discover(args.root)

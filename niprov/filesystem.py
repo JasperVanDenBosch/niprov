@@ -1,7 +1,7 @@
-import glob
+import os
 
 
 class Filesystem():
 
-    def glob(self, path):
-        return glob.glob(path)
+    def walk(self, path):
+        return os.walk(path)

@@ -7,9 +7,11 @@ class DiscoveryTests(unittest.TestCase):
         import niprov
         log = Mock()
         os = Mock()
-        os.glob.return_value = ['/p/f1.x','/p/p2/f2.x']
-        niprov.discover('target_root_dir', filesys=os, listener=log)
-        os.glob.assert_called_with('target_root_dir')
+        os.walk.return_value = [('root',[],['/p/f1.x','/p/f2.x']),
+            ('root',[],['/p/p2/f3.x'])] #(dirpath, dirnames, filenames)
+        niprov.discover('root', filesys=os, listener=log)
+        os.walk.assert_called_with('root')
         log.fileFound.assert_any_call('/p/f1.x')
-        log.fileFound.assert_any_call('/p/p2/f2.x')
+        log.fileFound.assert_any_call('/p/f2.x')
+        log.fileFound.assert_any_call('/p/p2/f3.x')
         

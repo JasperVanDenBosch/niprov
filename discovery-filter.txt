@@ -1,0 +1,4 @@
+.PAR
+.nii
+.vmr
+.fmr

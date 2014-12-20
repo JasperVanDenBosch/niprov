@@ -8,5 +8,6 @@ setup(name='niprov',
       description='provenance for neuroimaging data',
       packages=find_packages(),
       test_suite="tests",
-      scripts=['executables/discover']
+      scripts=['executables/discover'],
+      zip_safe=False
       )

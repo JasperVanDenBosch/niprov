@@ -1,5 +1,6 @@
 import unittest
 from mock import Mock
+import os.path as ospath
 
 class DiscoveryTests(unittest.TestCase):
 
@@ -35,8 +36,8 @@ class DiscoveryTests(unittest.TestCase):
         filt = self.setupFilter('.valid')
         os.walk.return_value = [('root',[],['a.valid','other.file','b.valid'])]
         niprov.discovery.discover('root', filesys=os, listener=log, filefilter=filt)
-        niprov.discovery.inspect.assert_any_call('a.valid')
-        niprov.discovery.inspect.assert_any_call('b.valid')
+        niprov.discovery.inspect.assert_any_call(ospath.join('root','a.valid'))
+        niprov.discovery.inspect.assert_any_call(ospath.join('root','b.valid'))
 
     def setupFilter(self, valid):
         def filter_side_effect(*args):

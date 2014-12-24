@@ -4,6 +4,7 @@
 
 class Commandline(object):
 
-    def fileFound(self, fpath):
-        print('Found file: '+fpath)
+    def fileFound(self, fname, provenance):
+        template = '{1[acquired]} {1[subject]} {1[protocol]:24} {0}'
+        print(template.format(fname,provenance))
     

@@ -5,28 +5,32 @@ import os.path as ospath
 class DiscoveryTests(unittest.TestCase):
 
     def test_Tells_listener_about_files_found(self):
-        import niprov
+        import niprov.discovery
+        niprov.discovery.inspect = Mock()
         log = Mock()
         filt = self.setupFilter('.x')
         os = Mock()
         os.walk.return_value = [('root',[],['/p/f1.x','/p/f2.x']),
             ('root',[],['/p/p2/f3.x'])] #(dirpath, dirnames, filenames)
-        niprov.discover('root', filesys=os, listener=log, filefilter=filt)
+        niprov.discovery.discover('root', filesys=os, listener=log, 
+            filefilter=filt)
         os.walk.assert_called_with('root')
-        log.fileFound.assert_any_call('/p/f1.x')
-        log.fileFound.assert_any_call('/p/f2.x')
-        log.fileFound.assert_any_call('/p/p2/f3.x')
+        log.fileFound.assert_any_call('/p/f1.x', niprov.discovery.inspect())
+        log.fileFound.assert_any_call('/p/f2.x', niprov.discovery.inspect())
+        log.fileFound.assert_any_call('/p/p2/f3.x', niprov.discovery.inspect())
 
     def test_file_filters(self):
-        import niprov
+        import niprov.discovery
+        niprov.discovery.inspect = Mock()
         log = Mock()
         os = Mock()
         filt = self.setupFilter('valid.file')
         os.walk.return_value = [('root',[],['valid.file','other.file'])]
-        niprov.discover('root', filesys=os, listener=log, filefilter=filt)
-        log.fileFound.assert_any_call('valid.file')
+        niprov.discovery.discover('root', filesys=os, listener=log,
+            filefilter=filt)
+        log.fileFound.assert_any_call('valid.file', niprov.discovery.inspect())
         self.assertRaises(AssertionError,
-            log.fileFound.assert_any_call,'other.file')
+            log.fileFound.assert_any_call,'other.file', niprov.discovery.inspect())
 
     def test_Calls_inspect(self):
         import niprov.discovery
@@ -35,7 +39,8 @@ class DiscoveryTests(unittest.TestCase):
         os = Mock()
         filt = self.setupFilter('.valid')
         os.walk.return_value = [('root',[],['a.valid','other.file','b.valid'])]
-        niprov.discovery.discover('root', filesys=os, listener=log, filefilter=filt)
+        niprov.discovery.discover('root', filesys=os, listener=log,
+            filefilter=filt)
         niprov.discovery.inspect.assert_any_call(ospath.join('root','a.valid'))
         niprov.discovery.inspect.assert_any_call(ospath.join('root','b.valid'))
 

@@ -14,6 +14,7 @@ def inspect(fpath, listener=Commandline(), libs=Dependencies()):
         acqstring = img.header.general_info['exam_date']
         dateformat = '%Y.%m.%d / %H:%M:%S'
         provenance['acquired'] = datetime.strptime(acqstring,dateformat)
-    return provenance
+        return provenance
+    return None
 
     

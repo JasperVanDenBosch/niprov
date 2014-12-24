@@ -17,9 +17,17 @@ class InspectionTests(unittest.TestCase):
         log = Mock()
         libs = self.setupNibabel()
         libs.hasDependency.return_value = False
-        niprov.inspection.inspect('/p/f1.x', listener=log, libs=libs)
+        provenance = niprov.inspection.inspect('/p/f1.x', listener=log, libs=libs)
         self.assertRaises(AssertionError,
             libs.nibabel.load.assert_any_call, '/p/f1.x')
+
+    def test_If_nothing_inspected_returns_None(self):
+        import niprov.inspection
+        log = Mock()
+        libs = self.setupNibabel()
+        libs.hasDependency.return_value = False
+        provenance = niprov.inspection.inspect('/p/f1.x', listener=log, libs=libs)
+        self.assertIsNone(provenance)
 
     def test_Gets_basic_info_from_nibabel_and_returns_it(self):
         import niprov.inspection

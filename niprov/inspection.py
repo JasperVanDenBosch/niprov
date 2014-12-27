@@ -8,7 +8,11 @@ from niprov.dependencies import Dependencies
 def inspect(fpath, listener=Commandline(), libs=Dependencies()):
     provenance = {}
     if libs.hasDependency('nibabel'):
-        img = libs.nibabel.load(fpath)
+        try:
+            img = libs.nibabel.load(fpath)
+        except:
+            listener.fileError(fpath)
+            return None
         provenance['subject'] = img.header.general_info['patient_name']
         provenance['protocol'] = img.header.general_info['protocol_name']
         acqstring = img.header.general_info['exam_date']

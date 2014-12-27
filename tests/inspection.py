@@ -39,6 +39,17 @@ class InspectionTests(unittest.TestCase):
         self.assertEqual(out['protocol'], 'T1 SENSE')
         self.assertEqual(out['acquired'], datetime(2014, 8, 5, 11, 27, 34))
 
+    def test_If_error_during_inspection_tells_listener_and_returns_None(self):
+        import niprov.inspection
+        log = Mock()
+        libs = Mock()
+        libs.hasDependency.return_value = True
+        libs.nibabel.load.side_effect = ValueError
+        out = niprov.inspection.inspect('/p/f1.x', listener=log, libs=libs)
+        self.assertIsNone(out)
+        log.fileError.assert_any_call('/p/f1.x')
+
+
     def setupNibabel(self):
         libs = Mock()
         img = Mock()

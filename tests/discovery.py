@@ -44,6 +44,19 @@ class DiscoveryTests(unittest.TestCase):
         niprov.discovery.inspect.assert_any_call(ospath.join('root','a.valid'))
         niprov.discovery.inspect.assert_any_call(ospath.join('root','b.valid'))
 
+    def test_If_inspect_returns_no_provenance_dont_call_fileFound(self):
+        import niprov.discovery
+        niprov.discovery.inspect = Mock()
+        niprov.discovery.inspect.return_value = None
+        log = Mock()
+        os = Mock()
+        filt = self.setupFilter('valid.file')
+        os.walk.return_value = [('root',[],['valid.file','other.file'])]
+        niprov.discovery.discover('root', filesys=os, listener=log,
+            filefilter=filt)
+        self.assertRaises(AssertionError,
+            log.fileFound.assert_any_call,'valid.file', niprov.discovery.inspect())
+
     def setupFilter(self, valid):
         def filter_side_effect(*args):
             if valid in args[0]:

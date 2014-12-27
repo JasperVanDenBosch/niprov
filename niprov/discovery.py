@@ -15,4 +15,5 @@ def discover(root, filefilter=FileFilter(),
             filepath = os.path.join(root, filename)
             if filefilter.include(filename):
                 provenance = inspect(filepath)
-                listener.fileFound(filename, provenance)    
+                if provenance is not None:
+                    listener.fileFound(filename, provenance)    

@@ -10,6 +10,11 @@ class Dependencies(object):
             self.nibabel = nibabel
         except:
             self.nibabel = None
+        try:
+            import dicom
+            self.dicom = dicom
+        except:
+            self.dicom = None
 
 
     def hasDependency(self, libname):

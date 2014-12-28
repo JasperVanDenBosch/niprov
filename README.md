@@ -5,6 +5,8 @@ niprov
 
 provenance for neuroimaging data
 
+To inspect image files, install `nibabel` and/or `pydicom`.
+
 
 
 ```

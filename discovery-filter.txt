@@ -1,4 +1,2 @@
 .PAR
-.nii
-.vmr
-.fmr
+.dcm

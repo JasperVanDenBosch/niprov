@@ -13,7 +13,7 @@ class DiscoveryTests(unittest.TestCase):
         os.walk.return_value = [('root',[],['/p/f1.x','/p/f2.x']),
             ('root',[],['/p/p2/f3.x'])] #(dirpath, dirnames, filenames)
         niprov.discovery.discover('root', filesys=os, listener=log, 
-            filefilter=filt)
+            filefilter=filt, repository=Mock())
         os.walk.assert_called_with('root')
         log.fileFound.assert_any_call('/p/f1.x', niprov.discovery.inspect())
         log.fileFound.assert_any_call('/p/f2.x', niprov.discovery.inspect())
@@ -27,7 +27,7 @@ class DiscoveryTests(unittest.TestCase):
         filt = self.setupFilter('valid.file')
         os.walk.return_value = [('root',[],['valid.file','other.file'])]
         niprov.discovery.discover('root', filesys=os, listener=log,
-            filefilter=filt)
+            filefilter=filt, repository=Mock())
         log.fileFound.assert_any_call('valid.file', niprov.discovery.inspect())
         self.assertRaises(AssertionError,
             log.fileFound.assert_any_call,'other.file', niprov.discovery.inspect())
@@ -40,7 +40,7 @@ class DiscoveryTests(unittest.TestCase):
         filt = self.setupFilter('.valid')
         os.walk.return_value = [('root',[],['a.valid','other.file','b.valid'])]
         niprov.discovery.discover('root', filesys=os, listener=log,
-            filefilter=filt)
+            filefilter=filt, repository=Mock())
         niprov.discovery.inspect.assert_any_call(ospath.join('root','a.valid'))
         niprov.discovery.inspect.assert_any_call(ospath.join('root','b.valid'))
 
@@ -53,9 +53,23 @@ class DiscoveryTests(unittest.TestCase):
         filt = self.setupFilter('valid.file')
         os.walk.return_value = [('root',[],['valid.file','other.file'])]
         niprov.discovery.discover('root', filesys=os, listener=log,
-            filefilter=filt)
+            filefilter=filt, repository=Mock())
         self.assertRaises(AssertionError,
             log.fileFound.assert_any_call,'valid.file', niprov.discovery.inspect())
+
+    def test_Hands_provenance_to_repository(self):
+        import niprov.discovery
+        niprov.discovery.inspect = Mock()
+        niprov.discovery.inspect.side_effect = lambda x: ('p', x)
+        os = Mock()
+        repo = Mock()
+        filt = self.setupFilter('.valid')
+        os.walk.return_value = [('root',[],['a.valid','other.file','b.valid'])]
+        niprov.discovery.discover('root', filesys=os, listener=Mock(),
+            filefilter=filt, repository=repo)
+        repo.store.assert_any_call([('p', 'root/a.valid'), ('p', 'root/b.valid')])
+
+
 
     def setupFilter(self, valid):
         def filter_side_effect(*args):

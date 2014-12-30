@@ -3,9 +3,11 @@
 import argparse
 import niprov
 
-parser = argparse.ArgumentParser(description='Find image files.')
-#parser.add_argument('root', default='.', 
-#                   help='Directory below which to search for files.')
-
+parser = argparse.ArgumentParser(
+    description='Provide provenance for known files.')
+parser.add_argument('--file', default=None,
+    help='Report on the file at this location.')
+parser.add_argument('--subject', default=None,
+    help='Report on files for this subject.')
 args = parser.parse_args()
-niprov.report()
+niprov.report(forFile=args.file, forSubject=args.subject)

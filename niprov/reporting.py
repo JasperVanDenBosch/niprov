@@ -3,5 +3,9 @@
 from niprov.jsonfile import JsonFile
 
 
-def report(repository=JsonFile()):
+def report(forFile=None, forSubject=None, repository=JsonFile()):
+    if forFile:
+        return repository.byPath(forFile)
+    elif forSubject:
+        return repository.bySubject(forSubject)
     return repository.all()

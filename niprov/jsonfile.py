@@ -7,10 +7,10 @@ class JsonFile(object):
         with open('provenance.json', 'w') as fp:
             json.dump(provenance, fp, default=datetime2json)
 
-#    def retrieve(self):
-#        with open('provenance.json', 'r') as fp:
-#            provenance = json.load(fp)
-#        return provenance
+    def all(self):
+        with open('provenance.json', 'r') as fp:
+            provenance = json.load(fp)
+        return provenance
 
 
 def datetime2json(obj):

@@ -1,11 +1,17 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 from niprov.jsonfile import JsonFile
+from niprov.exporters import ExportFactory
 
 
-def report(forFile=None, forSubject=None, repository=JsonFile()):
+def report(format=None, forFile=None, forSubject=None, repository=JsonFile(), 
+        exportFactory=ExportFactory()):
+    exporter = exportFactory.createExporter(format)
     if forFile:
-        return repository.byPath(forFile)
+        provenance = repository.byPath(forFile)
     elif forSubject:
-        return repository.bySubject(forSubject)
-    return repository.all()
+        provenance = repository.bySubject(forSubject)
+    else:
+        provenance = repository.all()
+        exporter.exportList(provenance)
+    return provenance

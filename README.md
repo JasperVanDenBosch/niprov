@@ -15,9 +15,9 @@ discover .
 *Look for image files below the current directory, inspect them and store the obtained provenance metadata.*
 
 ```
-provenance --subject "John Doe"
+provenance --subject "John Doe" --html
 ```
-*Show provenance of known files for subject 'John Doe'.*
+*Publish provenance of known files for subject 'John Doe' as an html file.*
 
 Python Usage
 -----------------

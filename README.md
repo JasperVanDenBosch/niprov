@@ -2,8 +2,9 @@ niprov
 ======
 provenance for neuroimaging data
 
-[![Build Status](https://travis-ci.org/ilogue/niprov.svg?branch=master)](https://travis-ci.org/ilogue/niprov)
-[![Docs Status](https://readthedocs.org/projects/niprov/badge/?version=latest)](http://niprov.readthedocs.org/)
+[![Build](https://travis-ci.org/ilogue/niprov.svg?branch=master)](https://travis-ci.org/ilogue/niprov)
+[![Docs](https://readthedocs.org/projects/niprov/badge/?version=latest)](http://niprov.readthedocs.org/)
+[![Coverage](https://img.shields.io/coveralls/ilogue/niprov.svg)](https://coveralls.io/r/ilogue/niprov)
 
 See the [full documentation](http://niprov.readthedocs.org/).
 
@@ -22,7 +23,7 @@ provenance --subject "John Doe" --html
 ```
 *Publish provenance of known files for subject 'John Doe' as an html file.*
 
-Python Usage
+Python API
 -----------------
 
 ```

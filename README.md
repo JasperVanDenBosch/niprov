@@ -3,6 +3,9 @@ niprov
 provenance for neuroimaging data
 
 [![Build Status](https://travis-ci.org/ilogue/niprov.svg?branch=master)](https://travis-ci.org/ilogue/niprov)
+[![Docs Status](https://readthedocs.org/projects/niprov/badge/?version=latest)](http://niprov.readthedocs.org/)
+
+See the [full documentation](http://niprov.readthedocs.org/).
 
 To inspect image files, install `nibabel` and/or `pydicom`.
 

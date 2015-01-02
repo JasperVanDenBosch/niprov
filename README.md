@@ -5,6 +5,7 @@ provenance for neuroimaging data
 [![Build](https://travis-ci.org/ilogue/niprov.svg?branch=master)](https://travis-ci.org/ilogue/niprov)
 [![Docs](https://readthedocs.org/projects/niprov/badge/?version=latest)](http://niprov.readthedocs.org/)
 [![Coverage](https://img.shields.io/coveralls/ilogue/niprov.svg)](https://coveralls.io/r/ilogue/niprov)
+[![DOI](https://zenodo.org/badge/7344/ilogue/niprov.svg)](http://dx.doi.org/10.5281/zenodo.13683)
 
 See the [full documentation](http://niprov.readthedocs.org/).
 

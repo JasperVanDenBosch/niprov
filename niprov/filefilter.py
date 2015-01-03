@@ -18,12 +18,14 @@ class FileFilter(object):
     def include(self, filepath):
         """Whether the file is to be included in discovery.
 
-        :param filepath: The full path of the file.
-        :type filepath: str.
-        :rtype: bool
-        :returns: True if the file should be included.
-        :raises: ValueError
+        Args:
+            filepath (str): The full path of the file.
 
+        Returns:
+            bool: True if the file should be included.
+
+        Raises:
+            ValueError: If not able to read discovery-filter.txt
         """
         if not self.filters:
             raise ValueError('Was not able to load filter file.')

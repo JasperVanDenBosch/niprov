@@ -12,7 +12,10 @@ Niprov is a python package to create, store and publish provenance information f
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
+
+   modules
+
 
 
 

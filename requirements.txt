@@ -1,2 +1,4 @@
 mock
 coveralls
+sphinx
+sphinxcontrib-napoleon

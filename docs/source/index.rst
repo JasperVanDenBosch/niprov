@@ -14,7 +14,9 @@ Contents:
 .. toctree::
    :maxdepth: 4
 
-   modules
+   commandline-usage
+   code-examples
+   niprov
 
 
 

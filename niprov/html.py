@@ -4,13 +4,17 @@
 
 class HtmlExporter(object):
 
-    def __init__(self, filesys, log):
+    def __init__(self, filesys, listener, externals):
         self.filesys = filesys
-        self.log = log
+        self.listener = listener
+        self.externals = externals
 
     def exportList(self, provenance):
         itemfmt = '<li>{0[acquired]} {0[subject]} {0[protocol]}</li>'
-        with self.filesys.open() as htmlfile:
+        with self.filesys.open('provenance.html','w') as htmlfile:
+            htmlfile.write('<ol>')
             for provitem in provenance:
                 htmlfile.write(itemfmt.format(provitem))
+            htmlfile.write('</ol>')
+        self.externals.run(['firefox', 'provenance.html'])
 

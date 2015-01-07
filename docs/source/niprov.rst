@@ -10,6 +10,7 @@ Submodules
    niprov.dependencies
    niprov.discovery
    niprov.exporters
+   niprov.externals
    niprov.filefilter
    niprov.filesystem
    niprov.html

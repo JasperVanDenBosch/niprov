@@ -3,6 +3,7 @@
 from niprov.filesystem import Filesystem
 from niprov.commandline import Commandline
 from niprov.html import HtmlExporter
+from niprov.externals import Externals
 
 
 class ExportFactory(object):
@@ -12,4 +13,4 @@ class ExportFactory(object):
         self.filesys = Filesystem()
 
     def createExporter(self, format):
-        return HtmlExporter(self.filesys, self.listener, None)
+        return HtmlExporter(self.filesys, self.listener, Externals())

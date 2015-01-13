@@ -10,8 +10,9 @@ class JsonSerializer(object):
     """
 
     def serialize(self, record):
-        """Convert one provenance item from its native python dict type to
-            a json string.
+        """
+        Convert one provenance item from its native python dict type to
+        a json string.
 
         Args:
             record (dict): The provenance item to convert.
@@ -22,8 +23,9 @@ class JsonSerializer(object):
         return json.dumps(self._deflate(record))
 
     def deserialize(self, jsonRecord):
-        """Convert one provenance item from its json string version to the 
-            native python dictionary format.
+        """
+        Convert one provenance item from its json string version to the 
+        native python dictionary format.
 
         Args:
             jsonRecord (str): The provenance item to convert as json-encoded 

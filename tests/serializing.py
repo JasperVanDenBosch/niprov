@@ -4,7 +4,6 @@ import unittest
 from mock import Mock
 from datetime import datetime
 import json
-import copy
 
 
 class SerializerTests(unittest.TestCase):

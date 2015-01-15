@@ -14,7 +14,7 @@ class JsonFile(object):
         """Add the provenance for one file to storage.
 
         Args:
-            record (str): Provenance for one image file.
+            record (dict): Provenance for one image file.
         """
         current = self.all()
         current.append(record)

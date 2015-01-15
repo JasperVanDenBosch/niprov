@@ -67,7 +67,8 @@ class DiscoveryTests(unittest.TestCase):
         os.walk.return_value = [('root',[],['a.valid','other.file','b.valid'])]
         niprov.discovery.discover('root', filesys=os, listener=Mock(),
             filefilter=filt, repository=repo)
-        repo.store.assert_any_call([('p', 'root/a.valid'), ('p', 'root/b.valid')])
+        repo.add.assert_any_call(('p', 'root/a.valid'))
+        repo.add.assert_any_call(('p', 'root/b.valid'))
 
 
 

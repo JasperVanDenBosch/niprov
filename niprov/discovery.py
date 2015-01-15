@@ -10,7 +10,6 @@ from niprov.jsonfile import JsonFile
 
 def discover(root, filefilter=FileFilter(), filesys=Filesystem(), 
         listener=Commandline(), repository=JsonFile()):
-    discovered = []
     dirs = filesys.walk(root)
     for (root, sdirs, files) in dirs:
         for filename in files:
@@ -18,6 +17,6 @@ def discover(root, filefilter=FileFilter(), filesys=Filesystem(),
             if filefilter.include(filename):
                 provenance = inspect(filepath)
                 if provenance is not None:
-                    discovered.append(provenance)
+                    repository.add(provenance)
                     listener.fileFound(filename, provenance) 
-    repository.store(discovered)   
+       

@@ -36,9 +36,39 @@ class JsonSerializer(object):
         """
         return self._inflate(json.loads(jsonRecord))
 
+    def serializeList(self, listOfRecords):
+        """
+        Convert a list of provenance items from its native list of python dict 
+        type to a json string.
+
+        Args:
+            listOfRecords (list): The provenance items to convert.
+
+        Returns:
+            str: Json version of the provenance items.
+        """
+        flatRecords = [self._deflate(r) for r in listOfRecords]
+        return json.dumps(flatRecords)
+
+    def deserializeList(self, jsonListOfRecords):
+        """
+        Convert a list of provenance items from its json string version to the 
+        a list of the native python dictionary format.
+
+        Args:
+            jsonListOfRecords (str): The provenance items to convert as 
+                json-encoded string.
+
+        Returns:
+            list: Python list of dictionaries of the provenance.
+        """
+        flatRecords = json.loads(jsonListOfRecords)
+        return [self._inflate(r) for r in flatRecords]
+
     def _deflate(self, record):
+        isoformat = "%Y-%m-%dT%H:%M:%S.%f"
         flatRecord = copy.deepcopy(record)
-        flatRecord['acquired'] = record['acquired'].isoformat()
+        flatRecord['acquired'] = record['acquired'].strftime(isoformat)
         return flatRecord
 
     def _inflate(self, flatRecord):

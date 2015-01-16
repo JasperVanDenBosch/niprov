@@ -18,6 +18,7 @@ def inspect(fpath, listener=Commandline(), libs=Dependencies()):
     if not libs.hasDependency(formats[extension]):
         listener.missingDependencyForImage(formats[extension], fpath)
         return None
+    provenance['path'] = fpath
     if formats[extension] == 'nibabel':
         try:
             img = libs.nibabel.load(fpath)

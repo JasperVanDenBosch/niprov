@@ -71,6 +71,14 @@ class InspectionTests(unittest.TestCase):
         self.assertEqual(out['protocol'], 'T1 SENSE')
         self.assertEqual(out['acquired'], datetime(2014, 8, 5, 12, 19, 14))
 
+    def test_Saves_file_path_along_with_provenance(self):
+        import niprov.inspection
+        log = Mock()
+        libs = self.setupPydicom()
+        libs.hasDependency.return_value = True
+        out = niprov.inspection.inspect('/p/f1.dcm', listener=log, libs=libs)
+        self.assertEqual(out['path'], '/p/f1.dcm')
+
     def test_If_error_during_inspection_tells_listener_and_returns_None(self):
         import niprov.inspection
         log = Mock()

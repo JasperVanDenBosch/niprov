@@ -16,8 +16,9 @@ Submodules
    niprov.html
    niprov.inspection
    niprov.jsonfile
-   niprov.reporting
    niprov.jsonserializing
+   niprov.recording
+   niprov.reporting
 
 Module contents
 ---------------

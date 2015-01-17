@@ -28,7 +28,7 @@ class ReportingTests(unittest.TestCase):
             exportFactory=Mock())
         self.assertEqual(out, repo.bySubject('Jane Doe'))
 
-    def test_Obtains_exporter_from_factory_and_passes_it_provenance(self):
+    def test_Obtains_exporter_from_factorye(self):
         import niprov
         factory = Mock()
         repo = Mock()
@@ -43,6 +43,15 @@ class ReportingTests(unittest.TestCase):
         repo = Mock()
         niprov.report(repository=repo, exportFactory=factory)
         factory.createExporter().exportList.assert_any_call(repo.all())
+        niprov.report(forSubject='Jane', repository=repo, exportFactory=factory)
+        factory.createExporter().exportList.assert_any_call(repo.bySubject())
+
+    def test_Passes_single_item_of_provenance_to_exporter(self):
+        import niprov
+        factory = Mock()
+        repo = Mock()
+        niprov.report(forFile='xyz',repository=repo, exportFactory=factory)
+        factory.createExporter().export.assert_any_call(repo.byPath('xyz'))
 
 
 

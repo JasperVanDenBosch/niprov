@@ -9,8 +9,10 @@ def report(format=None, forFile=None, forSubject=None, repository=JsonFile(),
     exporter = exportFactory.createExporter(format)
     if forFile:
         provenance = repository.byPath(forFile)
+        exporter.export(provenance)
     elif forSubject:
         provenance = repository.bySubject(forSubject)
+        exporter.exportList(provenance)
     else:
         provenance = repository.all()
         exporter.exportList(provenance)

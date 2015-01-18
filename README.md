@@ -20,6 +20,11 @@ discover .
 *Look for image files below the current directory, inspect them and store the obtained provenance metadata.*
 
 ```
+    record 'motion correction' fmri.nii fmri-3dmc.nii
+```
+*Add provenance for a new file created as a result of an existing file*
+
+```
 provenance --subject "John Doe" --html
 ```
 *Publish provenance of known files for subject 'John Doe' as an html file.*
@@ -30,6 +35,8 @@ Python API
 ```
 import niprov
 niprov.discover('.')
+analysispackage.correctmotion(input='JD-fmri.nii', output='JD-fmri-3dmc.nii')
+niprov.record('motion correction', 'JD-fmri.nii','JD-fmri-3dmc.nii')
 files = niprov.report(forSubject='John Doe')
 ```
 

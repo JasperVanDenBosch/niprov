@@ -14,17 +14,17 @@ To inspect image files, install `nibabel` and/or `pydicom`.
 Commandline Usage
 -----------------
 
-```
+```shell
 discover .
 ```
 *Look for image files below the current directory, inspect them and store the obtained provenance metadata.*
 
-```
+```shell
 record 'motion correction' fmri.nii fmri-3dmc.nii
 ```
 *Add provenance for a new file created as a result of an existing file*
 
-```
+```shell
 provenance --subject "John Doe" --html
 ```
 *Publish provenance of known files for subject 'John Doe' as an html file.*
@@ -32,7 +32,7 @@ provenance --subject "John Doe" --html
 Python API
 -----------------
 
-```
+```python
 import niprov
 niprov.discover('.')
 analysispackage.correctmotion(input='JD-fmri.nii', output='JD-fmri-3dmc.nii')

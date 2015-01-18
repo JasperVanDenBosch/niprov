@@ -35,6 +35,11 @@ class JsonFile(object):
         return self.json.deserializeList(jsonstr)
 
     def knowsByPath(self, path):
+        """Whether the file at this path has provenance associated with it.
+
+        Return:
+            bool: True if provenance is available for that path.
+        """
         try:
             self.byPath(path)
         except IndexError:

@@ -22,8 +22,8 @@ class HtmlTests(unittest.TestCase):
         item2['protocol'] = 'T1'
         item2['acquired'] = datetime(2014, 8, 6, 12, 23, 46)
         html.exportList([item1, item2])
-        filehandle.write.assert_any_call('<tr><td>2014-08-05 12:23:46</td><td>John</td><td>DTI</td><td>/p/f1</td></tr>')
-        filehandle.write.assert_any_call('<tr><td>2014-08-06 12:23:46</td><td>Jane</td><td>T1</td><td>/p/f2</td></tr>')
+        filehandle.write.assert_any_call('<tr><td>2014-08-05 12:23:46</td><td>John</td><td>DTI</td><td>/p/f1</td></tr>\n')
+        filehandle.write.assert_any_call('<tr><td>2014-08-06 12:23:46</td><td>Jane</td><td>T1</td><td>/p/f2</td></tr>\n')
 
     def test_If_item_misses_field_fills_questionmark(self):
         from niprov.html import HtmlExporter
@@ -40,8 +40,8 @@ class HtmlTests(unittest.TestCase):
         item2['subject'] = 'Jane'
         item2['protocol'] = 'T1'
         html.exportList([item1, item2])
-        filehandle.write.assert_any_call('<tr><td>2014-08-05 12:23:46</td><td>?</td><td>DTI</td><td>/p/f1</td></tr>')
-        filehandle.write.assert_any_call('<tr><td>?</td><td>Jane</td><td>T1</td><td>/p/f2</td></tr>')
+        filehandle.write.assert_any_call('<tr><td>2014-08-05 12:23:46</td><td>?</td><td>DTI</td><td>/p/f1</td></tr>\n')
+        filehandle.write.assert_any_call('<tr><td>?</td><td>Jane</td><td>T1</td><td>/p/f2</td></tr>\n')
 
     def test_Shortens_path_to_max_30chars(self):
         from niprov.html import HtmlExporter
@@ -52,7 +52,7 @@ class HtmlTests(unittest.TestCase):
         item1 = {}
         item1['path'] = '12345678901234567890123456789012345678901234567890'
         html.exportList([item1])
-        filehandle.write.assert_any_call('<tr><td>?</td><td>?</td><td>?</td><td>..1234567890123456789012345678901234567890</td></tr>')
+        filehandle.write.assert_any_call('<tr><td>?</td><td>?</td><td>?</td><td>..1234567890123456789012345678901234567890</td></tr>\n')
 
     def test_Writes_one_list_item_per_entry(self):
         from niprov.html import HtmlExporter

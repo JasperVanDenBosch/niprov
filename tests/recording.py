@@ -14,5 +14,11 @@ class RecordingTests(unittest.TestCase):
         self.assertEqual(provenance['path'], new)
         self.assertEqual(provenance['transformation'], trans)
 
+    def test_Stores_provenance(self):
+        from niprov.recording import record
+        repo = Mock()
+        provenance = record('old', 'new', 'trans', repository=repo)
+        repo.add.assert_any_call(provenance)
+
         
 

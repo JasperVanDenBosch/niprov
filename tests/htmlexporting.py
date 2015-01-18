@@ -23,6 +23,22 @@ class HtmlTests(unittest.TestCase):
         filehandle.write.assert_any_call('<li>2014-08-05 12:23:46 John DTI</li>')
         filehandle.write.assert_any_call('<li>2014-08-06 12:23:46 Jane T1</li>')
 
+    def test_If_item_misses_field_fills_questionmark(self):
+        from niprov.html import HtmlExporter
+        log = Mock()
+        externals = Mock()
+        (filesys, filehandle) = self.setupFilesys()
+        html = HtmlExporter(filesys, log, externals)
+        item1 = {}
+        item1['protocol'] = 'DTI'
+        item1['acquired'] = datetime(2014, 8, 5, 12, 23, 46)
+        item2 = {}
+        item2['subject'] = 'Jane'
+        item2['protocol'] = 'T1'
+        html.exportList([item1, item2])
+        filehandle.write.assert_any_call('<li>2014-08-05 12:23:46 ? DTI</li>')
+        filehandle.write.assert_any_call('<li>? Jane T1</li>')
+
     def test_Writes_one_list_item_per_entry(self):
         from niprov.html import HtmlExporter
         log = Mock()

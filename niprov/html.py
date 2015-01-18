@@ -17,6 +17,7 @@ li:hover{color:blue;}
 <h1>Provenance</h1>
 """
     footer = '</html>'
+    expectedFields = ['acquired','subject','protocol']
 
     def __init__(self, filesys, listener, externals):
         self.filesys = filesys
@@ -29,6 +30,9 @@ li:hover{color:blue;}
             htmlfile.write(self.header)
             htmlfile.write('<ol>')
             for provitem in provenance:
+                for field in self.expectedFields:
+                    if not (field in provitem):
+                        provitem[field] = '?'
                 htmlfile.write(itemfmt.format(provitem))
             htmlfile.write('</ol>')
             htmlfile.write(self.footer)

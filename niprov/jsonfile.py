@@ -34,6 +34,13 @@ class JsonFile(object):
             return []
         return self.json.deserializeList(jsonstr)
 
+    def knowsByPath(self, path):
+        try:
+            self.byPath(path)
+        except IndexError:
+            return False
+        return True
+
     def byPath(self, path):
         all = self.all()
         return [r for r in all if r['path'] == path][0]

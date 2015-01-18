@@ -12,7 +12,7 @@ class RecordingTests(unittest.TestCase):
         ancestor = '/p/f1'
         new = '/p/f2'
         trans = 'Something cool'
-        provenance = record(ancestor, new, trans, repository=repo)
+        provenance = record(trans, ancestor, new, repository=repo)
         self.assertEqual(provenance['ancestor'], ancestor)
         self.assertEqual(provenance['path'], new)
         self.assertEqual(provenance['transformation'], trans)
@@ -21,7 +21,7 @@ class RecordingTests(unittest.TestCase):
         from niprov.recording import record
         repo = Mock()
         repo.knowsByPath.return_value = False
-        provenance = record('old', 'new', 'trans', repository=repo)
+        provenance = record('trans', 'old', 'new', repository=repo)
         repo.add.assert_any_call(provenance)
 
     def test_Copies_fields_from_known_ancestor(self):
@@ -30,7 +30,7 @@ class RecordingTests(unittest.TestCase):
         ancestorProv = {'acquired':dt.now(),'subject':'JB','protocol':'T3'}
         repo = Mock()
         repo.byPath.side_effect = lambda x: {ancestor:ancestorProv}[x]
-        provenance = record(ancestor, 'new', 'trans', repository=repo)
+        provenance = record('trans', ancestor, 'new', repository=repo)
         self.assertEqual(provenance['acquired'], ancestorProv['acquired'])
         self.assertEqual(provenance['subject'], ancestorProv['subject'])
         self.assertEqual(provenance['protocol'], ancestorProv['protocol'])

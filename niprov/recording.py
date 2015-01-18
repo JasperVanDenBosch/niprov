@@ -3,7 +3,7 @@
 from niprov.jsonfile import JsonFile
 
 
-def record(ancestor, new, transformation, repository=JsonFile()):
+def record(transformation, ancestor, new, repository=JsonFile()):
     """
     Record an transformation that creates a new image.
     """

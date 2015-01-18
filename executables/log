@@ -10,4 +10,4 @@ parser.add_argument('ancestor', help='Image that was the basis of the transforma
 parser.add_argument('new', help='Where the resulting image was stored.')
 
 args = parser.parse_args()
-niprov.record(args.transformation, args.ancestor, args.new)
+niprov.log(args.transformation, args.ancestor, args.new)

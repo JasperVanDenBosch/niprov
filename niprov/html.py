@@ -9,12 +9,22 @@ class HtmlExporter(object):
 <head>
 <style>
 html {font-family:arial;}
-li{ margin: 10px;}
-li:hover{color:blue;}
+td {padding: 10px;}
+tr:hover {background-color:lavender;}
 </style>
 <title>Provenance</title>
 </head>
 <h1>Provenance</h1>
+<table>
+<thead>
+<tr>
+<th>Acquired</th>
+<th>Subject</th>
+<th>Protocol</th>
+<th>Path</th>
+</tr>
+</thead>
+<tbody>
 """
     footer = '</html>'
     expectedFields = ['acquired','subject','protocol']
@@ -25,10 +35,10 @@ li:hover{color:blue;}
         self.externals = externals
 
     def exportList(self, provenance):
-        itemfmt = '<li>{0[acquired]} {0[subject]} {0[protocol]} {1}</li>'
+        itemfmt = '<tr><td>{0[acquired]}</td><td>{0[subject]}</td><td>{0[protocol]}</td><td>{1}</td></tr>\n'
         with self.filesys.open('provenance.html','w') as htmlfile:
             htmlfile.write(self.header)
-            htmlfile.write('<ol>')
+            #htmlfile.write('<table>')
             for provitem in provenance:
                 for field in self.expectedFields:
                     if not (field in provitem):
@@ -37,7 +47,7 @@ li:hover{color:blue;}
                 if len(path) > 42:
                     path = '..'+path[-40:]
                 htmlfile.write(itemfmt.format(provitem, path))
-            htmlfile.write('</ol>')
+            htmlfile.write('</tbody></table>\n')
             htmlfile.write(self.footer)
         self.externals.run(['firefox', 'provenance.html'])
 

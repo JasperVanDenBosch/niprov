@@ -11,6 +11,11 @@ def record(ancestor, new, transformation, repository=JsonFile()):
     provenance['ancestor'] = ancestor
     provenance['path'] = new
     provenance['transformation'] = transformation
+    if repository.knowsByPath(ancestor):
+        ancestorProvenance = repository.byPath(ancestor)
+        provenance['acquired'] = ancestorProvenance['acquired']
+        provenance['subject'] = ancestorProvenance['subject']
+        provenance['protocol'] = ancestorProvenance['protocol']
     repository.add(provenance)
     return provenance
 

@@ -25,7 +25,7 @@ li:hover{color:blue;}
         self.externals = externals
 
     def exportList(self, provenance):
-        itemfmt = '<li>{0[acquired]} {0[subject]} {0[protocol]}</li>'
+        itemfmt = '<li>{0[acquired]} {0[subject]} {0[protocol]} {1}</li>'
         with self.filesys.open('provenance.html','w') as htmlfile:
             htmlfile.write(self.header)
             htmlfile.write('<ol>')
@@ -33,7 +33,10 @@ li:hover{color:blue;}
                 for field in self.expectedFields:
                     if not (field in provitem):
                         provitem[field] = '?'
-                htmlfile.write(itemfmt.format(provitem))
+                path = provitem['path']
+                if len(path) > 42:
+                    path = '..'+path[-40:]
+                htmlfile.write(itemfmt.format(provitem, path))
             htmlfile.write('</ol>')
             htmlfile.write(self.footer)
         self.externals.run(['firefox', 'provenance.html'])

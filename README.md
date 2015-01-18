@@ -20,7 +20,7 @@ discover .
 *Look for image files below the current directory, inspect them and store the obtained provenance metadata.*
 
 ```
-    record 'motion correction' fmri.nii fmri-3dmc.nii
+record 'motion correction' fmri.nii fmri-3dmc.nii
 ```
 *Add provenance for a new file created as a result of an existing file*
 

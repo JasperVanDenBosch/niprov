@@ -17,6 +17,7 @@ Submodules
    niprov.inspection
    niprov.jsonfile
    niprov.jsonserializing
+   niprov.logging
    niprov.recording
    niprov.reporting
 

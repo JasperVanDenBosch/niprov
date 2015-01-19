@@ -5,7 +5,15 @@ from niprov.jsonfile import JsonFile
 
 def log(transformation, ancestor, new, repository=JsonFile()):
     """
-    Record an transformation that creates a new image.
+    Record a transformation that creates a new image.
+
+    Args:
+        transformation (str): Name of the operation that has been used.
+        ancestor (str): Path to the file that was used as the basis of the transformation
+        new (str): Path to the newly created file.
+
+    Returns:
+        dict: New provenance
     """
     provenance = {}
     provenance['ancestor'] = ancestor

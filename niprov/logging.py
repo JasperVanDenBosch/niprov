@@ -3,7 +3,8 @@
 from niprov.jsonfile import JsonFile
 
 
-def log(transformation, ancestor, new, repository=JsonFile()):
+def log(transformation, ancestor, new, code=None, logtext=None,
+        repository=JsonFile()):
     """
     Record a transformation that creates a new image.
 
@@ -19,6 +20,10 @@ def log(transformation, ancestor, new, repository=JsonFile()):
     provenance['ancestor'] = ancestor
     provenance['path'] = new
     provenance['transformation'] = transformation
+    if code:
+        provenance['code'] = code
+    if logtext:
+        provenance['logtext'] = logtext
     if repository.knowsByPath(ancestor):
         ancestorProvenance = repository.byPath(ancestor)
         provenance['acquired'] = ancestorProvenance['acquired']

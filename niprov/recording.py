@@ -13,11 +13,12 @@ def record(command, externals=Externals()):
     Returns:
         dict: New provenance
     """
-    externals.run(command)
+    result = externals.run(command)
     transformation = command[0]
+    code = ' '.join(command)
     for c in range(len(command)):
         if command[c] in ['-out']:
             new = command[c+1]
         if command[c] in ['-in']:
             ancestor = command[c+1]
-    return log(transformation, ancestor, new)
+    return log(transformation, ancestor, new, code=code, logtext=result.output)

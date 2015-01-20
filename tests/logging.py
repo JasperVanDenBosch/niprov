@@ -35,5 +35,14 @@ class loggingTests(unittest.TestCase):
         self.assertEqual(provenance['subject'], ancestorProv['subject'])
         self.assertEqual(provenance['protocol'], ancestorProv['protocol'])
 
+    def test_Adds_code_or_logtext(self):
+        from niprov.logging import log
+        repo = Mock()
+        repo.knowsByPath.return_value = False
+        provenance = log('trans', 'old', 'new', code='abc', logtext='def', repository=repo)
+        repo.add.assert_any_call(provenance)
+        self.assertEqual(provenance['code'],'abc')
+        self.assertEqual(provenance['logtext'],'def')
+
         
 

@@ -76,6 +76,23 @@ class HtmlTests(unittest.TestCase):
         externals.run.assert_any_call(['firefox',
             'provenance.html'])
 
+    def test_Exporting_a_single_item(self):
+        from niprov.html import HtmlExporter
+        log = Mock()
+        externals = Mock()
+        (filesys, filehandle) = self.setupFilesys()
+        html = HtmlExporter(filesys, log, externals)
+        item1 = {}
+        item1['path'] = '/p/f1'
+        item1['subject'] = 'John'
+        item1['protocol'] = 'DTI'
+        item1['acquired'] = datetime(2014, 8, 5, 12, 23, 46)
+        item1['code'] = 'private static void'
+        item1['logtext'] = 'Hello World!'
+        html.export(item1)
+        filehandle.write.assert_any_call('<dt>code</dt><dd>private static void</dd>\n')
+        filehandle.write.assert_any_call('<dt>logtext</dt><dd>Hello World!</dd>\n')
+
     def setupFilesys(self):
         filesys = Mock()
         filehandle = Mock()

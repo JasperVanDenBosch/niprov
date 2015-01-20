@@ -4,7 +4,7 @@
 
 class HtmlExporter(object):
 
-    header = """
+    _header = """
 <html>
 <head>
 <style>
@@ -18,7 +18,7 @@ dd {padding: 10px;}
 </head>
 <h1>Provenance</h1>
 """
-    tableheader ="""
+    _tableheader ="""
 <table>
 <thead>
 <tr>
@@ -30,9 +30,9 @@ dd {padding: 10px;}
 </thead>
 <tbody>
 """
-    footer = '</html>'
-    expectedFields = ['acquired','subject','protocol']
-    allfields = ['path','ancestor','acquired','subject','protocol','transformation','code','logtext']
+    _footer = '</html>'
+    _expectedFields = ['acquired','subject','protocol']
+    _allfields = ['path','ancestor','acquired','subject','protocol','transformation','code','logtext']
 
     def __init__(self, filesys, listener, externals):
         self.filesys = filesys
@@ -47,10 +47,10 @@ dd {padding: 10px;}
         """
         itemfmt = '<tr><td>{0[acquired]}</td><td>{0[subject]}</td><td>{0[protocol]}</td><td>{1}</td></tr>\n'
         with self.filesys.open('provenance.html','w') as htmlfile:
-            htmlfile.write(self.header)
-            htmlfile.write(self.tableheader)
+            htmlfile.write(self._header)
+            htmlfile.write(self._tableheader)
             for provitem in provenance:
-                for field in self.expectedFields:
+                for field in self._expectedFields:
                     if not (field in provitem):
                         provitem[field] = '?'
                 path = provitem['path']
@@ -58,7 +58,7 @@ dd {padding: 10px;}
                     path = '..'+path[-40:]
                 htmlfile.write(itemfmt.format(provitem, path))
             htmlfile.write('</tbody></table>\n')
-            htmlfile.write(self.footer)
+            htmlfile.write(self._footer)
         self.externals.run(['firefox', 'provenance.html'])
 
     def export(self, provenance):
@@ -69,16 +69,16 @@ dd {padding: 10px;}
         """
         provitem = provenance
         keyvaluefmt = '<dt>{0}</dt><dd>{1}</dd>\n'
-        for field in self.expectedFields:
+        for field in self._expectedFields:
             if not (field in provitem):
                 provitem[field] = '?'
         with self.filesys.open('provenance.html','w') as htmlfile:
-            htmlfile.write(self.header)
+            htmlfile.write(self._header)
             htmlfile.write('<dl>\n')
-            for field in self.allfields:
+            for field in self._allfields:
                 if field in provitem:
                     htmlfile.write(keyvaluefmt.format(field, provitem[field]))
             htmlfile.write('</dl>\n')
-            htmlfile.write(self.footer)
+            htmlfile.write(self._footer)
         self.externals.run(['firefox', 'provenance.html'])
 

@@ -3,14 +3,46 @@
 import argparse
 import niprov
 
-parser = argparse.ArgumentParser(
-    description='Provide provenance for known files.')
-parser.add_argument('--file', default=None,
+parser = argparse.ArgumentParser()
+subparsers = parser.add_subparsers(dest="command",
+    title='subcommands')
+
+discover = subparsers.add_parser('discover', 
+    help='Find image files.')
+discover.add_argument('root', default='.', 
+    help='Directory below which to search for files.')
+
+log = subparsers.add_parser('log', 
+    help='Enter provenance of a new file created as the result of a '+
+    'transformation of an existing file.')
+log.add_argument('transformation', 
+    help='Name of the transformation applied.')
+log.add_argument('ancestor', 
+    help='Image that was the basis of the transformation.')
+log.add_argument('new', 
+    help='Where the resulting image was stored.')
+
+record = subparsers.add_parser('record',
+    help='Run shell commands and log provenance for files created by it.')
+record.add_argument('code', nargs=argparse.REMAINDER,
+    help='Shell commands that result in a new image.')
+
+report = subparsers.add_parser('report',
+    help='Provide provenance for known files.')
+report.add_argument('--file', default=None,
     help='Report on the file at this location.')
-parser.add_argument('--subject', default=None,
+report.add_argument('--subject', default=None,
     help='Report on files for this subject.')
-parser.add_argument('--html', dest='format', action='store_const',
-                   const='html', default=None,
-                   help='Export provenance as html file(s).')
+report.add_argument('--html', dest='format', action='store_const',
+    const='html', default=None,
+    help='Export provenance as html file(s).')
+
 args = parser.parse_args()
-niprov.report(format=args.format, forFile=args.file, forSubject=args.subject)
+if args.command == 'discover':
+    niprov.discover(args.root)
+elif args.command == 'log':
+    niprov.log(args.transformation, args.ancestor, args.new)
+elif args.command == 'record':
+    niprov.record(args.code)
+elif args.command == 'report':
+    niprov.report(format=args.format, forFile=args.file, forSubject=args.subject)

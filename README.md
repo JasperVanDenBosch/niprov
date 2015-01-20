@@ -16,22 +16,22 @@ Commandline Usage
 
 *Look for image files below the current directory, inspect them and store the obtained provenance metadata:*
 ```shell
-discover .
+provenance discover .
 ```
 
 *Run a transformation command and log it as provenance for the new file:*
 ```shell
-record mcflirt -in t1flip_all_orig -out t1all_reg -refvol 0
+provenance record mcflirt -in t1flip_all_orig -out t1all_reg -refvol 0
 ```
 
 *Alternatively, log the provenance after running the command:*
 ```shell
-log 'motion correction' fmri.nii fmri-3dmc.nii
+provenance log 'motion correction' fmri.nii fmri-3dmc.nii
 ```
 
 *Publish provenance of known files for subject 'John Doe' as an html file:*
 ```shell
-provenance --subject "John Doe" --html
+provenance report --subject "John Doe" --html
 ```
 
 Python API

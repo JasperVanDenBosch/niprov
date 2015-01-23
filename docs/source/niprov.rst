@@ -13,6 +13,7 @@ Submodules
    niprov.externals
    niprov.filefilter
    niprov.filesystem
+   niprov.hashing
    niprov.html
    niprov.inspection
    niprov.jsonfile

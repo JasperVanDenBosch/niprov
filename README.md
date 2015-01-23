@@ -14,22 +14,35 @@ To inspect image files, install `nibabel` and/or `pydicom`.
 Commandline Usage
 -----------------
 
+*Look for image files below the current directory, inspect them and store the obtained provenance metadata:*
+```shell
+provenance discover .
 ```
-discover .
-```
-*Look for image files below the current directory, inspect them and store the obtained provenance metadata.*
 
+*Run a transformation command and log it as provenance for the new file:*
+```shell
+provenance record mcflirt -in t1flip_all_orig -out t1all_reg -refvol 0
 ```
-provenance --subject "John Doe" --html
+
+*Alternatively, log the provenance after running the command:*
+```shell
+provenance log 'motion correction' fmri.nii fmri-3dmc.nii
 ```
-*Publish provenance of known files for subject 'John Doe' as an html file.*
+
+*Publish provenance of known files for subject 'John Doe' as an html file:*
+```shell
+provenance report --subject "John Doe" --html
+```
 
 Python API
 -----------------
 
-```
+```python
 import niprov
 niprov.discover('.')
+analysispackage.correctmotion(input='JD-fmri.nii', output='JD-fmri-3dmc.nii')
+niprov.log('motion correction', 'JD-fmri.nii','JD-fmri-3dmc.nii')
+niprov.record('mcflirt -in t1flip_all_orig -out t1all_reg -refvol 0')
 files = niprov.report(forSubject='John Doe')
 ```
 

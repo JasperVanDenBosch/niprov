@@ -12,4 +12,12 @@ class Externals(object):
         Args:
             command (list): A list of command elements.
         """
-        subprocess.check_call(command)
+        output = subprocess.check_output(command)
+        return Result(True, output)
+
+
+class Result(object):
+
+    def __init__(self, succesful, output):
+        self.succesful = succesful
+        self.output = output

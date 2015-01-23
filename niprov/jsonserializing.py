@@ -68,11 +68,13 @@ class JsonSerializer(object):
     def _deflate(self, record):
         isoformat = "%Y-%m-%dT%H:%M:%S.%f"
         flatRecord = copy.deepcopy(record)
-        flatRecord['acquired'] = record['acquired'].strftime(isoformat)
+        if 'acquired' in record:
+            flatRecord['acquired'] = record['acquired'].strftime(isoformat)
         return flatRecord
 
     def _inflate(self, flatRecord):
         isoformat = "%Y-%m-%dT%H:%M:%S.%f"
         record = flatRecord
-        record['acquired'] = datetime.strptime(record['acquired'], isoformat)
+        if 'acquired' in flatRecord:
+            record['acquired'] = datetime.strptime(record['acquired'], isoformat)
         return record

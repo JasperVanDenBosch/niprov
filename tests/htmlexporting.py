@@ -12,16 +12,47 @@ class HtmlTests(unittest.TestCase):
         (filesys, filehandle) = self.setupFilesys()
         html = HtmlExporter(filesys, log, externals)
         item1 = {}
+        item1['path'] = '/p/f1'
         item1['subject'] = 'John'
         item1['protocol'] = 'DTI'
         item1['acquired'] = datetime(2014, 8, 5, 12, 23, 46)
         item2 = {}
+        item1['path'] = '/p/f2'
         item2['subject'] = 'Jane'
         item2['protocol'] = 'T1'
         item2['acquired'] = datetime(2014, 8, 6, 12, 23, 46)
         html.exportList([item1, item2])
-        filehandle.write.assert_any_call('<li>2014-08-05 12:23:46 John DTI</li>')
-        filehandle.write.assert_any_call('<li>2014-08-06 12:23:46 Jane T1</li>')
+        filehandle.write.assert_any_call('<tr><td>2014-08-05 12:23:46</td><td>John</td><td>DTI</td><td>/p/f1</td></tr>\n')
+        filehandle.write.assert_any_call('<tr><td>2014-08-06 12:23:46</td><td>Jane</td><td>T1</td><td>/p/f2</td></tr>\n')
+
+    def test_If_item_misses_field_fills_questionmark(self):
+        from niprov.html import HtmlExporter
+        log = Mock()
+        externals = Mock()
+        (filesys, filehandle) = self.setupFilesys()
+        html = HtmlExporter(filesys, log, externals)
+        item1 = {}
+        item1['path'] = '/p/f1'
+        item1['protocol'] = 'DTI'
+        item1['acquired'] = datetime(2014, 8, 5, 12, 23, 46)
+        item2 = {}
+        item2['path'] = '/p/f2'
+        item2['subject'] = 'Jane'
+        item2['protocol'] = 'T1'
+        html.exportList([item1, item2])
+        filehandle.write.assert_any_call('<tr><td>2014-08-05 12:23:46</td><td>?</td><td>DTI</td><td>/p/f1</td></tr>\n')
+        filehandle.write.assert_any_call('<tr><td>?</td><td>Jane</td><td>T1</td><td>/p/f2</td></tr>\n')
+
+    def test_Shortens_path_to_max_30chars(self):
+        from niprov.html import HtmlExporter
+        log = Mock()
+        externals = Mock()
+        (filesys, filehandle) = self.setupFilesys()
+        html = HtmlExporter(filesys, log, externals)
+        item1 = {}
+        item1['path'] = '12345678901234567890123456789012345678901234567890'
+        html.exportList([item1])
+        filehandle.write.assert_any_call('<tr><td>?</td><td>?</td><td>?</td><td>..1234567890123456789012345678901234567890</td></tr>\n')
 
     def test_Writes_one_list_item_per_entry(self):
         from niprov.html import HtmlExporter
@@ -44,6 +75,23 @@ class HtmlTests(unittest.TestCase):
         html.exportList([])
         externals.run.assert_any_call(['firefox',
             'provenance.html'])
+
+    def test_Exporting_a_single_item(self):
+        from niprov.html import HtmlExporter
+        log = Mock()
+        externals = Mock()
+        (filesys, filehandle) = self.setupFilesys()
+        html = HtmlExporter(filesys, log, externals)
+        item1 = {}
+        item1['path'] = '/p/f1'
+        item1['subject'] = 'John'
+        item1['protocol'] = 'DTI'
+        item1['acquired'] = datetime(2014, 8, 5, 12, 23, 46)
+        item1['code'] = 'private static void'
+        item1['logtext'] = 'Hello World!'
+        html.export(item1)
+        filehandle.write.assert_any_call('<dt>code</dt><dd>private static void</dd>\n')
+        filehandle.write.assert_any_call('<dt>logtext</dt><dd>Hello World!</dd>\n')
 
     def setupFilesys(self):
         filesys = Mock()

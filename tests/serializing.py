@@ -17,6 +17,14 @@ class SerializerTests(unittest.TestCase):
         self.assertEqual(json.loads(out)['acquired'], 
             record['acquired'].isoformat())
 
+    def test_serialize_and_deserialize_dont_balk_if_acquired_field_absent(self):
+        from niprov.jsonserializing import JsonSerializer  
+        serializer = JsonSerializer()
+        record = {}
+        jsonrecord = serializer.serialize(record)
+        out = serializer.deserialize(jsonrecord)
+        self.assertEqual(record, out)
+
     def test_deserialize_makes_acquired_field_a_datetime_object(self):
         from niprov.jsonserializing import JsonSerializer  
         serializer = JsonSerializer()

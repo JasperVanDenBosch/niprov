@@ -35,6 +35,16 @@ class StorageTests(unittest.TestCase):
         with self.assertRaises(IndexError):
             repo.byPath('nothere')
 
+    def test_Can_add_file_and_ask_whether_its_known(self):
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile()
+        provenance = self.sampleProvenanceRecord()
+        repo.add(provenance)
+        repo2 = JsonFile()
+        self.assertFalse(repo2.knowsByPath('nonexisting'))
+        self.assertTrue(repo2.knowsByPath(provenance['path']))
+
+
     def sampleProvenanceRecord(self):
         record = {}
         record['path'] = str(random.randint(1000,9999))

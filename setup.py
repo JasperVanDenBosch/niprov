@@ -11,7 +11,7 @@ setup(name='niprov',
       packages=find_packages(),
       url = 'https://github.com/ilogue/niprov',
       test_suite="tests",
-      scripts=['executables/discover', 'executables/provenance'],
+      scripts=['executables/provenance'],
       zip_safe=False,
       classifiers=[
             'License :: OSI Approved :: BSD License',

@@ -1,7 +1,10 @@
 import os
 
 
-class Filesystem():
+class Filesystem(object):
+    """Wrapper of filesystem access functionality such as that implemented by 
+    the os package in the standard library.
+    """
 
     def __init__(self):
         self.open = open
@@ -29,4 +32,7 @@ class Filesystem():
         with open(path) as fhandle:
             contents = fhandle.read()
         return contents
+
+    def getsize(self, path):
+        return os.path.getsize(path)
 

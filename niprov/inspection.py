@@ -4,12 +4,14 @@ import os
 from datetime import datetime
 from niprov.commandline import Commandline
 from niprov.dependencies import Dependencies
+from niprov.filesystem import Filesystem
 
 formats = {'.PAR':'nibabel',
            '.dcm':'dicom'}
 
 
-def inspect(fpath, listener=Commandline(), libs=Dependencies()):
+def inspect(fpath, listener=Commandline(), libs=Dependencies(), 
+        filesystem=Filesystem()):
     provenance = {}
     extension = os.path.splitext(fpath)[1]
     if not extension in formats:
@@ -19,6 +21,7 @@ def inspect(fpath, listener=Commandline(), libs=Dependencies()):
         listener.missingDependencyForImage(formats[extension], fpath)
         return None
     provenance['path'] = fpath
+    provenance['size'] = filesystem.getsize(fpath)
     if formats[extension] == 'nibabel':
         try:
             img = libs.nibabel.load(fpath)

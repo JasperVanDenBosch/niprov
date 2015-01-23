@@ -89,9 +89,11 @@ class HtmlTests(unittest.TestCase):
         item1['acquired'] = datetime(2014, 8, 5, 12, 23, 46)
         item1['code'] = 'private static void'
         item1['logtext'] = 'Hello World!'
+        item1['size'] = 45678
         html.export(item1)
         filehandle.write.assert_any_call('<dt>code</dt><dd>private static void</dd>\n')
         filehandle.write.assert_any_call('<dt>logtext</dt><dd>Hello World!</dd>\n')
+        filehandle.write.assert_any_call('<dt>size</dt><dd>45678</dd>\n')
 
     def setupFilesys(self):
         filesys = Mock()

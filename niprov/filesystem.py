@@ -1,4 +1,5 @@
 import os
+import datetime
 
 
 class Filesystem(object):
@@ -35,4 +36,15 @@ class Filesystem(object):
 
     def getsize(self, path):
         return os.path.getsize(path)
+
+    def getctime(self, path):
+        """Get the creation time for the file at path.
+
+        Args:
+            path: Path to the file to read.
+
+        Returns:
+            datetime: Time when the file was last changed
+        """
+        return datetime.datetime.fromtimestamp(os.path.getctime(path))
 

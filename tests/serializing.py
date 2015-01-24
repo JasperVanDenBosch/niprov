@@ -8,16 +8,19 @@ import json
 
 class SerializerTests(unittest.TestCase):
 
-    def test_serialize_makes_acquired_field_a_string(self):
+    def test_serialize_makes_time_fields_a_string(self):
         from niprov.jsonserializing import JsonSerializer  
         serializer = JsonSerializer()
         record = {}
         record['acquired'] = datetime.now()
+        record['created'] = datetime.now()
         out = serializer.serialize(record)
         self.assertEqual(json.loads(out)['acquired'], 
             record['acquired'].isoformat())
+        self.assertEqual(json.loads(out)['created'], 
+            record['created'].isoformat())
 
-    def test_serialize_and_deserialize_dont_balk_if_acquired_field_absent(self):
+    def test_serialize_and_deserialize_dont_balk_if_time_field_absent(self):
         from niprov.jsonserializing import JsonSerializer  
         serializer = JsonSerializer()
         record = {}
@@ -25,22 +28,28 @@ class SerializerTests(unittest.TestCase):
         out = serializer.deserialize(jsonrecord)
         self.assertEqual(record, out)
 
-    def test_deserialize_makes_acquired_field_a_datetime_object(self):
+    def test_deserialize_makes_time_field_a_datetime_object(self):
         from niprov.jsonserializing import JsonSerializer  
         serializer = JsonSerializer()
         record = {}
-        original = datetime.now()
-        record['acquired'] = original.isoformat()      
+        acquired = datetime.now()
+        record['acquired'] = acquired.isoformat()      
+        created = datetime.now()
+        record['created'] = created.isoformat()      
         out = serializer.deserialize(json.dumps(record))
-        self.assertEqual(out['acquired'], original)
+        self.assertEqual(out['acquired'], acquired)
+        self.assertEqual(out['created'], created)
 
-    def test_serializeList_makes_acquired_field_a_string(self):
+    def test_serializeList_makes_time_field_a_string(self):
         from niprov.jsonserializing import JsonSerializer  
         serializer = JsonSerializer()
         record = {}
         record['acquired'] = datetime.now()
+        record['created'] = datetime.now()
         out = serializer.serializeList([record])
         self.assertEqual(json.loads(out)[0]['acquired'], 
             record['acquired'].isoformat())
+        self.assertEqual(json.loads(out)[0]['created'], 
+            record['created'].isoformat())
 
 

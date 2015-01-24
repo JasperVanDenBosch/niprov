@@ -9,6 +9,8 @@ class JsonSerializer(object):
     """Helper to convert provenance data to and from json encoded strings.
     """
 
+    datetimeFields = ['acquired','created']
+
     def serialize(self, record):
         """
         Convert one provenance item from its native python dict type to
@@ -68,13 +70,15 @@ class JsonSerializer(object):
     def _deflate(self, record):
         isoformat = "%Y-%m-%dT%H:%M:%S.%f"
         flatRecord = copy.deepcopy(record)
-        if 'acquired' in record:
-            flatRecord['acquired'] = record['acquired'].strftime(isoformat)
+        for field in self.datetimeFields:
+            if field in record:
+                flatRecord[field] = record[field].strftime(isoformat)
         return flatRecord
 
     def _inflate(self, flatRecord):
         isoformat = "%Y-%m-%dT%H:%M:%S.%f"
         record = flatRecord
-        if 'acquired' in flatRecord:
-            record['acquired'] = datetime.strptime(record['acquired'], isoformat)
+        for field in self.datetimeFields:
+            if field in record:
+                record[field] = datetime.strptime(record[field], isoformat)
         return record

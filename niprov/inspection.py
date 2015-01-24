@@ -22,6 +22,7 @@ def inspect(fpath, listener=Commandline(), libs=Dependencies(),
         return None
     provenance['path'] = fpath
     provenance['size'] = filesystem.getsize(fpath)
+    provenance['created'] = filesystem.getctime(fpath)
     if formats[extension] == 'nibabel':
         try:
             img = libs.nibabel.load(fpath)

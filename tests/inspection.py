@@ -96,6 +96,15 @@ class InspectionTests(unittest.TestCase):
         out = niprov.inspection.inspect('/p/f1.dcm', listener=log, libs=libs, filesystem=filesys)
         self.assertEqual(out['size'], filesys.getsize('/p/f1.dcm'))
 
+    def test_Saves_file_creation_time_along_with_provenance(self):
+        import niprov.inspection
+        log = Mock()
+        libs = self.setupPydicom()
+        libs.hasDependency.return_value = True
+        filesys = Mock()
+        out = niprov.inspection.inspect('/p/f1.dcm', listener=log, libs=libs, filesystem=filesys)
+        self.assertEqual(out['created'], filesys.getctime('/p/f1.dcm'))
+
     def test_If_error_during_inspection_tells_listener_and_returns_None(self):
         import niprov.inspection
         log = Mock()

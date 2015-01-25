@@ -50,63 +50,63 @@ File size.
 hash
 ----
 
-tba
+An MD5 hash of the file's binary contents.
 
 .. _field-created:
 
 created
 -------
 
-tba
+Last known modified date of the file as reported by the OS.
 
 .. _field-acquired:
 
 acquired
 --------
 
-tba
+When the data was collected.
 
 .. _field-subject:
 
 subject
 -------
 
-tba
+The participant whose brain was imaged.
 
 .. _field-protocol:
 
 protocol
 --------
 
-tba
+The name of the pulse sequence used.
 
 .. _field-transformation:
 
 transformation
 --------------
 
-tba
+The name of the transformation applied to generate this derivative image.
 
 .. _field-ancestor:
 
 ancestor
 --------
 
-tba
+The file that this file is a transformed version of.
 
 .. _field-code:
 
 code
 ----
 
-tba
+The command used to generate this image.
 
 .. _field-logtext:
 
 logtext
 -------
 
-tba
+The commandline output of the transformation.
 
 
 

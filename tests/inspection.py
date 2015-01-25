@@ -4,117 +4,91 @@ from datetime import datetime
 
 class InspectionTests(unittest.TestCase):
 
-    def test_Loads_file_with_nibabel(self):
+    def setUp(self):
+        self.log = Mock()
+        self.libs = self.setupNibabel()
+        self.libs.hasDependency.return_value = True
+        self.hasher = Mock()
+        self.filesys = Mock()
+        self.hasher = Mock()
+
+    def callInspect(self, fname):
         import niprov.inspection
-        log = Mock()
-        libs = self.setupNibabel()
-        libs.hasDependency.return_value = True
-        filesys = Mock()
-        niprov.inspection.inspect('/p/f1.PAR', listener=log, libs=libs, filesystem=filesys)
-        libs.nibabel.load.assert_any_call('/p/f1.PAR')
+        return niprov.inspection.inspect(fname, 
+            listener=self.log, 
+            libs=self.libs, 
+            filesystem=self.filesys,
+            hasher=self.hasher)
+
+    def test_Loads_file_with_nibabel(self):
+        self.callInspect('/p/f1.PAR')
+        self.libs.nibabel.load.assert_any_call('/p/f1.PAR')
 
     def test_Doesnt_use_nibabel_if_not_installed(self):
-        import niprov.inspection
-        log = Mock()
-        libs = self.setupNibabel()
-        libs.hasDependency.return_value = False
-        filesys = Mock()
-        provenance = niprov.inspection.inspect('/p/f1.PAR', listener=log, libs=libs, filesystem=filesys)
+        self.libs.hasDependency.return_value = False
+        self.callInspect('/p/f1.PAR')
         self.assertRaises(AssertionError,
-            libs.nibabel.load.assert_any_call, '/p/f1.PAR')
+            self.libs.nibabel.load.assert_any_call, '/p/f1.PAR')
 
     def test_If_dcm_passed_uses_pydicom_to_open(self):
-        import niprov.inspection
-        log = Mock()
-        libs = self.setupPydicom()
-        libs.hasDependency.return_value = True
-        filesys = Mock()
-        provenance = niprov.inspection.inspect('/p/f1.dcm', listener=log, libs=libs, filesystem=filesys)
+        self.libs = self.setupPydicom()
+        self.callInspect('/p/f1.dcm')
         # doesnt complain about missing pydicom        
         self.assertRaises(AssertionError,
-            log.missingDependencyForImage.assert_any_call, 'dicom','/p/f1.dcm')
+            self.log.missingDependencyForImage.assert_any_call, 'dicom','/p/f1.dcm')
         # uses pydicom
-        libs.dicom.read_file.assert_any_call('/p/f1.dcm')
+        self.libs.dicom.read_file.assert_any_call('/p/f1.dcm')
 
     def test_If_dcm_passed_but_pydicom_not_installed_tells_listener(self):
-        import niprov.inspection
-        log = Mock()
-        libs = self.setupPydicom()
-        libs.hasDependency.return_value = False
-        filesys = Mock()
-        provenance = niprov.inspection.inspect('/p/f1.dcm', listener=log, libs=libs, filesystem=filesys)
+        self.libs = self.setupPydicom()
+        self.libs.hasDependency.return_value = False
+        self.callInspect('/p/f1.dcm')
         self.assertRaises(AssertionError,
-            libs.dicom.read_file.assert_any_call, '/p/f1.dcm')
-        log.missingDependencyForImage.assert_any_call('dicom','/p/f1.dcm')
+            self.libs.dicom.read_file.assert_any_call, '/p/f1.dcm')
+        self.log.missingDependencyForImage.assert_any_call('dicom','/p/f1.dcm')
 
     def test_If_nothing_inspected_returns_None(self):
-        import niprov.inspection
-        log = Mock()
-        libs = self.setupNibabel()
-        libs.hasDependency.return_value = False
-        filesys = Mock()
-        provenance = niprov.inspection.inspect('/p/f1.PAR', listener=log, libs=libs, filesystem=filesys)
+        self.libs.hasDependency.return_value = False
+        provenance = self.callInspect('/p/f1.PAR')
         self.assertIsNone(provenance)
 
     def test_Gets_basic_info_from_nibabel_and_returns_it(self):
-        import niprov.inspection
-        log = Mock()
-        libs = self.setupNibabel()
-        libs.hasDependency.return_value = True
-        filesys = Mock()
-        out = niprov.inspection.inspect('/p/f1.PAR', listener=log, libs=libs, filesystem=filesys)
+        out = self.callInspect('/p/f1.PAR')
         self.assertEqual(out['subject'], 'John Doeish')
         self.assertEqual(out['protocol'], 'T1 SENSE')
         self.assertEqual(out['acquired'], datetime(2014, 8, 5, 11, 27, 34))
 
     def test_Gets_basic_info_from_pydicom_and_returns_it(self):
-        import niprov.inspection
-        log = Mock()
-        libs = self.setupPydicom()
-        libs.hasDependency.return_value = True
-        filesys = Mock()
-        out = niprov.inspection.inspect('/p/f1.dcm', listener=log, libs=libs, filesystem=filesys)
+        self.libs = self.setupPydicom()
+        out = self.callInspect('/p/f1.dcm')
         self.assertEqual(out['subject'], 'John Doeish')
         self.assertEqual(out['protocol'], 'T1 SENSE')
         self.assertEqual(out['acquired'], datetime(2014, 8, 5, 12, 19, 14))
 
     def test_Saves_file_path_along_with_provenance(self):
-        import niprov.inspection
-        log = Mock()
-        libs = self.setupPydicom()
-        libs.hasDependency.return_value = True
-        filesys = Mock()
-        out = niprov.inspection.inspect('/p/f1.dcm', listener=log, libs=libs, filesystem=filesys)
+        self.libs = self.setupPydicom()
+        out = self.callInspect('/p/f1.dcm')
         self.assertEqual(out['path'], '/p/f1.dcm')
 
     def test_Saves_filesize_along_with_provenance(self):
-        import niprov.inspection
-        log = Mock()
-        libs = self.setupPydicom()
-        libs.hasDependency.return_value = True
-        filesys = Mock()
-        out = niprov.inspection.inspect('/p/f1.dcm', listener=log, libs=libs, filesystem=filesys)
-        self.assertEqual(out['size'], filesys.getsize('/p/f1.dcm'))
+        self.libs = self.setupPydicom()
+        out = self.callInspect('/p/f1.dcm')
+        self.assertEqual(out['size'], self.filesys.getsize('/p/f1.dcm'))
 
     def test_Saves_file_creation_time_along_with_provenance(self):
-        import niprov.inspection
-        log = Mock()
-        libs = self.setupPydicom()
-        libs.hasDependency.return_value = True
-        filesys = Mock()
-        out = niprov.inspection.inspect('/p/f1.dcm', listener=log, libs=libs, filesystem=filesys)
-        self.assertEqual(out['created'], filesys.getctime('/p/f1.dcm'))
+        self.libs = self.setupPydicom()
+        out = self.callInspect('/p/f1.dcm')
+        self.assertEqual(out['created'], self.filesys.getctime('/p/f1.dcm'))
 
     def test_If_error_during_inspection_tells_listener_and_returns_None(self):
-        import niprov.inspection
-        log = Mock()
-        libs = Mock()
-        libs.hasDependency.return_value = True
-        libs.nibabel.load.side_effect = ValueError
-        filesys = Mock()
-        out = niprov.inspection.inspect('/p/f1.PAR', listener=log, libs=libs, filesystem=filesys)
+        self.libs.nibabel.load.side_effect = ValueError
+        out = self.callInspect('/p/f1.PAR')
         self.assertIsNone(out)
-        log.fileError.assert_any_call('/p/f1.PAR')
+        self.log.fileError.assert_any_call('/p/f1.PAR')
+
+    def test_Asks_hasher_for_digest_of_file(self):
+        out = self.callInspect('/p/f1.PAR')
+        self.assertEqual(out['hash'], self.hasher.digest('/p/f1.PAR'))
 
 
     def setupNibabel(self):
@@ -125,6 +99,7 @@ class InspectionTests(unittest.TestCase):
             'protocol_name':'T1 SENSE',
             'patient_name':'John Doeish'}
         libs.nibabel.load.return_value = img
+        libs.hasDependency.return_value = True
         return libs
 
     def setupPydicom(self):
@@ -134,5 +109,6 @@ class InspectionTests(unittest.TestCase):
         img.SeriesDescription = 'T1 SENSE'
         img.PatientID = 'John Doeish'
         libs.dicom.read_file.return_value = img
+        libs.hasDependency.return_value = True
         return libs        
 

@@ -5,13 +5,14 @@ from datetime import datetime
 from niprov.commandline import Commandline
 from niprov.dependencies import Dependencies
 from niprov.filesystem import Filesystem
+from niprov.hashing import Hasher
 
 formats = {'.PAR':'nibabel',
            '.dcm':'dicom'}
 
 
 def inspect(fpath, listener=Commandline(), libs=Dependencies(), 
-        filesystem=Filesystem()):
+        filesystem=Filesystem(), hasher=Hasher()):
     provenance = {}
     extension = os.path.splitext(fpath)[1]
     if not extension in formats:
@@ -23,6 +24,7 @@ def inspect(fpath, listener=Commandline(), libs=Dependencies(),
     provenance['path'] = fpath
     provenance['size'] = filesystem.getsize(fpath)
     provenance['created'] = filesystem.getctime(fpath)
+    provenance['hash'] = hasher.digest(fpath)
     if formats[extension] == 'nibabel':
         try:
             img = libs.nibabel.load(fpath)

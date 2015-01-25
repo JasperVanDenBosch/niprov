@@ -11,6 +11,8 @@ See the [full documentation](http://niprov.readthedocs.org/) and [PyPi package](
 
 To inspect image files, install `nibabel` and/or `pydicom`.
 
+A list with all provenance attributes collected can be found [here](http://niprov.readthedocs.org/en/latest/provenance-fields.html).
+
 Commandline Usage
 -----------------
 

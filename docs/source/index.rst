@@ -14,6 +14,7 @@ Contents:
 .. toctree::
    :maxdepth: 4
 
+   provenance-fields
    commandline-usage
    code-examples
    niprov

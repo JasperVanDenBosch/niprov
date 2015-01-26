@@ -23,7 +23,7 @@ Overview of provenance attributes collected:
 +-----------------------------+-------------+-------------+---------+-------+
 | :ref:`field-transformation` |             | yes         |         |       |
 +-----------------------------+-------------+-------------+---------+-------+
-| :ref:`field-ancestor`       |             | yes         |         |       |
+| :ref:`field-parent`       |             | yes         |         |       |
 +-----------------------------+-------------+-------------+---------+-------+
 | :ref:`field-code`           |             | yes         |         |       |
 +-----------------------------+-------------+-------------+---------+-------+
@@ -87,9 +87,9 @@ transformation
 
 The name of the transformation applied to generate this derivative image.
 
-.. _field-ancestor:
+.. _field-parent:
 
-ancestor
+parent
 --------
 
 The file that this file is a transformed version of.

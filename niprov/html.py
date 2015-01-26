@@ -32,7 +32,7 @@ dd {padding: 10px;}
 """
     _footer = '</html>'
     _expectedFields = ['acquired','subject','protocol']
-    _allfields = ['path','ancestor','acquired','created','subject','protocol','transformation','code','logtext','size','hash']
+    _allfields = ['path','parent','acquired','created','subject','protocol','transformation','code','logtext','size','hash']
 
     def __init__(self, filesys, listener, externals):
         self.filesys = filesys

@@ -20,5 +20,5 @@ def record(command, externals=Externals()):
         if command[c] in ['-out']:
             new = command[c+1]
         if command[c] in ['-in']:
-            ancestor = command[c+1]
-    return log(transformation, ancestor, new, code=code, logtext=result.output)
+            parent = command[c+1]
+    return log(transformation, parent, new, code=code, logtext=result.output)

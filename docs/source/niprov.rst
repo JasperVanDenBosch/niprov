@@ -6,12 +6,15 @@ Submodules
 
 .. toctree::
 
+   niprov.basefile
    niprov.commandline
    niprov.dependencies
+   niprov.dicom
    niprov.discovery
    niprov.exporters
    niprov.externals
    niprov.filefilter
+   niprov.files
    niprov.filesystem
    niprov.hashing
    niprov.html
@@ -19,8 +22,13 @@ Submodules
    niprov.jsonfile
    niprov.jsonserializing
    niprov.logging
+   niprov.parrec
    niprov.recording
    niprov.reporting
+
+
+
+
 
 Module contents
 ---------------

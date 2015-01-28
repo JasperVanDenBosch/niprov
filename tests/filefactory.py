@@ -1,0 +1,60 @@
+import unittest
+from mock import Mock
+
+class FileFactoryTests(unittest.TestCase):
+
+    def setUp(self):
+        self.log = Mock()
+        self.libs = Mock()
+        self.libs.hasDependency.return_value = True
+        self.log = Mock()
+
+    def test_BaseFile(self):
+        from niprov.files import FileFactory
+        from niprov.basefile import BaseFile
+        factory = FileFactory(libs=self.libs, listener=self.log)
+        fileCreated = factory.locatedAt('example.f')
+        self.assertIsInstance(fileCreated, BaseFile)
+
+    def test_If_parrec_passed_uses_ParrecFile(self):
+        from niprov.files import FileFactory
+        from niprov.parrec import ParrecFile
+        factory = FileFactory(libs=self.libs, listener=self.log)
+        fileCreated = factory.locatedAt('example.PAR')
+        self.assertIsInstance(fileCreated, ParrecFile)
+
+    def test_If_dicom_passed_uses_DicomFile(self):
+        from niprov.files import FileFactory
+        from niprov.dicom import DicomFile
+        factory = FileFactory(libs=self.libs, listener=self.log)
+        fileCreated = factory.locatedAt('example.dcm')
+        self.assertIsInstance(fileCreated, DicomFile)
+
+    def test_If_dcm_passed_but_pydicom_not_installed_tells_listener(self):
+        from niprov.files import FileFactory
+        from niprov.basefile import BaseFile
+        self.libs.hasDependency.return_value = False
+        factory = FileFactory(libs=self.libs, listener=self.log)
+        fileCreated = factory.locatedAt('example.dcm')
+        self.assertIsInstance(fileCreated, BaseFile)
+        self.log.missingDependencyForImage.assert_called_with('dicom','example.dcm')
+
+    def test_If_parrec_passed_but_nibabel_not_installed_tells_listener(self):
+        from niprov.files import FileFactory
+        from niprov.basefile import BaseFile
+        self.libs.hasDependency.return_value = False
+        factory = FileFactory(libs=self.libs, listener=self.log)
+        fileCreated = factory.locatedAt('example.PAR')
+        self.assertIsInstance(fileCreated, BaseFile)
+        self.log.missingDependencyForImage.assert_called_with('nibabel','example.PAR')
+
+    def test_If_extensions_are_not_case_sensitive(self):
+        from niprov.files import FileFactory
+        from niprov.dicom import DicomFile
+        factory = FileFactory(libs=self.libs, listener=self.log)
+        fileCreated = factory.locatedAt('example.dCm')
+        self.assertIsInstance(fileCreated, DicomFile)
+
+
+
+

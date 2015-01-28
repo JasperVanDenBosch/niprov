@@ -20,33 +20,6 @@ class InspectionTests(unittest.TestCase):
             filesystem=self.filesys,
             hasher=self.hasher)
 
-    def test_Loads_file_with_nibabel(self):
-        self.callInspect('/p/f1.PAR')
-        self.libs.nibabel.load.assert_any_call('/p/f1.PAR')
-
-    def test_Doesnt_use_nibabel_if_not_installed(self):
-        self.libs.hasDependency.return_value = False
-        self.callInspect('/p/f1.PAR')
-        self.assertRaises(AssertionError,
-            self.libs.nibabel.load.assert_any_call, '/p/f1.PAR')
-
-    def test_If_dcm_passed_uses_pydicom_to_open(self):
-        self.libs = self.setupPydicom()
-        self.callInspect('/p/f1.dcm')
-        # doesnt complain about missing pydicom        
-        self.assertRaises(AssertionError,
-            self.log.missingDependencyForImage.assert_any_call, 'dicom','/p/f1.dcm')
-        # uses pydicom
-        self.libs.dicom.read_file.assert_any_call('/p/f1.dcm')
-
-    def test_If_dcm_passed_but_pydicom_not_installed_tells_listener(self):
-        self.libs = self.setupPydicom()
-        self.libs.hasDependency.return_value = False
-        self.callInspect('/p/f1.dcm')
-        self.assertRaises(AssertionError,
-            self.libs.dicom.read_file.assert_any_call, '/p/f1.dcm')
-        self.log.missingDependencyForImage.assert_any_call('dicom','/p/f1.dcm')
-
     def test_If_nothing_inspected_returns_None(self):
         self.libs.hasDependency.return_value = False
         provenance = self.callInspect('/p/f1.PAR')

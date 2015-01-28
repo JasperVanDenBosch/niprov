@@ -1,0 +1,4 @@
+
+
+class BaseFile(object):
+    pass

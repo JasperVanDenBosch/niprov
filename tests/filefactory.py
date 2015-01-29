@@ -25,7 +25,7 @@ class FileFactoryTests(unittest.TestCase):
 
     def test_If_dicom_passed_uses_DicomFile(self):
         from niprov.files import FileFactory
-        from niprov.dicom import DicomFile
+        from niprov.dcm import DicomFile
         factory = FileFactory(libs=self.libs, listener=self.log)
         fileCreated = factory.locatedAt('example.dcm')
         self.assertIsInstance(fileCreated, DicomFile)
@@ -50,7 +50,7 @@ class FileFactoryTests(unittest.TestCase):
 
     def test_If_extensions_are_not_case_sensitive(self):
         from niprov.files import FileFactory
-        from niprov.dicom import DicomFile
+        from niprov.dcm import DicomFile
         factory = FileFactory(libs=self.libs, listener=self.log)
         fileCreated = factory.locatedAt('example.dCm')
         self.assertIsInstance(fileCreated, DicomFile)

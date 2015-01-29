@@ -1,7 +1,7 @@
-niprov.dicom module
+niprov.dcm module
 ===================
 
-.. automodule:: niprov.dicom
+.. automodule:: niprov.dcm
     :members:
     :undoc-members:
     :show-inheritance:

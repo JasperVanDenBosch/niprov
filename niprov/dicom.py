@@ -1,4 +1,0 @@
-
-
-class DicomFile(object):
-    pass

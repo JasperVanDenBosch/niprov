@@ -2,7 +2,7 @@ import os
 from niprov.dependencies import Dependencies
 from niprov.commandline import Commandline
 from basefile import BaseFile
-from dicom import DicomFile
+from dcm import DicomFile
 from parrec import ParrecFile
 
 
@@ -36,12 +36,12 @@ class FileFactory(object):
         """
         extension = os.path.splitext(path)[1].lower()
         if extension not in self.formats:
-            return BaseFile()
+            return BaseFile(path)
         elif not self.libs.hasDependency(self.formats[extension][0]):
             self.listener.missingDependencyForImage(
                 self.formats[extension][0], path)
-            return BaseFile()
-        return self.formats[extension][1]()
+            return BaseFile(path)
+        return self.formats[extension][1](path)
 
 
 

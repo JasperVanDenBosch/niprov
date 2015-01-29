@@ -9,7 +9,7 @@ Submodules
    niprov.basefile
    niprov.commandline
    niprov.dependencies
-   niprov.dicom
+   niprov.dcm
    niprov.discovery
    niprov.exporters
    niprov.externals

@@ -5,8 +5,8 @@
 class Commandline(object):
 
     def fileFound(self, fname, provenance):
-        template = '{1[acquired]} {1[subject]} {1[protocol]:24} {0}'
-        print(template.format(fname,provenance))
+        template = '{0[path]}'
+        print(template.format(provenance))
 
     def missingDependencyForImage(self, lib, fpath):
         template = 'Missing python package "{0}" to read file: {1}'        

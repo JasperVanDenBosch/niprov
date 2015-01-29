@@ -13,6 +13,7 @@ Submodules
    niprov.discovery
    niprov.exporters
    niprov.externals
+   niprov.fif
    niprov.filefilter
    niprov.files
    niprov.filesystem

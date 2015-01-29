@@ -30,6 +30,13 @@ class FileFactoryTests(unittest.TestCase):
         fileCreated = factory.locatedAt('example.dcm')
         self.assertIsInstance(fileCreated, DicomFile)
 
+    def test_If_fif_passed_uses_FifFile(self):
+        from niprov.files import FileFactory
+        from niprov.fif import FifFile
+        factory = FileFactory(libs=self.libs, listener=self.log)
+        fileCreated = factory.locatedAt('example.fif')
+        self.assertIsInstance(fileCreated, FifFile)
+
     def test_If_dcm_passed_but_pydicom_not_installed_tells_listener(self):
         from niprov.files import FileFactory
         from niprov.basefile import BaseFile
@@ -47,6 +54,15 @@ class FileFactoryTests(unittest.TestCase):
         fileCreated = factory.locatedAt('example.PAR')
         self.assertIsInstance(fileCreated, BaseFile)
         self.log.missingDependencyForImage.assert_called_with('nibabel','example.PAR')
+
+    def test_If_fif_passed_but_mne_not_installed_tells_listener(self):
+        from niprov.files import FileFactory
+        from niprov.basefile import BaseFile
+        self.libs.hasDependency.return_value = False
+        factory = FileFactory(libs=self.libs, listener=self.log)
+        fileCreated = factory.locatedAt('example.fif')
+        self.assertIsInstance(fileCreated, BaseFile)
+        self.log.missingDependencyForImage.assert_called_with('mne','example.fif')
 
     def test_If_extensions_are_not_case_sensitive(self):
         from niprov.files import FileFactory

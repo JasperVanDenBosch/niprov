@@ -15,6 +15,11 @@ class Dependencies(object):
             self.dicom = dicom
         except:
             self.dicom = None
+        try:
+            import mne.io
+            self.mne = mne
+        except:
+            self.mne = None
 
 
     def hasDependency(self, libname):

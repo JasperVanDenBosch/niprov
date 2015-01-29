@@ -4,6 +4,7 @@ from niprov.commandline import Commandline
 from basefile import BaseFile
 from dcm import DicomFile
 from parrec import ParrecFile
+from fif import FifFile
 
 
 class FileFactory(object):
@@ -14,7 +15,8 @@ class FileFactory(object):
     """
 
     formats = {'.par':('nibabel', ParrecFile),
-               '.dcm':('dicom', DicomFile)}
+               '.dcm':('dicom', DicomFile),
+               '.fif':('mne',FifFile)}
 
     def __init__(self, libs=Dependencies(), listener=Commandline()):
         self.libs = libs

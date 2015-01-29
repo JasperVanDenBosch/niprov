@@ -9,7 +9,7 @@ provenance for neuroimaging data
 
 See the [full online documentation](http://niprov.readthedocs.org/) (or [pdf](https://media.readthedocs.org/pdf/niprov/latest/niprov.pdf)) and [PyPi package](https://pypi.python.org/pypi/niprov).
 
-To inspect image files, install `nibabel` and/or `pydicom`.
+To inspect image files, install `nibabel`,`mne` and/or `pydicom`.
 
 A list with all provenance attributes collected can be found [here](http://niprov.readthedocs.org/en/latest/provenance-fields.html).
 

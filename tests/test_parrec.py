@@ -12,7 +12,8 @@ class ParrecTests(BasicInspectionTests):
         self.setupNibabel()
         from niprov.parrec import ParrecFile
         self.file = ParrecFile(self.path, listener=self.log, 
-            filesystem=self.filesys, hasher=self.hasher, dependencies=self.libs)
+            filesystem=self.filesys, hasher=self.hasher, dependencies=self.libs,
+            serializer=self.json)
 
     def test_If_error_during_inspection_tells_listener_and_returns_None(self):
         self.libs.nibabel.load.side_effect = ValueError

@@ -12,7 +12,8 @@ class FifTests(BasicInspectionTests):
         self.setupMne()
         from niprov.fif import FifFile
         self.file = FifFile(self.path, listener=self.log, 
-            filesystem=self.filesys, hasher=self.hasher, dependencies=self.libs)
+            filesystem=self.filesys, hasher=self.hasher, dependencies=self.libs,
+            serializer=self.json)
 
     def test_If_error_during_inspection_tells_listener_and_returns_None(self):
         self.libs.mne.io.Raw.side_effect = ValueError

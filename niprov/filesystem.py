@@ -34,6 +34,16 @@ class Filesystem(object):
             contents = fhandle.read()
         return contents
 
+    def write(self, path, content):
+        """Write string content to a textfile.
+
+        Args:
+            path: Path to the file to read.
+            content (str): What to fill the file with
+        """
+        with open(path, 'w') as fhandle:
+            fhandle.write(content)
+
     def getsize(self, path):
         return os.path.getsize(path)
 

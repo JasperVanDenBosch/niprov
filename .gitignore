@@ -1,6 +1,7 @@
 # Provenance storage files
 provenance.json
 provenance.html
+*.provenance
 
 # Gedit autosave files
 *~

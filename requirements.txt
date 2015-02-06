@@ -2,3 +2,4 @@ mock
 coveralls
 sphinx
 sphinxcontrib-napoleon
+mako

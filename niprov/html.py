@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+from mako.lookup import TemplateLookup
 
 
 class HtmlExporter(object):
@@ -46,20 +47,9 @@ dd {padding: 10px;}
         Args:
             provenance (list): List of provenance dictionaries.
         """
-        itemfmt = '<tr><td>{0[acquired]}</td><td>{0[subject]}</td><td>{0[protocol]}</td><td>{1}</td></tr>\n'
+        template = TemplateLookup().get_template()
         with self.filesys.open('provenance.html','w') as htmlfile:
-            htmlfile.write(self._header)
-            htmlfile.write(self._tableheader)
-            for provitem in provenance:
-                for field in self._expectedFields:
-                    if not (field in provitem):
-                        provitem[field] = '?'
-                path = provitem['path']
-                if len(path) > 42:
-                    path = '..'+path[-40:]
-                htmlfile.write(itemfmt.format(provitem, path))
-            htmlfile.write('</tbody></table>\n')
-            htmlfile.write(self._footer)
+            htmlfile.write(template.render())
         self.externals.run(['firefox', 'provenance.html'])
 
     def export(self, provenance):

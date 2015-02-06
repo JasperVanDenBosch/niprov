@@ -12,7 +12,9 @@ dd {padding: 10px;}
 <h1>Provenance</h1>
 
 <dl>
-<dt>{0}</dt><dd>{1}</dd>
+% for k, v in provenance.items():
+    <dt>${k}</dt><dd>${v}</dd>
+% endfor
 </dl>
 
 </html>

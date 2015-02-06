@@ -6,18 +6,6 @@ import pkg_resources as pkgr
 
 class HtmlTests(unittest.TestCase):
 
-
-#    def test_Shortens_path_to_max_30chars(self):
-#        from niprov.html import HtmlExporter
-#        log = Mock()
-#        externals = Mock()
-#        (filesys, filehandle) = self.setupFilesys()
-#        html = HtmlExporter(filesys, log, externals)
-#        item1 = {}
-#        item1['path'] = '12345678901234567890123456789012345678901234567890'
-#        html.exportList([item1])
-#        self.assertEqual('..1234567890123456789012345678901234567890')
-
     def setUp(self):
         import niprov.html
         self.log = Mock()

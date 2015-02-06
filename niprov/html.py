@@ -25,7 +25,7 @@ class HtmlExporter(object):
         """
         template = self.templates.get_template('list.mako')
         with self.filesys.open('provenance.html','w') as htmlfile:
-            htmlfile.write(template.render())
+            htmlfile.write(template.render(provenance=provenance))
         self.externals.run(['firefox', 'provenance.html'])
 
     def export(self, provenance):
@@ -36,6 +36,6 @@ class HtmlExporter(object):
         """
         template = self.templates.get_template('single.mako')
         with self.filesys.open('provenance.html','w') as htmlfile:
-            htmlfile.write(template.render())
+            htmlfile.write(template.render(provenance=provenance))
         self.externals.run(['firefox', 'provenance.html'])
 

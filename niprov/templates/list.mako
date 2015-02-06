@@ -23,8 +23,13 @@ dd {padding: 10px;}
 </thead>
 <tbody>
 
-% for row in rows:
-   <tr><td>{0[acquired]}</td><td>{0[subject]}</td><td>{0[protocol]}</td><td>{1}</td></tr>
+% for p in provenance:
+   <tr>
+        <td>${p.get('acquired')}</td>
+        <td>${p.get('subject')}</td>
+        <td>${p.get('protocol')}</td>
+        <td>${p.get('path')}</td>
+    </tr>
 % endfor
 
 </tbody></table>

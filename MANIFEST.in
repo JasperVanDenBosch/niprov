@@ -1,1 +1,2 @@
 include discovery-filter.txt
+include niprov/templates/*.mako

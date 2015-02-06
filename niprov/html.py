@@ -1,37 +1,11 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 from mako.lookup import TemplateLookup
+import pkg_resources as pkgr
 
 
 class HtmlExporter(object):
 
-    _header = """
-<html>
-<head>
-<style>
-html {font-family:arial;}
-td {padding: 10px;}
-tr:hover {background-color:lavender;}
-dt {color: dark-grey; font-style: italic; background-color:lavender; padding: 10px;}
-dd {padding: 10px;}
-</style>
-<title>Provenance</title>
-</head>
-<h1>Provenance</h1>
-"""
-    _tableheader ="""
-<table>
-<thead>
-<tr>
-<th>Acquired</th>
-<th>Subject</th>
-<th>Protocol</th>
-<th>Path</th>
-</tr>
-</thead>
-<tbody>
-"""
-    _footer = '</html>'
     _expectedFields = ['acquired','subject','protocol']
     _allfields = ['path','parent','acquired','created','subject','project','protocol',
         'transformation','code','logtext','size','hash']
@@ -40,6 +14,8 @@ dd {padding: 10px;}
         self.filesys = filesys
         self.listener = listener
         self.externals = externals
+        templateDir = pkgr.resource_filename('niprov', 'templates')
+        self.templates = TemplateLookup([templateDir])
 
     def exportList(self, provenance):
         """Publish the provenance for several images in an html file and display in Firefox.
@@ -47,7 +23,7 @@ dd {padding: 10px;}
         Args:
             provenance (list): List of provenance dictionaries.
         """
-        template = TemplateLookup().get_template()
+        template = self.templates.get_template('list.mako')
         with self.filesys.open('provenance.html','w') as htmlfile:
             htmlfile.write(template.render())
         self.externals.run(['firefox', 'provenance.html'])
@@ -58,18 +34,8 @@ dd {padding: 10px;}
         Args:
             provenance (dict): Provenance for one image file
         """
-        provitem = provenance
-        keyvaluefmt = '<dt>{0}</dt><dd>{1}</dd>\n'
-        for field in self._expectedFields:
-            if not (field in provitem):
-                provitem[field] = '?'
+        template = self.templates.get_template('single.mako')
         with self.filesys.open('provenance.html','w') as htmlfile:
-            htmlfile.write(self._header)
-            htmlfile.write('<dl>\n')
-            for field in self._allfields:
-                if field in provitem:
-                    htmlfile.write(keyvaluefmt.format(field, provitem[field]))
-            htmlfile.write('</dl>\n')
-            htmlfile.write(self._footer)
+            htmlfile.write(template.render())
         self.externals.run(['firefox', 'provenance.html'])
 

@@ -4,11 +4,15 @@ from niprov.externals import Externals
 from niprov.logging import log
 
 
-def record(command, externals=Externals()):
+def record(command, parent=None, new=None, externals=Externals()):
     """Execute a command and log it as provenance for the newly created file.
 
     Args:
         command (list): Commands to be executed
+        parent (str): (optional) Override path to the parent file, i.e. if it 
+            cannot be parsed from the command.
+        new (str): (optional) Override path to the new file, i.e. if it 
+            cannot be parsed from the command.
 
     Returns:
         dict: New provenance
@@ -18,7 +22,11 @@ def record(command, externals=Externals()):
     code = ' '.join(command)
     for c in range(len(command)):
         if command[c] in ['-out']:
-            new = command[c+1]
+            _new = command[c+1]
         if command[c] in ['-in']:
-            parent = command[c+1]
-    return log(transformation, parent, new, code=code, logtext=result.output)
+            _parent = command[c+1]
+    if parent:
+        _parent = parent
+    if new:
+        _new = new
+    return log(transformation, _parent, _new, code=code, logtext=result.output)

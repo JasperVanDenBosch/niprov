@@ -21,6 +21,8 @@ log.add_argument('ancestor',
     help='Image that was the basis of the transformation.')
 log.add_argument('new', 
     help='Where the resulting image was stored.')
+log.add_argument('--code', default=None,
+    help='Code used to generate the new image.')
 
 record = subparsers.add_parser('record',
     help='Run shell commands and log provenance for files created by it.')
@@ -41,7 +43,7 @@ args = parser.parse_args()
 if args.command == 'discover':
     niprov.discover(args.root)
 elif args.command == 'log':
-    niprov.log(args.transformation, args.ancestor, args.new)
+    niprov.log(args.transformation, args.ancestor, args.new, code=args.code)
 elif args.command == 'record':
     niprov.record(args.code)
 elif args.command == 'report':

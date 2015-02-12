@@ -39,6 +39,9 @@ report.add_argument('--html', dest='format', action='store_const',
     const='html', default=None,
     help='Export provenance as html file(s).')
 
+report = subparsers.add_parser('version',
+    help='Show niprov software version.')
+
 args = parser.parse_args()
 if args.command == 'discover':
     niprov.discover(args.root)
@@ -48,3 +51,6 @@ elif args.command == 'record':
     niprov.record(args.code)
 elif args.command == 'report':
     niprov.report(format=args.format, forFile=args.file, forSubject=args.subject)
+elif args.command == 'version':
+    import pkg_resources
+    print(pkg_resources.get_distribution("niprov").version)

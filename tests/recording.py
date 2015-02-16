@@ -20,7 +20,7 @@ class RecordingTests(unittest.TestCase):
         sub = Mock()
         recording.log = log
         recording.record(cmd, externals=sub)
-        log.assert_called_with('mytransform','oldfile.f','newfile.f',
+        log.assert_called_with('newfile.f','mytransform','oldfile.f',
             code=' '.join(cmd), logtext=sub.run().output)
 
     def test_If_parent_or_new_provided_override_parsed(self):
@@ -31,14 +31,7 @@ class RecordingTests(unittest.TestCase):
         recording.log = log
         recording.record(cmd, parent='customParent', new='customNew',
             externals=sub)
-        log.assert_called_with('mytransform','customParent','customNew',
+        log.assert_called_with('customNew','mytransform','customParent',
             code=' '.join(cmd), logtext=sub.run().output)
-
-#    def test_Does_not_log_provenance_if_command_fails(self):
-#        from niprov.recording import record
-#        self.fail()
-
-
-
         
 

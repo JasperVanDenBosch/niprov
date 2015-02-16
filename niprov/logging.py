@@ -3,15 +3,15 @@
 from niprov.jsonfile import JsonFile
 
 
-def log(transformation, parent, new, code=None, logtext=None,
+def log(new, transformation, parent, code=None, logtext=None,
         repository=JsonFile()):
     """
     Record a transformation that creates a new image.
 
     Args:
+        new (str): Path to the newly created file.
         transformation (str): Name of the operation that has been used.
         parent (str): Path to the file that was used as the basis of the transformation
-        new (str): Path to the newly created file.
 
     Returns:
         dict: New provenance

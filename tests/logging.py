@@ -12,7 +12,7 @@ class loggingTests(unittest.TestCase):
         parent = '/p/f1'
         new = '/p/f2'
         trans = 'Something cool'
-        provenance = log(trans, parent, new, repository=repo)
+        provenance = log(new, trans, parent, repository=repo)
         self.assertEqual(provenance['parent'], parent)
         self.assertEqual(provenance['path'], new)
         self.assertEqual(provenance['transformation'], trans)
@@ -21,7 +21,7 @@ class loggingTests(unittest.TestCase):
         from niprov.logging import log
         repo = Mock()
         repo.knowsByPath.return_value = False
-        provenance = log('trans', 'old', 'new', repository=repo)
+        provenance = log('new', 'trans', 'old', repository=repo)
         repo.add.assert_any_call(provenance)
 
     def test_Copies_fields_from_known_parent(self):
@@ -30,7 +30,7 @@ class loggingTests(unittest.TestCase):
         parentProv = {'acquired':dt.now(),'subject':'JB','protocol':'T3'}
         repo = Mock()
         repo.byPath.side_effect = lambda x: {parent:parentProv}[x]
-        provenance = log('trans', parent, 'new', repository=repo)
+        provenance = log('new', 'trans', parent, repository=repo)
         self.assertEqual(provenance['acquired'], parentProv['acquired'])
         self.assertEqual(provenance['subject'], parentProv['subject'])
         self.assertEqual(provenance['protocol'], parentProv['protocol'])
@@ -39,7 +39,7 @@ class loggingTests(unittest.TestCase):
         from niprov.logging import log
         repo = Mock()
         repo.knowsByPath.return_value = False
-        provenance = log('trans', 'old', 'new', code='abc', logtext='def', repository=repo)
+        provenance = log('new', 'trans', 'old', code='abc', logtext='def', repository=repo)
         repo.add.assert_any_call(provenance)
         self.assertEqual(provenance['code'],'abc')
         self.assertEqual(provenance['logtext'],'def')

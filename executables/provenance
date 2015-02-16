@@ -15,12 +15,12 @@ discover.add_argument('root', default='.',
 log = subparsers.add_parser('log', 
     help='Enter provenance of a new file created as the result of a '+
     'transformation of an existing file.')
+log.add_argument('new', 
+    help='Where the resulting image was stored.')
 log.add_argument('transformation', 
     help='Name of the transformation applied.')
 log.add_argument('ancestor', 
     help='Image that was the basis of the transformation.')
-log.add_argument('new', 
-    help='Where the resulting image was stored.')
 log.add_argument('--code', default=None,
     help='Code used to generate the new image.')
 
@@ -46,7 +46,7 @@ args = parser.parse_args()
 if args.command == 'discover':
     niprov.discover(args.root)
 elif args.command == 'log':
-    niprov.log(args.transformation, args.ancestor, args.new, code=args.code)
+    niprov.log(args.new, args.transformation, args.ancestor, code=args.code)
 elif args.command == 'record':
     niprov.record(args.code)
 elif args.command == 'report':

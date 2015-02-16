@@ -11,7 +11,7 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     Args:
         new (str): Path to the newly created file.
         transformation (str): Name of the operation that has been used.
-        parents (str): Paths to the files that were used as the basis of the 
+        parents (list): Paths to the files that were used as the basis of the 
             transformation. Assumes that the first file in the list is the 
             primary parent for which basic provenance is known.
         code (str, optional): Code that was used to generate the new file

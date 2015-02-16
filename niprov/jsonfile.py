@@ -1,5 +1,6 @@
 from niprov.filesystem import Filesystem
 from jsonserializing import JsonSerializer
+import os
 
 
 class JsonFile(object):
@@ -9,6 +10,7 @@ class JsonFile(object):
     def __init__(self, filesys=Filesystem(), json=JsonSerializer()):
         self.filesys = filesys
         self.json = json
+        self.datafile = os.path.expanduser(os.path.join('~','provenance.json'))
 
     def add(self, record):
         """Add the provenance for one file to storage.
@@ -19,7 +21,7 @@ class JsonFile(object):
         current = self.all()
         current.append(record)
         jsonstr = self.json.serializeList(current)
-        with open('provenance.json', 'w') as fp:
+        with open(self.datafile, 'w') as fp:
             fp.write(jsonstr)
 
     def all(self):
@@ -29,7 +31,7 @@ class JsonFile(object):
             list: List of provenance for known files.
         """
         try:
-            jsonstr = self.filesys.read('provenance.json')
+            jsonstr = self.filesys.read(self.datafile)
         except IOError:
             return []
         return self.json.deserializeList(jsonstr)

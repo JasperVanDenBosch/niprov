@@ -45,5 +45,15 @@ class loggingTests(unittest.TestCase):
         self.assertEqual(provenance['code'],'abc')
         self.assertEqual(provenance['logtext'],'def')
 
+    def test_Accepts_temp_flag(self):
+        from niprov.logging import log
+        repo = Mock()
+        repo.knowsByPath.return_value = False
+        parents = ['/p/f1']
+        new = '/p/f2'
+        trans = 'Something cool'
+        provenance = log(new, trans, parents, transient=True, repository=repo)
+        self.assertEqual(provenance['transient'], True)
+
         
 

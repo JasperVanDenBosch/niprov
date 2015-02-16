@@ -3,7 +3,7 @@
 from niprov.jsonfile import JsonFile
 
 
-def log(new, transformation, parents, code=None, logtext=None,
+def log(new, transformation, parents, code=None, logtext=None, transient=False,
         repository=JsonFile()):
     """
     Record a transformation that creates a new image.
@@ -14,6 +14,13 @@ def log(new, transformation, parents, code=None, logtext=None,
         parents (str): Paths to the files that were used as the basis of the 
             transformation. Assumes that the first file in the list is the 
             primary parent for which basic provenance is known.
+        code (str, optional): Code that was used to generate the new file
+        logtext (str, optional): Any information about the transformation that 
+            was logged.
+        transient (bool, optional): Set this to True to indicate that the file 
+            is only temporary and future checks should not expect it to be 
+            physically present. Defaults to False, assuming that the file 
+            remains.
 
     Returns:
         dict: New provenance
@@ -22,6 +29,7 @@ def log(new, transformation, parents, code=None, logtext=None,
     provenance['parents'] = parents
     provenance['path'] = new
     provenance['transformation'] = transformation
+    provenance['transient'] = transient
     if code:
         provenance['code'] = code
     if logtext:

@@ -3,7 +3,7 @@
 from niprov.jsonfile import JsonFile
 
 
-def log(new, transformation, parent, code=None, logtext=None,
+def log(new, transformation, parents, code=None, logtext=None,
         repository=JsonFile()):
     """
     Record a transformation that creates a new image.
@@ -11,21 +11,23 @@ def log(new, transformation, parent, code=None, logtext=None,
     Args:
         new (str): Path to the newly created file.
         transformation (str): Name of the operation that has been used.
-        parent (str): Path to the file that was used as the basis of the transformation
+        parents (str): Paths to the files that were used as the basis of the 
+            transformation. Assumes that the first file in the list is the 
+            primary parent for which basic provenance is known.
 
     Returns:
         dict: New provenance
     """
     provenance = {}
-    provenance['parent'] = parent
+    provenance['parents'] = parents
     provenance['path'] = new
     provenance['transformation'] = transformation
     if code:
         provenance['code'] = code
     if logtext:
         provenance['logtext'] = logtext
-    if repository.knowsByPath(parent):
-        parentProvenance = repository.byPath(parent)
+    if repository.knowsByPath(parents[0]):
+        parentProvenance = repository.byPath(parents[0])
         provenance['acquired'] = parentProvenance['acquired']
         provenance['subject'] = parentProvenance['subject']
         provenance['protocol'] = parentProvenance['protocol']

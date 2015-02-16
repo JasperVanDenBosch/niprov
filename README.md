@@ -28,7 +28,7 @@ provenance record mcflirt -in t1flip_all_orig -out t1all_reg -refvol 0
 
 *Alternatively, log the provenance after running the command:*
 ```shell
-provenance log 'motion correction' fmri.nii fmri-3dmc.nii
+provenance log fmri-3dmc.nii 'motion correction' fmri.nii 
 ```
 
 *Publish provenance of known files for subject 'John Doe' as an html file:*
@@ -43,7 +43,7 @@ Python API
 import niprov
 niprov.discover('.')
 analysispackage.correctmotion(input='JD-fmri.nii', output='JD-fmri-3dmc.nii')
-niprov.log('motion correction', 'JD-fmri.nii','JD-fmri-3dmc.nii')
+niprov.log('JD-fmri.nii', 'motion correction', ['JD-fmri-3dmc.nii'])
 niprov.record('mcflirt -in t1flip_all_orig -out t1all_reg -refvol 0')
 files = niprov.report(forSubject='John Doe')
 ```

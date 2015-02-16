@@ -6,6 +6,7 @@ Submodules
 
 .. toctree::
 
+   niprov.adding
    niprov.basefile
    niprov.commandline
    niprov.dependencies

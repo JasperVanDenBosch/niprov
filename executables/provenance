@@ -29,6 +29,11 @@ record = subparsers.add_parser('record',
 record.add_argument('code', nargs=argparse.REMAINDER,
     help='Shell commands that result in a new image.')
 
+add = subparsers.add_parser('add', 
+    help='Simply register the file for future reference.')
+add.add_argument('new', 
+    help='Where the file resides.')
+
 report = subparsers.add_parser('report',
     help='Provide provenance for known files.')
 report.add_argument('--file', default=None,
@@ -49,6 +54,8 @@ elif args.command == 'log':
     niprov.log(args.new, args.transformation, args.parents, code=args.code)
 elif args.command == 'record':
     niprov.record(args.code)
+elif args.command == 'add':
+    niprov.add(args.new)
 elif args.command == 'report':
     niprov.report(format=args.format, forFile=args.file, forSubject=args.subject)
 elif args.command == 'version':

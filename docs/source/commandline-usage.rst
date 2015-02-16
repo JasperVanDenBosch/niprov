@@ -24,3 +24,9 @@ Publish provenance of known files for subject 'John Doe' as an html file.
 
     provenance report --subject "John Doe" --html
 
+
+Register a file to the provenance database without inspecting it:
+::
+
+    provenance add 'motionvars.mat'
+

@@ -15,6 +15,8 @@ Overview of provenance attributes collected:
 +-----------------------------+-------------+-------------+---------+-------+-----+
 | :ref:`field-created`        | yes         | yes         | yes     | yes   | yes |
 +-----------------------------+-------------+-------------+---------+-------+-----+
+| :ref:`field-transient`      | yes         | yes         | yes     | yes   | yes |
++-----------------------------+-------------+-------------+---------+-------+-----+
 | :ref:`field-acquired`       |             | inherited   | yes     | yes   | yes |
 +-----------------------------+-------------+-------------+---------+-------+-----+
 | :ref:`field-subject`        |             | inherited   | yes     | yes   | yes |
@@ -60,6 +62,13 @@ created
 -------
 
 Last known modified date of the file as reported by the OS.
+
+.. _field-transient:
+
+transient
+---------
+
+Whether the file is deemed temporary.
 
 .. _field-acquired:
 

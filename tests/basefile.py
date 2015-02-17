@@ -30,7 +30,7 @@ class BasicInspectionTests(unittest.TestCase):
         out = self.file.inspect()
         self.assertEqual(out['hash'], self.hasher.digest(self.path))
 
-    def test_Attach_writes_provenance_to_a_file(self):
+    def test_Attach_method(self):
         self.file.provenance = {'foo':'bar'}
         self.file.attach()
         self.json.serialize.assert_called_with(self.file.provenance)

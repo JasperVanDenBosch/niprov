@@ -2,9 +2,11 @@
 # -*- coding: UTF-8 -*-
 from niprov.externals import Externals
 from niprov.logging import log
+from niprov.commandline import Commandline
 
 
-def record(command, new=None, parents=None, transient=False, externals=Externals()):
+def record(command, new=None, parents=None, transient=False, 
+    externals=Externals(), listener=Commandline()):
     """Execute a command and log it as provenance for the newly created file.
 
     Args:
@@ -21,7 +23,6 @@ def record(command, new=None, parents=None, transient=False, externals=Externals
     Returns:
         dict: New provenance
     """
-    result = externals.run(command)
     transformation = command[0]
     code = ' '.join(command)
     for c in range(len(command)):
@@ -33,5 +34,7 @@ def record(command, new=None, parents=None, transient=False, externals=Externals
         _parents = parents
     if new:
         _new = new
+    listener.interpretedRecording(_new, transformation, _parents)
+    result = externals.run(command)
     return log(_new, transformation, _parents, code=code, transient=transient,
         logtext=result.output)

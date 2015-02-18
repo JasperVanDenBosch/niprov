@@ -1,12 +1,14 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 from niprov.jsonfile import JsonFile
+from niprov.filesystem import Filesystem
+import errno
 
 
 def log(new, transformation, parents, code=None, logtext=None, transient=False,
-        repository=JsonFile()):
+        repository=JsonFile(), filesys=Filesystem()):
     """
-    Record a transformation that creates a new image.
+    Register a transformation that creates a new image.
 
     Args:
         new (str): Path to the newly created file.
@@ -22,9 +24,15 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
             physically present. Defaults to False, assuming that the file 
             remains.
 
+    Raises:
+      IOError: '[Errno 2] File not found' is raised if the new file does not
+        exist on the filesystem and is not marked as transient.
+
     Returns:
         dict: New provenance
     """
+    if not transient and not filesys.fileExists(new):
+        raise IOError(errno.ENOENT, 'File not found', new)
     provenance = {}
     provenance['parents'] = parents
     provenance['path'] = new

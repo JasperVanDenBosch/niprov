@@ -10,6 +10,9 @@ class Filesystem(object):
     def __init__(self):
         self.open = open
 
+    def fileExists(self, path):
+        return os.path.isfile(path) 
+
     def walk(self, path):
         return os.walk(path)
 

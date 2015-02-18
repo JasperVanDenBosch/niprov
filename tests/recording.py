@@ -44,3 +44,10 @@ class RecordingTests(unittest.TestCase):
         self.listener.interpretedRecording.assert_called_with(
             'newfile.f','mytransform',['oldfile.f'])
 
+    def test_Works_on_single_string_too(self):
+        cmd = 'mytransform -out newfile.f -in oldfile.f'
+        self.record(cmd)
+        self.sub.run.assert_called_with(cmd.split())
+        self.log.assert_called_with('newfile.f','mytransform',['oldfile.f'], 
+            transient=False, code=cmd, logtext=self.sub.run().output)
+

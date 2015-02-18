@@ -3,6 +3,16 @@ from mock import Mock
 
 class ReportingTests(unittest.TestCase):
 
+    def setUp(self):
+        self.factory = Mock()
+        self.repo = Mock()
+        self.listener = Mock()
+
+    def report(self, *args, **kwargs):
+        import niprov
+        niprov.report(*args, repository=self.repo, exportFactory=self.factory,
+            listener=self.listener, **kwargs)
+
     def test_Without_specifics_returns_all_files(self):
         import niprov
         log = Mock()
@@ -52,6 +62,12 @@ class ReportingTests(unittest.TestCase):
         repo = Mock()
         niprov.report(forFile='xyz',repository=repo, exportFactory=factory)
         factory.createExporter().export.assert_any_call(repo.byPath('xyz'))
+
+    def test_If_file_unknown_tells_listener(self):
+        self.repo.knowsByPath.return_value = False
+        self.repo.byPath.side_effect = IndexError
+        self.report(forFile='xyz')
+        self.listener.unknownFile.assert_called_with('xyz')
 
 
 

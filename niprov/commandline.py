@@ -18,7 +18,7 @@ class Commandline(object):
     def interpretedRecording(self, new, transform, parents):
         template = ('[provenance] Recorded the command [{1}] to create [{0}] '+
             'based on [{2}]')
-        print(template.format(new, transform, ', '.join(parents)))
+        print(template.format(', '.join(new), transform, ', '.join(parents)))
 
     def unknownFile(self, fpath):
         print('[provenance] Unknown file: '+fpath)

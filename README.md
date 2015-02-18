@@ -28,7 +28,7 @@ provenance record mcflirt -in t1flip_all_orig -out t1all_reg -refvol 0
 
 *Alternatively, log the provenance after running the command:*
 ```shell
-provenance log fmri-3dmc.nii 'motion correction' fmri.nii 
+provenance log 'motion correction' --new fmri-3dmc.nii --parent fmri.nii 
 ```
 
 *Publish provenance of known files for subject 'John Doe' as an html file:*

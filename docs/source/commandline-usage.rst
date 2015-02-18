@@ -16,7 +16,7 @@ Run a transformation command and log it as provenance for the new file:
 Alternatively, log the provenance after running the command:
 ::
 
-    provenance log 'motion correction' fmri.nii fmri-3dmc.nii
+    provenance log 'motion correction' --new fmri-3dmc.nii --parent fmri.nii 
 
 
 Publish provenance of known files for subject 'John Doe' as an html file.

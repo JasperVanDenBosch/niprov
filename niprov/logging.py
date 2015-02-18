@@ -3,19 +3,20 @@
 from niprov.jsonfile import JsonFile
 from niprov.filesystem import Filesystem
 import errno
+import copy
 
 
 def log(new, transformation, parents, code=None, logtext=None, transient=False,
         repository=JsonFile(), filesys=Filesystem()):
     """
-    Register a transformation that creates a new image.
+    Register a transformation that creates a new image (or several).
 
     Args:
-        new (str): Path to the newly created file.
+        new (str or list): Path(s) to the newly created file(s).
         transformation (str): Name of the operation that has been used.
-        parents (list): Paths to the files that were used as the basis of the 
-            transformation. Assumes that the first file in the list is the 
-            primary parent for which basic provenance is known.
+        parents (str or list): Path(s) to the file(s) that were used as the 
+            basis of the transformation. Assumes that the first file in the 
+            list is the primary parent for which basic provenance is known.
         code (str, optional): Code that was used to generate the new file
         logtext (str, optional): Any information about the transformation that 
             was logged.
@@ -29,25 +30,43 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
         exist on the filesystem and is not marked as transient.
 
     Returns:
-        dict: New provenance
+        dict or list: New provenance, if multiple files were created, this is 
+            a list of dicts, otherwise, it is a single dict.
     """
-    if not transient and not filesys.fileExists(new):
-        raise IOError(errno.ENOENT, 'File not found', new)
-    provenance = {}
-    provenance['parents'] = parents
-    provenance['path'] = new
-    provenance['transformation'] = transformation
-    provenance['transient'] = transient
+    if isinstance(new, basestring):
+        new = [new]
+    if isinstance(parents, basestring):
+        parents = [parents]
+
+    #gather provenance common to all new files
+    commonProvenance = {}
+    commonProvenance['parents'] = parents
+    commonProvenance['transformation'] = transformation
+    commonProvenance['transient'] = transient
     if code:
-        provenance['code'] = code
+        commonProvenance['code'] = code
     if logtext:
-        provenance['logtext'] = logtext
+        commonProvenance['logtext'] = logtext
     if repository.knowsByPath(parents[0]):
         parentProvenance = repository.byPath(parents[0])
-        provenance['acquired'] = parentProvenance['acquired']
-        provenance['subject'] = parentProvenance['subject']
-        provenance['protocol'] = parentProvenance['protocol']
-    repository.add(provenance)
+        commonProvenance['acquired'] = parentProvenance['acquired']
+        commonProvenance['subject'] = parentProvenance['subject']
+        commonProvenance['protocol'] = parentProvenance['protocol']
+
+    #do things specific to each new file
+    provenance = []
+    for newfile in new:
+        singleProvenance = copy.deepcopy(commonProvenance)
+        singleProvenance['path'] = newfile
+        if not transient and not filesys.fileExists(newfile):
+            raise IOError(errno.ENOENT, 'File not found', newfile)
+        repository.add(singleProvenance)
+        provenance.append(singleProvenance)
+
+    #only return one dict if only one new file was created
+    if len(new) == 1:
+        return singleProvenance
+
     return provenance
 
 

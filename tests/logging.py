@@ -7,6 +7,7 @@ class loggingTests(unittest.TestCase):
 
     def setUp(self):
         self.repo = Mock()
+        self.repo.knowsByPath.return_value = False
         self.filesys = Mock()
 
     def log(self, *args, **kwargs):
@@ -31,6 +32,7 @@ class loggingTests(unittest.TestCase):
         self.repo.add.assert_any_call(provenance)
 
     def test_Copies_fields_from_known_parent(self):
+        self.repo.knowsByPath.return_value = True
         parent = '/p/f1'
         parents = [parent]
         parentProv = {'acquired':dt.now(),'subject':'JB','protocol':'T3'}
@@ -73,5 +75,17 @@ class loggingTests(unittest.TestCase):
         trans = 'Something cool'
         provenance = self.log(new, trans, parents, transient=True)
         self.repo.add.assert_any_call(provenance)
+
+    def test_Can_pass_multiple_new_files(self):
+        parents = ['/p/f1']
+        new = ['/p/f2','/p/f3']
+        trans = 'Something cool'
+        provenance = self.log(new, trans, parents)
+        self.assertEqual(provenance[0]['parents'], parents)
+        self.assertEqual(provenance[1]['parents'], parents)
+        self.assertEqual(provenance[0]['path'], new[0])
+        self.assertEqual(provenance[1]['path'], new[1])
+        self.repo.add.assert_any_call(provenance[0])
+        self.repo.add.assert_any_call(provenance[1])
 
 

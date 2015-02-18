@@ -25,32 +25,32 @@ class RecordingTests(unittest.TestCase):
     def test_Extracts_provenance_from_commands(self):
         cmd = ['mytransform','-out','newfile.f','-in','oldfile.f']
         self.record(cmd)
-        self.log.assert_called_with('newfile.f','mytransform',['oldfile.f'], 
+        self.log.assert_called_with(['newfile.f'],'mytransform',['oldfile.f'], 
             transient=False, code=' '.join(cmd), logtext=self.sub.run().output)
 
     def test_If_parent_or_new_provided_override_parsed(self):
         cmd = ['mytransform','-out','newfile.f','-in','oldfile.f']
         self.record(cmd, parents=['customParent'], new='customNew')
-        self.log.assert_called_with('customNew','mytransform',['customParent'],
+        self.log.assert_called_with(['customNew'],'mytransform',['customParent'],
             transient=False, code=' '.join(cmd), logtext=self.sub.run().output)
 
     def test_Passes_transient_flag(self):
         cmd = ['mytransform','-out','newfile.f','-in','oldfile.f']
         self.record(cmd, transient=True)
-        self.log.assert_called_with('newfile.f','mytransform',['oldfile.f'], 
+        self.log.assert_called_with(['newfile.f'],'mytransform',['oldfile.f'], 
             transient=True, code=' '.join(cmd), logtext=self.sub.run().output)
 
     def test_Informs_listener_about_interpretation(self):
         cmd = ['mytransform','-out','newfile.f','-in','oldfile.f']
         self.record(cmd)
         self.listener.interpretedRecording.assert_called_with(
-            'newfile.f','mytransform',['oldfile.f'])
+            ['newfile.f'],'mytransform',['oldfile.f'])
 
     def test_Works_on_single_string_too(self):
         cmd = 'mytransform -out newfile.f -in oldfile.f'
         self.record(cmd)
         self.sub.run.assert_called_with(cmd.split())
-        self.log.assert_called_with('newfile.f','mytransform',['oldfile.f'], 
+        self.log.assert_called_with(['newfile.f'],'mytransform',['oldfile.f'], 
             transient=False, code=cmd, logtext=self.sub.run().output)
 
     def test_Python_code(self):
@@ -61,7 +61,7 @@ class RecordingTests(unittest.TestCase):
         kwargs = {'one':'foz','two':'baz'}
         self.record(myfunc, args=args, kwargs=kwargs, new='new.f', parents=['old.f'])
         myfunc.assert_called_with(*args, **kwargs)
-        self.log.assert_called_with('new.f',myfunc.func_name,['old.f'], 
+        self.log.assert_called_with(['new.f'],myfunc.func_name,['old.f'], 
             transient=False, code=None, logtext=None)
         # myfunc.func_code.co_filename
 

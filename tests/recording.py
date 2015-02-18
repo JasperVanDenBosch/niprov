@@ -1,5 +1,7 @@
+from __future__ import print_function
 import unittest
 from mock import Mock
+
 
 
 class RecordingTests(unittest.TestCase):
@@ -50,4 +52,18 @@ class RecordingTests(unittest.TestCase):
         self.sub.run.assert_called_with(cmd.split())
         self.log.assert_called_with('newfile.f','mytransform',['oldfile.f'], 
             transient=False, code=cmd, logtext=self.sub.run().output)
+
+    def test_Python_code(self):
+        myfunc = Mock()
+        myfunc.side_effect = lambda a,b,one=None,two=None: print('Hello World!')
+        myfunc.func_name = 'myfunc'
+        args = ['foo','bar']
+        kwargs = {'one':'foz','two':'baz'}
+        self.record(myfunc, args=args, kwargs=kwargs, new='new.f', parents=['old.f'])
+        myfunc.assert_called_with(*args, **kwargs)
+        self.log.assert_called_with('new.f',myfunc.func_name,['old.f'], 
+            transient=False, code='', logtext='')
+        # myfunc.func_code.co_filename
+
+        
 

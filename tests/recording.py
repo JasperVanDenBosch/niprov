@@ -62,7 +62,7 @@ class RecordingTests(unittest.TestCase):
         self.record(myfunc, args=args, kwargs=kwargs, new='new.f', parents=['old.f'])
         myfunc.assert_called_with(*args, **kwargs)
         self.log.assert_called_with('new.f',myfunc.func_name,['old.f'], 
-            transient=False, code='', logtext='')
+            transient=False, code=None, logtext=None)
         # myfunc.func_code.co_filename
 
         

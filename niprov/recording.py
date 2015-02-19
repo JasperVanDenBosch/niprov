@@ -36,6 +36,7 @@ def record(command, new=[], parents=[], transient=False, args=[], kwargs={},
     if isinstance(command, (list, tuple)):
         transformation = command[0]
         code = ' '.join(command)
+        script = None
         parsingNew = len(new) == 0
         parsingParents = len(parents) == 0
         for c in range(len(command)):
@@ -45,6 +46,7 @@ def record(command, new=[], parents=[], transient=False, args=[], kwargs={},
                 parents.append(command[c+1])
     else:
         transformation = command.func_name
+        script = command.func_code.co_filename
         code = None
 
     listener.interpretedRecording(new, transformation, parents)
@@ -57,4 +59,4 @@ def record(command, new=[], parents=[], transient=False, args=[], kwargs={},
         output = None
 
     return log(new, transformation, parents, code=code, transient=transient,
-        logtext=output)
+        logtext=output, script=script)

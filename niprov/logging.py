@@ -7,7 +7,7 @@ import copy
 
 
 def log(new, transformation, parents, code=None, logtext=None, transient=False,
-        repository=JsonFile(), filesys=Filesystem()):
+        script=None, repository=JsonFile(), filesys=Filesystem()):
     """
     Register a transformation that creates a new image (or several).
 
@@ -20,6 +20,8 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
         code (str, optional): Code that was used to generate the new file
         logtext (str, optional): Any information about the transformation that 
             was logged.
+        script (str, optional): Path to the code file that contains the 
+            transformation code.
         transient (bool, optional): Set this to True to indicate that the file 
             is only temporary and future checks should not expect it to be 
             physically present. Defaults to False, assuming that the file 
@@ -42,6 +44,7 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     commonProvenance = {}
     commonProvenance['parents'] = parents
     commonProvenance['transformation'] = transformation
+    commonProvenance['script'] = script
     commonProvenance['transient'] = transient
     if code:
         commonProvenance['code'] = code

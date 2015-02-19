@@ -88,4 +88,12 @@ class loggingTests(unittest.TestCase):
         self.repo.add.assert_any_call(provenance[0])
         self.repo.add.assert_any_call(provenance[1])
 
+    def test_Script_added_to_provenance(self):
+        parents = ['/p/f1']
+        new = '/p/f2'
+        trans = 'Something cool'
+        script = '/p/test.py'
+        provenance = self.log(new, trans, parents, script=script)
+        self.assertEqual(provenance['script'], script)
+
 

@@ -7,7 +7,7 @@ import copy
 
 
 def log(new, transformation, parents, code=None, logtext=None, transient=False,
-        script=None, repository=JsonFile(), filesys=Filesystem()):
+        script=None, provenance={}, repository=JsonFile(), filesys=Filesystem()):
     """
     Register a transformation that creates a new image (or several).
 
@@ -26,6 +26,8 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
             is only temporary and future checks should not expect it to be 
             physically present. Defaults to False, assuming that the file 
             remains.
+        provenance (dict, optional): Add the key-value pairs in this dictionary 
+            to the provenance record for the new files.
 
     Raises:
       IOError: '[Errno 2] File not found' is raised if the new file does not
@@ -41,7 +43,7 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
         parents = [parents]
 
     #gather provenance common to all new files
-    commonProvenance = {}
+    commonProvenance = provenance
     commonProvenance['parents'] = parents
     commonProvenance['transformation'] = transformation
     commonProvenance['script'] = script

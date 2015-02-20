@@ -20,6 +20,22 @@ class SerializerTests(unittest.TestCase):
         self.assertEqual(json.loads(out)['created'], 
             record['created'].isoformat())
 
+    def test_serialize_makes_args_kwargs_values_strings(self):
+        from niprov.jsonserializing import JsonSerializer  
+        class CustomType(object):
+            pass
+        serializer = JsonSerializer()
+        record = {}
+        ct1 = CustomType()
+        ct2 = CustomType()
+        record['args'] = [1.23, ct1]
+        record['kwargs'] = {'one':ct2, 'two':4.56}
+        out = serializer.serialize(record)
+        self.assertEqual(json.loads(out)['args'], 
+            [1.23, str(ct1)])
+        self.assertEqual(json.loads(out)['kwargs'], 
+            {'one':str(ct2), 'two':4.56})
+
     def test_serialize_and_deserialize_dont_balk_if_time_field_absent(self):
         from niprov.jsonserializing import JsonSerializer  
         serializer = JsonSerializer()

@@ -73,6 +73,12 @@ class JsonSerializer(object):
         for field in self.datetimeFields:
             if field in record:
                 flatRecord[field] = record[field].strftime(isoformat)
+        if 'args' in record:
+            flatRecord['args'] = [self._strcust(a) for a in record['args']]
+        if 'kwargs' in record:
+            kwargs = record['kwargs']
+            flatRecord['kwargs'] = {k: self._strcust(kwargs[k]) 
+                for k in kwargs.keys()}
         return flatRecord
 
     def _inflate(self, flatRecord):
@@ -82,3 +88,9 @@ class JsonSerializer(object):
             if field in record:
                 record[field] = datetime.strptime(record[field], isoformat)
         return record
+
+    def _strcust(self, val):
+        """Stringify an object that is not of a simple type."""
+        if not isinstance(val, (str, unicode, int, float, bool, type(None))):
+            return str(val)
+        return val

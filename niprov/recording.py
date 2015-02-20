@@ -33,6 +33,7 @@ def record(command, new=[], parents=[], transient=False, args=[], kwargs={},
         parents = [parents]
     if isinstance(command, basestring):
         command = command.split()
+    provenance = {}
     if isinstance(command, (list, tuple)):
         transformation = command[0]
         code = ' '.join(command)
@@ -48,6 +49,8 @@ def record(command, new=[], parents=[], transient=False, args=[], kwargs={},
         transformation = command.func_name
         script = command.func_code.co_filename
         code = None
+        provenance['args'] = args
+        provenance['kwargs'] = kwargs
 
     listener.interpretedRecording(new, transformation, parents)
 
@@ -59,4 +62,4 @@ def record(command, new=[], parents=[], transient=False, args=[], kwargs={},
         output = None
 
     return log(new, transformation, parents, code=code, transient=transient,
-        logtext=output, script=script)
+        logtext=output, script=script, provenance=provenance)

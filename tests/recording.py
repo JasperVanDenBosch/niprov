@@ -27,21 +27,21 @@ class RecordingTests(unittest.TestCase):
         self.record(cmd)
         self.log.assert_called_with(['newfile.f'],'mytransform',['oldfile.f'], 
             transient=False, code=' '.join(cmd), logtext=self.sub.run().output, 
-            script=None)
+            script=None, provenance={})
 
     def test_If_parent_or_new_provided_override_parsed(self):
         cmd = ['mytransform','-out','newfile.f','-in','oldfile.f']
         self.record(cmd, parents=['customParent'], new='customNew')
         self.log.assert_called_with(['customNew'],'mytransform',['customParent'],
             transient=False, code=' '.join(cmd), logtext=self.sub.run().output, 
-            script=None)
+            script=None, provenance={})
 
     def test_Passes_transient_flag(self):
         cmd = ['mytransform','-out','newfile.f','-in','oldfile.f']
         self.record(cmd, transient=True)
         self.log.assert_called_with(['newfile.f'],'mytransform',['oldfile.f'], 
             transient=True, code=' '.join(cmd), logtext=self.sub.run().output, 
-            script=None)
+            script=None, provenance={})
 
     def test_Informs_listener_about_interpretation(self):
         cmd = ['mytransform','-out','newfile.f','-in','oldfile.f']
@@ -55,7 +55,7 @@ class RecordingTests(unittest.TestCase):
         self.sub.run.assert_called_with(cmd.split())
         self.log.assert_called_with(['newfile.f'],'mytransform',['oldfile.f'], 
             transient=False, code=cmd, logtext=self.sub.run().output, 
-            script=None)
+            script=None, provenance={})
 
     def test_Python_code(self):
         myfunc = Mock()
@@ -66,7 +66,9 @@ class RecordingTests(unittest.TestCase):
         self.record(myfunc, args=args, kwargs=kwargs, new='new.f', parents=['old.f'])
         myfunc.assert_called_with(*args, **kwargs)
         self.log.assert_called_with(['new.f'],myfunc.func_name,['old.f'], 
-            transient=False, code=None, logtext=None, script=myfunc.func_code.co_filename)
+            transient=False, code=None, logtext=None, 
+            script=myfunc.func_code.co_filename,
+            provenance={'args':args, 'kwargs':kwargs})
         # myfunc.func_code.co_filename
 
         

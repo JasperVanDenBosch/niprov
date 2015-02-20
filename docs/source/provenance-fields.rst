@@ -33,6 +33,12 @@ Overview of provenance attributes collected:
 +-----------------------------+-------------+-------------+---------+-------+-----+
 | :ref:`field-logtext`        |             | yes         |         |       |     |
 +-----------------------------+-------------+-------------+---------+-------+-----+
+| :ref:`field-script`         |             | yes         |         |       |     |
++-----------------------------+-------------+-------------+---------+-------+-----+
+| :ref:`field-args`           |             | yes         |         |       |     |
++-----------------------------+-------------+-------------+---------+-------+-----+
+| :ref:`field-kwargs`         |             | yes         |         |       |     |
++-----------------------------+-------------+-------------+---------+-------+-----+
 
 
 .. _field-path:
@@ -125,6 +131,28 @@ logtext
 -------
 
 The commandline output of the transformation.
+
+.. _field-script:
+
+script
+------
+
+The path to the code file containing the transformation routine.
+
+.. _field-args:
+
+args
+----
+
+The positional arguments passed to a python-based transformation command.
+
+.. _field-kwargs:
+
+kwargs
+------
+
+The keyword arguments passed to a python-based transformation command.
+
 
 
 

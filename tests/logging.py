@@ -96,4 +96,12 @@ class loggingTests(unittest.TestCase):
         provenance = self.log(new, trans, parents, script=script)
         self.assertEqual(provenance['script'], script)
 
+    def test_Accepts_and_processes_custom_provenance(self):
+        parents = ['/p/f1']
+        new = '/p/f2'
+        trans = 'Something cool'
+        p = {'akey':'avalue'}
+        provenance = self.log(new, trans, parents, provenance=p)
+        self.assertEqual(provenance['akey'], 'avalue')
+
 

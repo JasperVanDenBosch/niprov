@@ -5,8 +5,8 @@ from niprov.logging import log
 from niprov.commandline import Commandline
 
 
-def record(command, new=[], parents=[], transient=False, args=[], kwargs={},
-    externals=Externals(), listener=Commandline()):
+def record(command, new=None, parents=None, transient=False, args=None, 
+    kwargs=None, externals=Externals(), listener=Commandline()):
     """Execute a command and log it as provenance for the newly created file.
 
     Args:
@@ -27,12 +27,26 @@ def record(command, new=[], parents=[], transient=False, args=[], kwargs={},
     Returns:
         dict: New provenance
     """
+
+    # initialize mutable defaults:
+    if new is None:
+        new = []
+    if parents is None:
+        parents = []
+    if args is None:
+        args = []
+    if kwargs is None:
+        kwargs = {}
+
+    # initialize singular/plural ducktyping
     if isinstance(new, basestring):
         new = [new]
     if isinstance(parents, basestring):
         parents = [parents]
     if isinstance(command, basestring):
         command = command.split()
+
+    # gather tranformation provenance
     provenance = {}
     if isinstance(command, (list, tuple)):
         transformation = command[0]
@@ -51,9 +65,9 @@ def record(command, new=[], parents=[], transient=False, args=[], kwargs={},
         code = None
         provenance['args'] = args
         provenance['kwargs'] = kwargs
-
     listener.interpretedRecording(new, transformation, parents)
 
+    # run transformation
     if isinstance(command, (list, tuple)):
         result = externals.run(command)
         output = result.output
@@ -61,5 +75,6 @@ def record(command, new=[], parents=[], transient=False, args=[], kwargs={},
         command(*args, **kwargs)
         output = None
 
+    # defer the rest to log()
     return log(new, transformation, parents, code=code, transient=transient,
         logtext=output, script=script, provenance=provenance)

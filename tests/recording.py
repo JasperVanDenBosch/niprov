@@ -59,7 +59,7 @@ class RecordingTests(unittest.TestCase):
 
     def test_Python_code(self):
         myfunc = Mock()
-        myfunc.side_effect = lambda a,b,one=None,two=None: print('Hello World!')
+        myfunc.side_effect = lambda a,b,one=None,two=None: None
         myfunc.func_name = 'myfunc'
         args = ['foo','bar']
         kwargs = {'one':'foz','two':'baz'}

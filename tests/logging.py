@@ -107,4 +107,8 @@ class loggingTests(unittest.TestCase):
         self.listener.unknownFile.assert_called_with(parent)
         assert not self.repo.add.called
 
+    def test_Doesnt_complain_if_parent_is_missing_basic_fields(self):
+        self.repo.byPath.return_value = {'acquired':dt.now()} #missing subject
+        provenance = self.log('new', 'trans', ['/p/f1parent'])
+        self.assertNotIn('subject', provenance)
 

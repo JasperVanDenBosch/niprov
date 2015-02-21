@@ -8,10 +8,16 @@ import copy
 
 
 def log(new, transformation, parents, code=None, logtext=None, transient=False,
-        script=None, provenance={}, repository=JsonFile(), filesys=Filesystem(),
+        script=None, provenance=None, repository=JsonFile(), filesys=Filesystem(),
         listener=Commandline()):
     """
     Register a transformation that creates a new image (or several).
+
+    This will retrieve the primary parent's provenance. if no provenance is 
+    availale for the primary parent, calls listener.unknownFile. Otherwise,
+    some fields are copied from the primary parent, subject to availability. 
+    For instance, if the parent has no 'subject' field, the new file's 
+    provenance won't either.
 
     Args:
         new (str or list): Path(s) to the newly created file(s).
@@ -43,6 +49,8 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
         new = [new]
     if isinstance(parents, basestring):
         parents = [parents]
+    if provenance is None:
+        provenance = {}
 
     #gather provenance common to all new files
     commonProvenance = provenance
@@ -56,9 +64,9 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
         commonProvenance['logtext'] = logtext
     if repository.knowsByPath(parents[0]):
         parentProvenance = repository.byPath(parents[0])
-        commonProvenance['acquired'] = parentProvenance['acquired']
-        commonProvenance['subject'] = parentProvenance['subject']
-        commonProvenance['protocol'] = parentProvenance['protocol']
+        for field in ['acquired','subject','protocol']:
+            if field in parentProvenance:
+                commonProvenance[field] = parentProvenance[field]
     else:
         listener.unknownFile(parents[0])
         return

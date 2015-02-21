@@ -15,8 +15,11 @@ def discover(root, filefilter=FileFilter(), filesys=Filesystem(),
         for filename in files:
             filepath = os.path.join(root, filename)
             if filefilter.include(filename):
-                provenance = inspect(filepath)
-                if provenance is not None:
-                    repository.add(provenance)
-                    listener.fileFound(filename, provenance) 
+                if repository.knowsByPath(filepath):
+                    listener.knownFile(filepath)
+                else:
+                    provenance = inspect(filepath)
+                    if provenance is not None:
+                        repository.add(provenance)
+                        listener.fileFound(filename, provenance) 
        

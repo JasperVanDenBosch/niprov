@@ -22,4 +22,7 @@ class Commandline(object):
 
     def unknownFile(self, fpath):
         print('[provenance] Unknown file: '+fpath)
-    
+
+    def knownFile(self, fpath):
+        print('[provenance] File already known: '+fpath)
+

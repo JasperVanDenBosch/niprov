@@ -7,17 +7,18 @@ class loggingTests(unittest.TestCase):
 
     def setUp(self):
         self.repo = Mock()
-        self.repo.knowsByPath.return_value = False
+        self.repo.knowsByPath.return_value = True
+        self.repo.byPath.return_value = {'acquired':dt.now(),'subject':'JD',
+            'protocol':'X'}
         self.filesys = Mock()
+        self.listener = Mock()
 
     def log(self, *args, **kwargs):
         from niprov.logging import log
-        return log(*args, repository=self.repo, filesys=self.filesys, **kwargs)
+        return log(*args, repository=self.repo, filesys=self.filesys, 
+            listener=self.listener, **kwargs)
 
     def test_Returns_provenance(self):
-        from niprov.logging import log
-        self.repo = Mock()
-        self.repo.knowsByPath.return_value = False
         parents = ['/p/f1']
         new = '/p/f2'
         trans = 'Something cool'
@@ -27,12 +28,10 @@ class loggingTests(unittest.TestCase):
         self.assertEqual(provenance['transformation'], trans)
 
     def test_Stores_provenance(self):
-        self.repo.knowsByPath.return_value = False
         provenance = self.log('new', 'trans', 'old')
         self.repo.add.assert_any_call(provenance)
 
     def test_Copies_fields_from_known_parent(self):
-        self.repo.knowsByPath.return_value = True
         parent = '/p/f1'
         parents = [parent]
         parentProv = {'acquired':dt.now(),'subject':'JB','protocol':'T3'}
@@ -43,14 +42,12 @@ class loggingTests(unittest.TestCase):
         self.assertEqual(provenance['protocol'], parentProv['protocol'])
 
     def test_Adds_code_or_logtext(self):
-        self.repo.knowsByPath.return_value = False
         provenance = self.log('new', 'trans', 'old', code='abc', logtext='def')
         self.repo.add.assert_any_call(provenance)
         self.assertEqual(provenance['code'],'abc')
         self.assertEqual(provenance['logtext'],'def')
 
     def test_Accepts_temp_flag(self):
-        self.repo.knowsByPath.return_value = False
         parents = ['/p/f1']
         new = '/p/f2'
         trans = 'Something cool'
@@ -58,7 +55,6 @@ class loggingTests(unittest.TestCase):
         self.assertEqual(provenance['transient'], True)
 
     def test_If_file_doesnt_exists_tells_listener_and_doesnt_save_prov(self):
-        self.repo.knowsByPath.return_value = False
         self.filesys.fileExists.return_value = False
         parents = ['/p/f1']
         new = '/p/f2'
@@ -68,7 +64,6 @@ class loggingTests(unittest.TestCase):
         
 
     def test_For_nonexisting_transient_file_behaves_normal(self):
-        self.repo.knowsByPath.return_value = False
         self.filesys.fileExists.return_value = False
         parents = ['/p/f1']
         new = '/p/f2'
@@ -103,5 +98,13 @@ class loggingTests(unittest.TestCase):
         p = {'akey':'avalue'}
         provenance = self.log(new, trans, parents, provenance=p)
         self.assertEqual(provenance['akey'], 'avalue')
+
+    def test_Notifies_listener_and_exits_if_parent_unknown(self):
+        self.repo.knowsByPath.return_value = False
+        parent = '/p/f1'
+        parents = [parent]
+        provenance = self.log('new', 'trans', parents)
+        self.listener.unknownFile.assert_called_with(parent)
+        assert not self.repo.add.called
 
 

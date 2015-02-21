@@ -2,12 +2,14 @@
 # -*- coding: UTF-8 -*-
 from niprov.jsonfile import JsonFile
 from niprov.filesystem import Filesystem
+from niprov.commandline import Commandline
 import errno
 import copy
 
 
 def log(new, transformation, parents, code=None, logtext=None, transient=False,
-        script=None, provenance={}, repository=JsonFile(), filesys=Filesystem()):
+        script=None, provenance={}, repository=JsonFile(), filesys=Filesystem(),
+        listener=Commandline()):
     """
     Register a transformation that creates a new image (or several).
 
@@ -57,6 +59,9 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
         commonProvenance['acquired'] = parentProvenance['acquired']
         commonProvenance['subject'] = parentProvenance['subject']
         commonProvenance['protocol'] = parentProvenance['protocol']
+    else:
+        listener.unknownFile(parents[0])
+        return
 
     #do things specific to each new file
     provenance = []

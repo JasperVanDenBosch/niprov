@@ -1,10 +1,16 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 from setuptools import setup, find_packages
+import os
 
+try:
+   import pypandoc
+   README = pypandoc.convert('README.md', 'rst')
+except (IOError, ImportError):
+   README = ''
 
 setup(name='niprov',
-      version='0.1',
+      version='0.1.post1',
       author='Jasper J.F. van den Bosch',
       author_email='japsai@gmail.com',
       description='provenance for neuroimaging data',
@@ -13,6 +19,8 @@ setup(name='niprov',
       test_suite="tests",
       scripts=['executables/provenance'],
       zip_safe=False,
+      license='BSD',
+      long_description=README,
       classifiers=[
             'License :: OSI Approved :: BSD License',
             'Intended Audience :: Science/Research',

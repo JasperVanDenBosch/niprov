@@ -2,6 +2,7 @@ niprov
 ======
 provenance for neuroimaging data
 
+[![Pypi](https://pypip.in/version/niprov/badge.svg)](https://pypi.python.org/pypi/niprov/)
 [![Build](https://travis-ci.org/ilogue/niprov.svg?branch=master)](https://travis-ci.org/ilogue/niprov)
 [![Docs](https://readthedocs.org/projects/niprov/badge/?version=latest)](http://niprov.readthedocs.org/)
 [![Coverage](https://img.shields.io/coveralls/ilogue/niprov.svg)](https://coveralls.io/r/ilogue/niprov)

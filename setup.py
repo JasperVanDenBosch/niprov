@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 
 setup(name='niprov',
-      version='0.0',
+      version='0.1',
       author='Jasper J.F. van den Bosch',
       author_email='japsai@gmail.com',
       description='provenance for neuroimaging data',

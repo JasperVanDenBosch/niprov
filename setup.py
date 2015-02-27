@@ -24,5 +24,7 @@ setup(name='niprov',
       classifiers=[
             'License :: OSI Approved :: BSD License',
             'Intended Audience :: Science/Research',
-            'Topic :: Scientific/Engineering']
+            'Topic :: Scientific/Engineering'],
+      package_data={'niprov': ['discovery-filter.txt']},
+      include_package_data=True,
       )

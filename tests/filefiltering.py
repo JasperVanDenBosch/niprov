@@ -3,18 +3,19 @@ from mock import Mock
 import os
 
 
-
-
 class FileFilterTests(unittest.TestCase):
 
     def test_reads_extensions_from_default_file(self):
-        packageroot = os.path.split(os.path.split(__file__)[0])[0]
-        defaultfilterfile = os.path.join(packageroot,'discovery-filter.txt')
-        from niprov.filefilter import FileFilter
+        import niprov.filefilter
+        print(niprov.filefilter.__file__)
         filesys = Mock()
         filesys.readlines.return_value = ['.abc','.def']
-        filt = FileFilter(filesys=filesys)
-        filesys.readlines.assert_called_with(defaultfilterfile)
+        niprov.filefilter.pkg_resources = Mock()
+        filt = niprov.filefilter.FileFilter(filesys=filesys)
+        niprov.filefilter.pkg_resources.resource_filename.assert_called_with(
+            'niprov','discovery-filter.txt')
+        filesys.readlines.assert_called_with(
+            niprov.filefilter.pkg_resources.resource_filename())
         self.assertTrue(filt.include('/p/sth.abc'))
         self.assertTrue(filt.include('/p/sth.def'))
         self.assertFalse(filt.include('/p/sth.xyz'))

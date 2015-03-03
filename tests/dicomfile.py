@@ -30,9 +30,10 @@ class DicomTests(BasicInspectionTests):
         del(self.img.AcquisitionDateTime)
         self.img.SeriesDate = '20120416'
         self.img.SeriesTime = '101330.60000'
+        h = datetime.fromtimestamp(101330.60000).hour
         out = self.file.inspect()
         self.assertEqual(out['acquired'], 
-            datetime(2012, 4, 16, 20, 8, 50, 600000))
+            datetime(2012, 4, 16, h, 8, 50, 600000))
 
     def setupPydicom(self):
         self.img = Mock()

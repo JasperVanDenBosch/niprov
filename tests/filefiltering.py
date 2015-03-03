@@ -7,7 +7,6 @@ class FileFilterTests(unittest.TestCase):
 
     def test_reads_extensions_from_default_file(self):
         import niprov.filefilter
-        print(niprov.filefilter.__file__)
         filesys = Mock()
         filesys.readlines.return_value = ['.abc','.def']
         niprov.filefilter.pkg_resources = Mock()

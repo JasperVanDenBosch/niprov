@@ -26,11 +26,19 @@ class DicomTests(BasicInspectionTests):
         out = self.file.inspect()
         self.log.fileError.assert_called_with(self.path)
 
+    def test_if_doesnt_have_acqDateTime_get_seriesDatetime(self):
+        del(self.img.AcquisitionDateTime)
+        self.img.SeriesDate = '20120416'
+        self.img.SeriesTime = '101330.60000'
+        out = self.file.inspect()
+        self.assertEqual(out['acquired'], 
+            datetime(2012, 4, 16, 20, 8, 50, 600000))
+
     def setupPydicom(self):
-        img = Mock()
-        img.AcquisitionDateTime = '20140805121914.59000'
-        img.SeriesDescription = 'T1 SENSE'
-        img.PatientID = 'John Doeish'
-        self.libs.dicom.read_file.return_value = img
+        self.img = Mock()
+        self.img.AcquisitionDateTime = '20140805121914.59000'
+        self.img.SeriesDescription = 'T1 SENSE'
+        self.img.PatientID = 'John Doeish'
+        self.libs.dicom.read_file.return_value = self.img
         self.libs.hasDependency.return_value = True
 

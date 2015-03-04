@@ -8,6 +8,7 @@ class DiscoveryTests(unittest.TestCase):
     def setUp(self):
         self.repo = Mock()
         self.repo.knows.return_value = False
+        self.repo.knowsSeries.return_value = False
         self.img1 = Mock()
         self.img2 = Mock()
         self.img3 = Mock()
@@ -69,6 +70,16 @@ class DiscoveryTests(unittest.TestCase):
         self.repo.add.assert_any_call(self.img1.provenance)
         self.assertNotCalledWith(self.repo.add, self.img2.provenance)
         self.listener.knownFile.assert_called_with(self.img2.path)
+
+    def test_If_repo_doesnt_know_file_but_knows_series_update_series(self):
+        self.repo.knows.return_value = False
+        self.repo.knowsSeries.side_effect = lambda f: True if f==self.img2 else False
+        series = Mock()
+        self.repo.getSeries.return_value = series
+        self.discover('root')
+        series.addFile.assert_called_with(self.img2)
+        self.repo.update.assert_called_with(series)
+        self.listener.fileFoundInSeries.assert_called_with(self.img2, series)
 
     def assertNotCalledWith(self, m, *args, **kwargs):
         c = mock.call(*args, **kwargs)

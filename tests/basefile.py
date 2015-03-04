@@ -41,6 +41,9 @@ class BasicInspectionTests(unittest.TestCase):
         self.filesys.write.assert_called_with(
             self.path+'.provenance', self.json.serialize(self.file.provenance))
 
+    def test_Series_interface(self):
+        self.assertEqual(self.file.getSeriesId(), None)
+
 
 #ATTACH
 # check if we have provenance to attach

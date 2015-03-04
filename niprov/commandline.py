@@ -8,6 +8,10 @@ class Commandline(object):
         template = '[provenance] {0}'
         print(template.format(image.path))
 
+    def fileFoundInSeries(self, img, series):
+        template = '[provenance] Adding {0} file to series: {1}'
+        print(template.format(ordinal(series.nfiles), series.seriesId))
+
     def missingDependencyForImage(self, lib, fpath):
         template = '[provenance] Missing python package "{0}" to read file: {1}'        
         print(template.format(lib, fpath))
@@ -25,4 +29,13 @@ class Commandline(object):
 
     def knownFile(self, fpath):
         print('[provenance] File already known: '+fpath)
+
+SUFFIXES = {1: 'st', 2: 'nd', 3: 'rd'}
+def ordinal(num):
+    if 10 <= num % 100 <= 20:
+        suffix = 'th'
+    else:
+        # the second parameter is a default.
+        suffix = SUFFIXES.get(num % 10, 'th')
+    return str(num) + suffix
 

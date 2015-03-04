@@ -35,3 +35,6 @@ class BaseFile(object):
         """
         provstr = self.serializer.serialize(self.provenance)
         self.filesystem.write(self.path+'.provenance', provstr)
+
+    def getSeriesId(self):
+        pass

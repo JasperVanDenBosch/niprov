@@ -28,6 +28,11 @@ def discover(root, filefilter=FileFilter(), filesys=Filesystem(),
                 img = file.locatedAt(filepath)
                 if repository.knows(img):
                     listener.knownFile(img.path)
+                elif repository.knowsSeries(img):
+                    series = repository.getSeries(img)
+                    series.addFile(img)
+                    repository.update(series)
+                    listener.fileFoundInSeries(img, series)
                 else:
                     img.inspect()
                     repository.add(img.provenance)

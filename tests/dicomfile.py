@@ -35,11 +35,15 @@ class DicomTests(BasicInspectionTests):
         self.assertEqual(out['acquired'], 
             datetime(2012, 4, 16, h, 8, 50, 600000))
 
+    def test_Series_interface(self):
+        self.assertEqual(self.file.getSeriesId(), self.img.SeriesInstanceUID)
+
     def setupPydicom(self):
         self.img = Mock()
         self.img.AcquisitionDateTime = '20140805121914.59000'
         self.img.SeriesDescription = 'T1 SENSE'
         self.img.PatientID = 'John Doeish'
+        self.img.SeriesInstanceUID = '1.3.46.670589.11.17388.5.0.6340.2011121308140690488'
         self.libs.dicom.read_file.return_value = self.img
         self.libs.hasDependency.return_value = True
 

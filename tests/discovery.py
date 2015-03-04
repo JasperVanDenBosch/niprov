@@ -7,8 +7,14 @@ class DiscoveryTests(unittest.TestCase):
 
     def setUp(self):
         self.repo = Mock()
-        self.repo.knowsByPath.return_value = False
+        self.repo.knows.return_value = False
+        self.img1 = Mock()
+        self.img2 = Mock()
+        self.img3 = Mock()
+        self.fileFactory = Mock()
+        self.fileFactory.locatedAt.side_effect = [self.img1, self.img2, self.img3]
         self.filesys = Mock()
+        self.filesys.walk.return_value = [('root',[],['known','new','unknown'])]
         self.listener = Mock()
         self.filt = Mock()
         self.inspect = Mock()
@@ -18,7 +24,7 @@ class DiscoveryTests(unittest.TestCase):
         import niprov.discovery
         niprov.discovery.inspect = self.inspect
         niprov.discovery.discover(path, filesys=self.filesys, listener=self.listener,
-            filefilter=self.filt, repository=self.repo)
+            filefilter=self.filt, repository=self.repo, file=self.fileFactory)
 
     def test_Tells_listener_about_files_found(self):
         self.setupFilter('.x')
@@ -26,53 +32,47 @@ class DiscoveryTests(unittest.TestCase):
             ('root',[],['/p/p2/f3.x'])] #(dirpath, dirnames, filenames)
         self.discover('root')
         self.filesys.walk.assert_called_with('root')
-        self.listener.fileFound.assert_any_call('/p/f1.x', self.inspect('/p/f1.x'))
-        self.listener.fileFound.assert_any_call('/p/f2.x', self.inspect('/p/f2.x'))
-        self.listener.fileFound.assert_any_call('/p/p2/f3.x', self.inspect('/p/p2/f3.x'))
+        self.listener.fileFound.assert_any_call(self.img1)
+        self.listener.fileFound.assert_any_call(self.img2)
+        self.listener.fileFound.assert_any_call(self.img3)
 
     def test_file_filters(self):
         self.setupFilter('valid.file')
         self.filesys.walk.return_value = [('root',[],['valid.file','other.file'])]
         self.discover('root')
-        self.listener.fileFound.assert_any_call('valid.file', 
-            self.inspect('root/valid.file'))
+        self.listener.fileFound.assert_any_call(self.img1)
+
+    def test_Creates_ImageFile_object_with_factory(self):
+        self.setupFilter('.valid')
+        self.filesys.walk.return_value = [('root',[],['a.valid', 'other.file'])]
+        self.discover('root')
+        self.fileFactory.locatedAt.assert_any_call('root/a.valid')
         self.assertRaises(AssertionError,
-            self.listener.fileFound.assert_any_call,'other.file', 
-                self.inspect('root/other.file'))
+            self.fileFactory.locatedAt.assert_any_call,'root/other.file')
 
     def test_Calls_inspect(self):
         self.setupFilter('.valid')
-        self.filesys.walk.return_value = [('root',[],['a.valid','other.file','b.valid'])]
+        self.filesys.walk.return_value = [('root',[],['a.valid','b.valid'])]
         self.discover('root')
-        self.inspect.assert_any_call(ospath.join('root','a.valid'))
-        self.inspect.assert_any_call(ospath.join('root','b.valid'))
-
-    def test_If_inspect_returns_no_provenance_dont_call_fileFound(self):
-        self.setupFilter('valid.file')
-        self.filesys.walk.return_value = [('root',[],['valid.file','other.file'])]
-        self.discover('root')
-        self.assertRaises(AssertionError,
-            self.listener.fileFound.assert_any_call,'valid.file', self.inspect('valid.file'))
+        self.img1.inspect.assert_called_with()
 
     def test_Hands_provenance_to_repository(self):
         self.setupFilter('.valid')
         self.filesys.walk.return_value = [('root',[],['a.valid','other.file','b.valid'])]
         self.discover('root')
-        self.repo.add.assert_any_call(('p', 'root/a.valid'))
-        self.repo.add.assert_any_call(('p', 'root/b.valid'))
+        self.repo.add.assert_any_call(self.img1.provenance)
+        self.repo.add.assert_any_call(self.img2.provenance)
 
     def test_If_discovers_file_that_is_known_ignore_it(self):
-        self.repo.knowsByPath.side_effect = lambda p: True if p == 'root/known' else False
-        self.filesys.walk.return_value = [('root',[],['known','new','unknown'])]
+        self.repo.knows.side_effect = lambda f: True if f==self.img2 else False
         self.discover('root')
-        self.repo.add.assert_any_call(('p', 'root/unknown'))
-        self.assertNotCalledWith(self.repo.add, ('p', 'root/known'))
-        self.listener.knownFile.assert_called_with('root/known')
+        self.repo.add.assert_any_call(self.img1.provenance)
+        self.assertNotCalledWith(self.repo.add, self.img2.provenance)
+        self.listener.knownFile.assert_called_with(self.img2.path)
 
     def assertNotCalledWith(self, m, *args, **kwargs):
         c = mock.call(*args, **kwargs)
         assert c not in m.call_args_list, "Unexpectedly found call: "+str(c)
-
 
     def setupFilter(self, valid):
         def filter_side_effect(*args):

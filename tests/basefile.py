@@ -30,6 +30,10 @@ class BasicInspectionTests(unittest.TestCase):
         out = self.file.inspect()
         self.assertEqual(out['hash'], self.hasher.digest(self.path))
 
+    def test_Provenance_property_equals_dictionary_returned_by_inspect(self):
+        out = self.file.inspect()
+        self.assertEqual(out, self.file.provenance)
+
     def test_Attach_method(self):
         self.file.provenance = {'foo':'bar'}
         self.file.attach()

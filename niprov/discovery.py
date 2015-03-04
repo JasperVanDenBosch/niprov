@@ -4,12 +4,12 @@ import os
 from niprov.filesystem import Filesystem
 from niprov.commandline import Commandline
 from niprov.filefilter import FileFilter
-from niprov.inspection import inspect
 from niprov.jsonfile import JsonFile
+from niprov.files import FileFactory
 
 
 def discover(root, filefilter=FileFilter(), filesys=Filesystem(), 
-        listener=Commandline(), repository=JsonFile()):
+        listener=Commandline(), repository=JsonFile(), file=FileFactory()):
     """
     Search a directory for image files, inspect them and store provenance.
 
@@ -25,11 +25,11 @@ def discover(root, filefilter=FileFilter(), filesys=Filesystem(),
         for filename in files:
             filepath = os.path.join(root, filename)
             if filefilter.include(filename):
-                if repository.knowsByPath(filepath):
-                    listener.knownFile(filepath)
+                img = file.locatedAt(filepath)
+                if repository.knows(img):
+                    listener.knownFile(img.path)
                 else:
-                    provenance = inspect(filepath)
-                    if provenance is not None:
-                        repository.add(provenance)
-                        listener.fileFound(filename, provenance) 
+                    img.inspect()
+                    repository.add(img.provenance)
+                    listener.fileFound(img)
        

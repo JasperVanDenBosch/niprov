@@ -48,6 +48,18 @@ class JsonFile(object):
             return False
         return True
 
+    def knows(self, image):
+        """Whether this file has provenance associated with it.
+
+        Return:
+            bool: True if provenance is available for this image.
+        """
+        try:
+            self.byPath(image.path)
+        except IndexError:
+            return False
+        return True
+
     def byPath(self, path):
         all = self.all()
         return [r for r in all if r['path'] == path][0]

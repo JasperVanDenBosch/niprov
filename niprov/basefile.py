@@ -22,6 +22,7 @@ class BaseFile(object):
         provenance['size'] = self.filesystem.getsize(self.path)
         provenance['created'] = self.filesystem.getctime(self.path)
         provenance['hash'] = self.hasher.digest(self.path)
+        self.provenance = provenance
         return provenance
 
     def attach(self):

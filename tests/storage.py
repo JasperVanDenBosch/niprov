@@ -54,6 +54,21 @@ class StorageTests(unittest.TestCase):
         self.assertFalse(repo2.knowsByPath('nonexisting'))
         self.assertTrue(repo2.knowsByPath(provenance['path']))
 
+    def test_Can_add_file_and_ask_whether_its_known(self):
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile()
+        repo.datafile = self.templocation
+        provenance = self.sampleProvenanceRecord()
+        repo.add(provenance)
+        repo2 = JsonFile()
+        repo2.datafile = self.templocation
+        known = Mock()
+        known.path = provenance['path']
+        unknown = Mock()
+        unknown.path = 'maohafnv'
+        self.assertFalse(repo2.knows(unknown))
+        self.assertTrue(repo2.knows(known))
+
 
     def sampleProvenanceRecord(self):
         record = {}

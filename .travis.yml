@@ -1,3 +1,5 @@
 language: python
-script:   coverage run --source=niprov setup.py test
+script:
+  - coverage run --source=niprov setup.py test
+  - python setup.py test --test-suite acceptance
 after_success:  coveralls

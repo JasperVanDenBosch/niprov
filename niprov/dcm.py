@@ -28,6 +28,7 @@ class DicomFile(BaseFile):
             return provenance
         provenance['subject'] = img.PatientID
         provenance['protocol'] = img.SeriesDescription
+        provenance['seriesuid'] = img.SeriesInstanceUID
         if hasattr(img, 'AcquisitionDateTime'):
             acqstring = img.AcquisitionDateTime.split('.')[0]
             dateformat = '%Y%m%d%H%M%S'
@@ -38,4 +39,9 @@ class DicomFile(BaseFile):
             acqtime = datetime.fromtimestamp(float(img.SeriesTime)).time()
             provenance['acquired'] = datetime.combine(acqdate, acqtime) 
         return provenance
+
+    def getSeriesId(self):
+        if not hasattr(self, 'provenance'):
+            self.inspect()
+        return self.provenance['seriesuid']
         

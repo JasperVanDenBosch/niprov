@@ -119,6 +119,28 @@ class StorageTests(unittest.TestCase):
         with self.assertRaises(IndexError):
             repo.getSeries(img2)
 
+    def test_Update(self):
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(factory=self.fileFactory)
+        repo.datafile = self.templocation
+        provenance = self.sampleProvenanceRecord()
+        repo.add(provenance)
+        repo2 = JsonFile(factory=self.fileFactory)
+        repo2.datafile = self.templocation
+        intermediate = repo2.byPath(provenance['path'])
+        intermediate['newfield'] = 'newval'
+        intermediate['subject'] = 'Jane Newman'
+        repo3 = JsonFile(factory=self.fileFactory)
+        repo3.datafile = self.templocation
+        updatedImage = Mock()
+        updatedImage.path = intermediate['path']
+        updatedImage.provenance = intermediate
+        repo3.update(updatedImage)
+        repo4 = JsonFile(factory=self.fileFactory)
+        repo4.datafile = self.templocation
+        out = repo4.byPath(provenance['path'])
+        self.assertEqual(out, intermediate)
+
 
     def sampleProvenanceRecord(self):
         record = {}

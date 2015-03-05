@@ -27,6 +27,20 @@ class JsonFile(object):
         with open(self.datafile, 'w') as fp:
             fp.write(jsonstr)
 
+    def update(self, image):
+        """Save changed provenance for this file..
+
+        Args:
+            image (BaseFile): Image file that has changed.
+        """
+        current = self.all()
+        for r in range(len(current)):
+            if current[r]['path'] == image.path:
+                current[r] = image.provenance
+        jsonstr = self.json.serializeList(current)
+        with open(self.datafile, 'w') as fp:
+            fp.write(jsonstr)
+
     def all(self):
         """Retrieve all known provenance from storage.
 

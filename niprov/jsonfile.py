@@ -1,5 +1,6 @@
 from niprov.filesystem import Filesystem
 from jsonserializing import JsonSerializer
+from niprov.files import FileFactory
 import os
 
 
@@ -7,9 +8,11 @@ class JsonFile(object):
     """Stores provenance in a local text file encoded as json.
     """
 
-    def __init__(self, filesys=Filesystem(), json=JsonSerializer()):
+    def __init__(self, filesys=Filesystem(), json=JsonSerializer(), 
+            factory=FileFactory()):
         self.filesys = filesys
         self.json = json
+        self.factory = factory
         self.datafile = os.path.expanduser(os.path.join('~','provenance.json'))
 
     def add(self, record):
@@ -60,6 +63,13 @@ class JsonFile(object):
             return False
         return True
 
+    def knowsSeries(self, image):
+        try:
+            self.getSeries(image)
+        except IndexError:
+            return False
+        return True
+
     def byPath(self, path):
         all = self.all()
         return [r for r in all if r['path'] == path][0]
@@ -67,4 +77,15 @@ class JsonFile(object):
     def bySubject(self, subject):
         all = self.all()
         return [f for f in all if f['subject']==subject]
+
+    def getSeries(self, image):
+        if image.getSeriesId() is None:
+            raise IndexError('Image has no series id.')
+        seriesId = image.getSeriesId()
+        for record in self.all():
+            if 'seriesuid' in record and record['seriesuid'] == seriesId:
+                return self.factory.fromProvenance(record)
+        else:
+            raise IndexError('No provenance record for that series.')
+       
 

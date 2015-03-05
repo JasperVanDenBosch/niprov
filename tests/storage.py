@@ -141,6 +141,20 @@ class StorageTests(unittest.TestCase):
         out = repo4.byPath(provenance['path'])
         self.assertEqual(out, intermediate)
 
+    def test_ByPath_also_returns_series_if_filepath_among_it(self):
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(factory=self.fileFactory)
+        repo.datafile = self.templocation
+        provenance = self.sampleProvenanceRecord()
+        provenance['filesInSeries'] = ['sfile1.f','sfile2.f']
+        repo.add(provenance)
+        repo2 = JsonFile(factory=self.fileFactory)
+        repo2.datafile = self.templocation
+        out = repo2.byPath('sfile1.f')
+        self.assertEqual(out, provenance)
+        with self.assertRaises(IndexError):
+            repo2.byPath('sfile3.f')
+
 
     def sampleProvenanceRecord(self):
         record = {}

@@ -44,7 +44,7 @@ class JsonFile(object):
     def all(self):
         """Retrieve all known provenance from storage.
 
-        Return:
+        Returns:
             list: List of provenance for known files.
         """
         try:
@@ -56,7 +56,7 @@ class JsonFile(object):
     def knowsByPath(self, path):
         """Whether the file at this path has provenance associated with it.
 
-        Return:
+        Returns:
             bool: True if provenance is available for that path.
         """
         try:
@@ -68,7 +68,7 @@ class JsonFile(object):
     def knows(self, image):
         """Whether this file has provenance associated with it.
 
-        Return:
+        Returns:
             bool: True if provenance is available for this image.
         """
         try:
@@ -85,8 +85,24 @@ class JsonFile(object):
         return True
 
     def byPath(self, path):
-        all = self.all()
-        return [r for r in all if r['path'] == path][0]
+        """Get the provenance for a file at the given path. 
+
+        In the case of a dicom series, this returns the provenance for the 
+        series.
+
+        Args:
+            path (str): File system path to the image file.
+
+        Returns:
+            bool: True if provenance is available for this image.
+        """
+        for record in self.all():
+            if record['path'] == path:
+                return record
+            elif 'filesInSeries' in record and path in record['filesInSeries']:
+                return record
+        else:
+            raise IndexError('No file with that path known.')
 
     def bySubject(self, subject):
         all = self.all()

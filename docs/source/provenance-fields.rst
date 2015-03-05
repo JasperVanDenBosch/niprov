@@ -39,6 +39,10 @@ Overview of provenance attributes collected:
 +-----------------------------+-------------+-------------+---------+-------+-----+
 | :ref:`field-kwargs`         |             | yes         |         |       |     |
 +-----------------------------+-------------+-------------+---------+-------+-----+
+| :ref:`field-seriesuid`      |             |             |         | yes   |     |
++-----------------------------+-------------+-------------+---------+-------+-----+
+| :ref:`field-filesInSeries`  |             |             |         | yes   |     |
++-----------------------------+-------------+-------------+---------+-------+-----+
 
 
 .. _field-path:
@@ -153,6 +157,17 @@ kwargs
 
 The keyword arguments passed to a python-based transformation command.
 
+.. _field-seriesuid:
 
+seriesuid
+---------
 
+A unique identifier for files in a series. Corresponds to `SeriesInstanceUID` in the DICOM format.
+
+.. _field-filesInSeries:
+
+filesInSeries
+-------------
+
+A list of paths to files that are part of this series.
 

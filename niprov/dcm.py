@@ -42,11 +42,23 @@ class DicomFile(BaseFile):
         return provenance
 
     def getSeriesId(self):
+        """
+        Return the DICOM "SeriesInstanceUID" that all files in this series 
+        have in common.
+
+        Returns:
+            str: A string uniquely identifying files belonging to this series.
+        """
         if not hasattr(self, 'provenance'):
             self.inspect()
         return self.provenance['seriesuid']
 
     def addFile(self, img):
+        """
+        Add a single DICOM file object to this series.
+
+        The file will be stored in provenance in the 'filesInSeries' list.
+        """
         self.provenance['filesInSeries'].append(img.path)
         
         

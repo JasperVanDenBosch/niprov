@@ -78,6 +78,12 @@ class JsonFile(object):
         return True
 
     def knowsSeries(self, image):
+        """Whether the series that this file is part of has provenance 
+        associated with it.
+
+        Returns:
+            bool: True if provenance is available for this series.
+        """
         try:
             self.getSeries(image)
         except IndexError:
@@ -94,7 +100,7 @@ class JsonFile(object):
             path (str): File system path to the image file.
 
         Returns:
-            bool: True if provenance is available for this image.
+            dict: Provenance for one image file.
         """
         for record in self.all():
             if record['path'] == path:
@@ -105,10 +111,27 @@ class JsonFile(object):
             raise IndexError('No file with that path known.')
 
     def bySubject(self, subject):
+        """Get the provenance for all files of a given participant. 
+
+        Args:
+            subject (str): The name or other ID string.
+
+        Returns:
+            list: List of provenance for known files imaging this subject.
+        """
         all = self.all()
         return [f for f in all if f['subject']==subject]
 
     def getSeries(self, image):
+        """Get the object that carries provenance for the series that the image 
+        passed is in. 
+
+        Args:
+            image (BaseFile): File that is part of a series.
+
+        Returns:
+            BaseFile: Image object that caries provenance for the series.
+        """
         if image.getSeriesId() is None:
             raise IndexError('Image has no series id.')
         seriesId = image.getSeriesId()

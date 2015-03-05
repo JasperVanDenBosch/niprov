@@ -29,6 +29,7 @@ class DicomFile(BaseFile):
         provenance['subject'] = img.PatientID
         provenance['protocol'] = img.SeriesDescription
         provenance['seriesuid'] = img.SeriesInstanceUID
+        provenance['filesInSeries'] = [self.path]
         if hasattr(img, 'AcquisitionDateTime'):
             acqstring = img.AcquisitionDateTime.split('.')[0]
             dateformat = '%Y%m%d%H%M%S'
@@ -44,4 +45,8 @@ class DicomFile(BaseFile):
         if not hasattr(self, 'provenance'):
             self.inspect()
         return self.provenance['seriesuid']
+
+    def addFile(self, img):
+        self.provenance['filesInSeries'].append(img.path)
+        
         

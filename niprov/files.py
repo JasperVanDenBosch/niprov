@@ -45,7 +45,7 @@ class FileFactory(object):
             return BaseFile(path)
         return self.formats[extension][1](path, provenance=provenance)
 
-    def withProvenance(self, provenance):
+    def fromProvenance(self, provenance):
         return self.locatedAt(provenance['path'], provenance)
 
 

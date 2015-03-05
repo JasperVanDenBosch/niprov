@@ -71,7 +71,7 @@ class FileFactoryTests(unittest.TestCase):
         fileCreated = factory.locatedAt('example.dCm')
         self.assertIsInstance(fileCreated, DicomFile)
 
-    def test_withProvenance_inserts_existing_provenance(self):
+    def test_fromProvenance_inserts_existing_provenance(self):
         import niprov.files
         niprov.files.BaseFile = Mock()
         niprov.files.DicomFile = Mock()
@@ -79,9 +79,9 @@ class FileFactoryTests(unittest.TestCase):
         factory = niprov.files.FileFactory(libs=self.libs, listener=self.log)
         inProvenance = {'path':'some.file','aproperty':'avalue'}
         inProvenanceDcm = {'path':'some.dcm','aproperty':'avalue'}
-        fileCreated = factory.withProvenance(inProvenance)
+        fileCreated = factory.fromProvenance(inProvenance)
         niprov.files.BaseFile.assert_called_with('some.file', provenance=inProvenance)
-        fileCreated = factory.withProvenance(inProvenanceDcm)
+        fileCreated = factory.fromProvenance(inProvenanceDcm)
         niprov.files.DicomFile.assert_called_with('some.dcm', provenance=inProvenanceDcm)
 
 

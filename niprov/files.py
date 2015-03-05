@@ -34,7 +34,7 @@ class FileFactory(object):
             path: Path to the file to represent.
 
         Returns:
-            BaseFile: An object that derives from BaseFile
+            :class:`.BaseFile`: An object that derives from BaseFile
         """
         extension = os.path.splitext(path)[1].lower()
         if extension not in self.formats:

@@ -31,7 +31,7 @@ class JsonFile(object):
         """Save changed provenance for this file..
 
         Args:
-            image (BaseFile): Image file that has changed.
+            image (:class:`.BaseFile`): Image file that has changed.
         """
         current = self.all()
         for r in range(len(current)):
@@ -81,6 +81,9 @@ class JsonFile(object):
         """Whether the series that this file is part of has provenance 
         associated with it.
 
+        Args:
+            image (:class:`.BaseFile`): File for which the series is sought.
+
         Returns:
             bool: True if provenance is available for this series.
         """
@@ -127,10 +130,10 @@ class JsonFile(object):
         passed is in. 
 
         Args:
-            image (BaseFile): File that is part of a series.
+            image (:class:`.DicomFile`): File that is part of a series.
 
         Returns:
-            BaseFile: Image object that caries provenance for the series.
+            :class:`.DicomFile`: Image object that caries provenance for the series.
         """
         if image.getSeriesId() is None:
             raise IndexError('Image has no series id.')

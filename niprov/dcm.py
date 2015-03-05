@@ -14,7 +14,7 @@ class DicomFile(BaseFile):
         Inspect the DICOM file attributes.
 
         If a general AcquisitionDateTime attribute is not present, the 
-        SeriesDate and SeriesTime will be used to set the 'acquired' 
+        SeriesDate and SeriesTime will be used to set the :ref:`field-acquired` 
         provenance field.
 
         Returns:

@@ -11,7 +11,7 @@ class ApiTests(unittest.TestCase):
 
     def tearDown(self):
         if os.path.exists(self.dbpath):
-            os.remove(self.dbpath)
+            shutil.move(self.dbpath, self.dbpath.replace('.json','.test.json'))
 
     def test_Discover(self):
         import niprov

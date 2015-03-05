@@ -1,16 +1,17 @@
 import unittest
 from mock import Mock
 from datetime import datetime
-from tests.basefile import BasicInspectionTests
+from tests.basefile import BaseFileTests
 
 
-class ParrecTests(BasicInspectionTests):
+class ParrecTests(BaseFileTests):
 
     def setUp(self):
         super(ParrecTests, self).setUp()
         self.libs = Mock()
         self.setupNibabel()
         from niprov.parrec import ParrecFile
+        self.constructor = ParrecFile
         self.file = ParrecFile(self.path, listener=self.log, 
             filesystem=self.filesys, hasher=self.hasher, dependencies=self.libs,
             serializer=self.json)

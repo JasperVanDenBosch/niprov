@@ -1,16 +1,17 @@
 import unittest
 from mock import Mock
 from datetime import datetime
-from tests.basefile import BasicInspectionTests
+from tests.basefile import BaseFileTests
 
 
-class DicomTests(BasicInspectionTests):
+class DicomTests(BaseFileTests):
 
     def setUp(self):
         super(DicomTests, self).setUp()
         self.libs = Mock()
         self.setupPydicom()
         from niprov.dcm import DicomFile
+        self.constructor = DicomFile
         self.file = DicomFile(self.path, listener=self.log, 
             filesystem=self.filesys, hasher=self.hasher, dependencies=self.libs,
             serializer=self.json)

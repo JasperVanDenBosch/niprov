@@ -80,9 +80,9 @@ class FileFactoryTests(unittest.TestCase):
         inProvenance = {'path':'some.file','aproperty':'avalue'}
         inProvenanceDcm = {'path':'some.dcm','aproperty':'avalue'}
         fileCreated = factory.withProvenance(inProvenance)
-        niprov.files.BaseFile.assert_called_with('some.file', inProvenance)
+        niprov.files.BaseFile.assert_called_with('some.file', provenance=inProvenance)
         fileCreated = factory.withProvenance(inProvenanceDcm)
-        niprov.files.DicomFile.assert_called_with('some.dcm', inProvenanceDcm)
+        niprov.files.DicomFile.assert_called_with('some.dcm', provenance=inProvenanceDcm)
 
 
 

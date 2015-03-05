@@ -1,16 +1,17 @@
 import unittest
 from mock import Mock
 from datetime import datetime
-from tests.basefile import BasicInspectionTests
+from tests.basefile import BaseFileTests
 
 
-class FifTests(BasicInspectionTests):
+class FifTests(BaseFileTests):
 
     def setUp(self):
         super(FifTests, self).setUp()
         self.libs = Mock()
         self.setupMne()
         from niprov.fif import FifFile
+        self.constructor = FifFile
         self.file = FifFile(self.path, listener=self.log, 
             filesystem=self.filesys, hasher=self.hasher, dependencies=self.libs,
             serializer=self.json)

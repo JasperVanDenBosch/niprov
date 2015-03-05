@@ -2,7 +2,7 @@ import unittest
 from mock import Mock
 from datetime import datetime
 
-class BasicInspectionTests(unittest.TestCase):
+class BaseFileTests(unittest.TestCase):
 
     def setUp(self):
         self.log = Mock()
@@ -11,6 +11,7 @@ class BasicInspectionTests(unittest.TestCase):
         self.json = Mock()
         self.path = 'example.abc'
         from niprov.basefile import BaseFile
+        self.constructor = BaseFile
         self.file = BaseFile(self.path, listener=self.log, 
             filesystem=self.filesys, hasher=self.hasher, serializer=self.json)
 
@@ -43,6 +44,11 @@ class BasicInspectionTests(unittest.TestCase):
 
     def test_Series_interface(self):
         self.assertEqual(self.file.getSeriesId(), None)
+
+    def test_Construct_with_provenance(self):
+        prov = {'aprop':'aval'}
+        img = self.constructor(self.path, provenance=prov)
+        self.assertEqual(prov, img.provenance)
 
 
 #ATTACH

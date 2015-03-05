@@ -38,12 +38,12 @@ class FileFactory(object):
         """
         extension = os.path.splitext(path)[1].lower()
         if extension not in self.formats:
-            return BaseFile(path, provenance)
+            return BaseFile(path, provenance=provenance)
         elif not self.libs.hasDependency(self.formats[extension][0]):
             self.listener.missingDependencyForImage(
                 self.formats[extension][0], path)
             return BaseFile(path)
-        return self.formats[extension][1](path, provenance)
+        return self.formats[extension][1](path, provenance=provenance)
 
     def withProvenance(self, provenance):
         return self.locatedAt(provenance['path'], provenance)

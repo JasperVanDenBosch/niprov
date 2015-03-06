@@ -27,12 +27,18 @@ class ParrecTests(BaseFileTests):
         self.assertEqual(out['protocol'], 'T1 SENSE')
         self.assertEqual(out['acquired'], datetime(2014, 8, 5, 11, 27, 34))
 
+
+    def test_Gets_dimensions(self):
+        out = self.file.inspect()
+        self.assertEqual(out['dimensions'], [80,80,10])
+
     def setupNibabel(self):
         img = Mock()
         img.header.general_info = {
             'exam_date':'2014.08.05 / 11:27:34',
             'protocol_name':'T1 SENSE',
             'patient_name':'John Doeish'}
+        img.shape = (80,80,10)
         self.libs.nibabel.load.return_value = img
         self.libs.hasDependency.return_value = True
 

@@ -21,4 +21,5 @@ class ParrecFile(BaseFile):
         acqstring = img.header.general_info['exam_date']
         dateformat = '%Y.%m.%d / %H:%M:%S'
         provenance['acquired'] = datetime.strptime(acqstring, dateformat)
+        provenance['dimensions'] = list(img.shape)
         return provenance

@@ -27,6 +27,10 @@ class FifTests(BaseFileTests):
         self.assertEqual(out['project'], 'worlddom')
         self.assertEqual(out['acquired'], self.acquired)
 
+    def test_Gets_dimensions(self):
+        out = self.file.inspect()
+        self.assertEqual(out['dimensions'], [123, 91])
+
     def setupMne(self):
         TS = 1422522595.76096
         self.acquired = datetime.fromtimestamp(TS)
@@ -37,6 +41,8 @@ class FifTests(BaseFileTests):
             'subject_info':{'first_name':'John','last_name':'Doeish'},
             'nchan':123,
             'sfreq':200}
+        img.first_samp = 10
+        img.last_samp = 100
         self.libs.mne.io.Raw.return_value = img
         self.libs.hasDependency.return_value = True
 

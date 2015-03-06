@@ -21,6 +21,8 @@ Overview of provenance attributes collected:
 +-----------------------------+-------------+-------------+---------+-------+-----+
 | :ref:`field-subject`        |             | inherited   | yes     | yes   | yes |
 +-----------------------------+-------------+-------------+---------+-------+-----+
+| :ref:`field-dimensions`     |             |             | yes     | yes   | yes |
++-----------------------------+-------------+-------------+---------+-------+-----+
 | :ref:`field-project`        |             | inherited   |         |       | yes |
 +-----------------------------+-------------+-------------+---------+-------+-----+
 | :ref:`field-protocol`       |             | inherited   | yes     | yes   |     |
@@ -93,6 +95,13 @@ subject
 -------
 
 The participant whose brain was imaged.
+
+.. _field-dimensions:
+
+dimensions
+----------
+
+Dimensions of the image. Order of dimensions dependent on format; in principle follows (where applicable); in-slice, number of slices, time. E.g. x,z,y,t.
 
 .. _field-project:
 

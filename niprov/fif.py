@@ -16,10 +16,13 @@ class FifFile(BaseFile):
         except:
             self.listener.fileError(self.path)
             return provenance
-        subject = img.info['subject_info']
-        provenance['subject'] = subject['first_name']+' '+subject['last_name']
+        sub = img.info['subject_info']
+        if sub is not None:
+            provenance['subject'] = sub['first_name']+' '+sub['last_name']
         provenance['project'] = img.info['proj_name']
         acqTS = img.info['meas_date'][0]
         provenance['acquired'] = datetime.fromtimestamp(acqTS)
+        T = img.last_samp - img.first_samp + 1
+        provenance['dimensions'] = [img.info['nchan'], T]
         return provenance
 

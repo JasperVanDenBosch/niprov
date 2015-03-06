@@ -16,4 +16,6 @@ class ApiTests(unittest.TestCase):
     def test_Discover(self):
         import niprov
         niprov.discover('testdata')
+        provenance = niprov.report(forFile='testdata/dicom/T1.dcm')
+        self.assertEqual(provenance['dimensions'], [80, 80, 10])
 

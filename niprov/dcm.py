@@ -30,6 +30,14 @@ class DicomFile(BaseFile):
         provenance['protocol'] = img.SeriesDescription
         provenance['seriesuid'] = img.SeriesInstanceUID
         provenance['filesInSeries'] = [self.path]
+        if hasattr(img, 'NumberOfFrames'):
+            provenance['multiframeDicom'] = True
+            provenance['dimensions'] = [int(img.Rows), int(img.Columns), 
+                int(img.NumberOfFrames)]
+        else:
+            provenance['multiframeDicom'] = False
+            provenance['dimensions'] = [int(img.Rows), int(img.Columns), 
+                len(provenance['filesInSeries'])]
         if hasattr(img, 'AcquisitionDateTime'):
             acqstring = img.AcquisitionDateTime.split('.')[0]
             dateformat = '%Y%m%d%H%M%S'
@@ -60,5 +68,11 @@ class DicomFile(BaseFile):
         The file will be stored in provenance in the 'filesInSeries' list.
         """
         self.provenance['filesInSeries'].append(img.path)
+        self._updateNfilesDependentFields()
+
+    def _updateNfilesDependentFields(self):
+        if not self.provenance['multiframeDicom']:
+            nfiles = len(self.provenance['filesInSeries'])
+            self.provenance['dimensions'][2] = nfiles
         
         

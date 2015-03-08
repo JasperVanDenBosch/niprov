@@ -9,6 +9,11 @@ class ExportFactoryTests(unittest.TestCase):
         exporter = ExportFactory().createExporter('html')
         self.assertIsInstance(exporter, HtmlExporter)
 
+    def test_Default(self):
+        from niprov.exporters import ExportFactory, DummyExporter
+        exporter = ExportFactory().createExporter(None)
+        self.assertIsInstance(exporter, DummyExporter)
+
 
 
 

@@ -15,6 +15,9 @@ dd {padding: 10px;}
 % for k, v in provenance.items():
     <dt>${k}</dt><dd>${v}</dd>
 % endfor
+% if 'filesInSeries' in provenance:
+    <dt>number of files</dt><dd>${len(provenance['filesInSeries'])}</dd>
+% endif
 </dl>
 
 </html>

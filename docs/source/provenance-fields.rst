@@ -21,6 +21,8 @@ Overview of provenance attributes collected:
 +-----------------------------+-------------+-------------+---------+-------+-----+
 | :ref:`field-subject`        |             | inherited   | yes     | yes   | yes |
 +-----------------------------+-------------+-------------+---------+-------+-----+
+| :ref:`field-dimensions`     |             |             | yes     | yes   | yes |
++-----------------------------+-------------+-------------+---------+-------+-----+
 | :ref:`field-project`        |             | inherited   |         |       | yes |
 +-----------------------------+-------------+-------------+---------+-------+-----+
 | :ref:`field-protocol`       |             | inherited   | yes     | yes   |     |
@@ -38,6 +40,10 @@ Overview of provenance attributes collected:
 | :ref:`field-args`           |             | yes         |         |       |     |
 +-----------------------------+-------------+-------------+---------+-------+-----+
 | :ref:`field-kwargs`         |             | yes         |         |       |     |
++-----------------------------+-------------+-------------+---------+-------+-----+
+| :ref:`field-seriesuid`      |             |             |         | yes   |     |
++-----------------------------+-------------+-------------+---------+-------+-----+
+| :ref:`field-filesInSeries`  |             |             |         | yes   |     |
 +-----------------------------+-------------+-------------+---------+-------+-----+
 
 
@@ -89,6 +95,13 @@ subject
 -------
 
 The participant whose brain was imaged.
+
+.. _field-dimensions:
+
+dimensions
+----------
+
+Dimensions of the image. Order of dimensions dependent on format; in principle follows (where applicable); in-slice, number of slices, time. E.g. x,z,y,t.
 
 .. _field-project:
 
@@ -153,6 +166,17 @@ kwargs
 
 The keyword arguments passed to a python-based transformation command.
 
+.. _field-seriesuid:
 
+seriesuid
+---------
 
+A unique identifier for files in a series. Corresponds to `SeriesInstanceUID` in the DICOM format.
+
+.. _field-filesInSeries:
+
+filesInSeries
+-------------
+
+A list of paths to files that are part of this series.
 

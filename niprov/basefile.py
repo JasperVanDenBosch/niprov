@@ -7,10 +7,12 @@ from niprov.jsonserializing import JsonSerializer
 
 class BaseFile(object):
 
-    def __init__(self, fpath, listener=Commandline(), 
+    def __init__(self, fpath, provenance=None, listener=Commandline(), 
             filesystem=Filesystem(), hasher=Hasher(), 
             serializer=JsonSerializer()):
         self.path = fpath
+        if provenance:
+            self.provenance = provenance
         self.listener = listener
         self.filesystem = filesystem
         self.hasher = hasher

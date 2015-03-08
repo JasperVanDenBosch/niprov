@@ -42,7 +42,7 @@ report.add_argument('--subject', default=None,
     help='Report on files for this subject.')
 report.add_argument('--html', dest='format', action='store_const',
     const='html', default=None,
-    help='Export provenance as html file(s).')
+    help='Export provenance as html file(s). (default format)')
 
 report = subparsers.add_parser('version',
     help='Show niprov software version.')
@@ -57,6 +57,8 @@ elif args.command == 'record':
 elif args.command == 'add':
     niprov.add(args.new)
 elif args.command == 'report':
+    if args.format is None:
+        args.format = 'html'
     niprov.report(format=args.format, forFile=args.file, forSubject=args.subject)
 elif args.command == 'version':
     import pkg_resources

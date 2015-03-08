@@ -10,7 +10,8 @@ class Commandline(object):
 
     def fileFoundInSeries(self, img, series):
         template = '[provenance] Adding {0} file to series: {1}'
-        print(template.format(ordinal(series.nfiles), series.seriesId))
+        nfiles = len(series.provenance['filesInSeries'])
+        print(template.format(ordinal(nfiles), series.getSeriesId()))
 
     def missingDependencyForImage(self, lib, fpath):
         template = '[provenance] Missing python package "{0}" to read file: {1}'        

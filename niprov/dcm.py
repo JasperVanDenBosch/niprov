@@ -14,7 +14,7 @@ class DicomFile(BaseFile):
         Inspect the DICOM file attributes.
 
         If a general AcquisitionDateTime attribute is not present, the 
-        SeriesDate and SeriesTime will be used to set the 'acquired' 
+        SeriesDate and SeriesTime will be used to set the :ref:`field-acquired` 
         provenance field.
 
         Returns:
@@ -29,6 +29,15 @@ class DicomFile(BaseFile):
         provenance['subject'] = img.PatientID
         provenance['protocol'] = img.SeriesDescription
         provenance['seriesuid'] = img.SeriesInstanceUID
+        provenance['filesInSeries'] = [self.path]
+        if hasattr(img, 'NumberOfFrames'):
+            provenance['multiframeDicom'] = True
+            provenance['dimensions'] = [int(img.Rows), int(img.Columns), 
+                int(img.NumberOfFrames)]
+        else:
+            provenance['multiframeDicom'] = False
+            provenance['dimensions'] = [int(img.Rows), int(img.Columns), 
+                len(provenance['filesInSeries'])]
         if hasattr(img, 'AcquisitionDateTime'):
             acqstring = img.AcquisitionDateTime.split('.')[0]
             dateformat = '%Y%m%d%H%M%S'
@@ -41,7 +50,29 @@ class DicomFile(BaseFile):
         return provenance
 
     def getSeriesId(self):
+        """
+        Return the DICOM "SeriesInstanceUID" that all files in this series 
+        have in common.
+
+        Returns:
+            str: A string uniquely identifying files belonging to this series.
+        """
         if not hasattr(self, 'provenance'):
             self.inspect()
         return self.provenance['seriesuid']
+
+    def addFile(self, img):
+        """
+        Add a single DICOM file object to this series.
+
+        The file will be stored in provenance in the 'filesInSeries' list.
+        """
+        self.provenance['filesInSeries'].append(img.path)
+        self._updateNfilesDependentFields()
+
+    def _updateNfilesDependentFields(self):
+        if not self.provenance['multiframeDicom']:
+            nfiles = len(self.provenance['filesInSeries'])
+            self.provenance['dimensions'][2] = nfiles
+        
         

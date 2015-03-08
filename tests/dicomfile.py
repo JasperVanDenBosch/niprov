@@ -1,16 +1,17 @@
 import unittest
 from mock import Mock
 from datetime import datetime
-from tests.basefile import BasicInspectionTests
+from tests.basefile import BaseFileTests
 
 
-class DicomTests(BasicInspectionTests):
+class DicomTests(BaseFileTests):
 
     def setUp(self):
         super(DicomTests, self).setUp()
         self.libs = Mock()
         self.setupPydicom()
         from niprov.dcm import DicomFile
+        self.constructor = DicomFile
         self.file = DicomFile(self.path, listener=self.log, 
             filesystem=self.filesys, hasher=self.hasher, dependencies=self.libs,
             serializer=self.json)
@@ -37,6 +38,19 @@ class DicomTests(BasicInspectionTests):
 
     def test_Series_interface(self):
         self.assertEqual(self.file.getSeriesId(), self.img.SeriesInstanceUID)
+        self.assertIn(self.file.path, self.file.provenance['filesInSeries'])
+        newFile = Mock()
+        self.file.addFile(newFile)
+        self.assertIn(newFile.path, self.file.provenance['filesInSeries'])
+
+    def test_Gets_dimensions(self):
+        out = self.file.inspect()
+        self.assertEqual(out['dimensions'], [11, 12, 13])
+        del(self.img.NumberOfFrames)
+        out = self.file.inspect()
+        self.assertEqual(out['dimensions'], [11, 12, 1])
+        self.file.addFile(Mock())
+        self.assertEqual(out['dimensions'], [11, 12, 2])
 
     def setupPydicom(self):
         self.img = Mock()
@@ -44,6 +58,9 @@ class DicomTests(BasicInspectionTests):
         self.img.SeriesDescription = 'T1 SENSE'
         self.img.PatientID = 'John Doeish'
         self.img.SeriesInstanceUID = '1.3.46.670589.11.17388.5.0.6340.2011121308140690488'
+        self.img.Rows = 11
+        self.img.Columns = 12
+        self.img.NumberOfFrames = 13
         self.libs.dicom.read_file.return_value = self.img
         self.libs.hasDependency.return_value = True
 

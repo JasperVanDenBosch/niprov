@@ -1,10 +1,10 @@
 import unittest
 from mock import Mock
 from datetime import datetime
-from tests.basefile import BasicInspectionTests
+from tests.basefile import BaseFileTests
 
 
-class NiftiTests(BasicInspectionTests):
+class NiftiTests(BaseFileTests):
 
     def setUp(self):
         super(NiftiTests, self).setUp()
@@ -13,6 +13,7 @@ class NiftiTests(BasicInspectionTests):
         self.hdr = Mock()
         self.setupNibabel()
         from niprov.nifti import NiftiFile
+        self.constructor = NiftiFile
         self.file = NiftiFile(self.path, listener=self.log, 
             filesystem=self.filesys, hasher=self.hasher, dependencies=self.libs,
             serializer=self.json)

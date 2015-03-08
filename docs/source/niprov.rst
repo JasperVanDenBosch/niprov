@@ -8,6 +8,7 @@ Submodules
 
    niprov.adding
    niprov.basefile
+   niprov.capturing
    niprov.commandline
    niprov.dependencies
    niprov.dcm

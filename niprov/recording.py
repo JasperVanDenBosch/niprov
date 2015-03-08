@@ -3,6 +3,7 @@
 from niprov.externals import Externals
 from niprov.logging import log
 from niprov.commandline import Commandline
+from capturing import OutputCapture
 
 
 def record(command, new=None, parents=None, transient=False, args=None, 
@@ -72,9 +73,12 @@ def record(command, new=None, parents=None, transient=False, args=None,
         result = externals.run(command)
         output = result.output
     else:
-        command(*args, **kwargs)
-        output = None
+        with OutputCapture() as captured:
+            command(*args, **kwargs)
+        output = captured.output
 
     # defer the rest to log()
     return log(new, transformation, parents, code=code, transient=transient,
         logtext=output, script=script, provenance=provenance)
+
+

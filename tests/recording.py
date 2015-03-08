@@ -66,10 +66,21 @@ class RecordingTests(unittest.TestCase):
         self.record(myfunc, args=args, kwargs=kwargs, new='new.f', parents=['old.f'])
         myfunc.assert_called_with(*args, **kwargs)
         self.log.assert_called_with(['new.f'],myfunc.func_name,['old.f'], 
-            transient=False, code=None, logtext=None, 
+            transient=False, code=None, logtext='', 
             script=myfunc.func_code.co_filename,
             provenance={'args':args, 'kwargs':kwargs})
-        # myfunc.func_code.co_filename
+
+    def test_Python_code_output_captured(self):
+        def myfunc():
+            print('Hello MyFunc')
+        args = []
+        kwargs = {}
+        self.record(myfunc, args=args, kwargs=kwargs, new='new.f', parents=['old.f'])
+        self.log.assert_called_with(['new.f'],myfunc.func_name,['old.f'], 
+            transient=False, code=None, logtext='Hello MyFunc\n', 
+            script=myfunc.func_code.co_filename,
+            provenance={'args':args, 'kwargs':kwargs})
+
 
         
 

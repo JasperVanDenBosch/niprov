@@ -1,3 +1,4 @@
 .PAR
 .dcm
 .fif
+.cnt

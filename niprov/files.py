@@ -5,6 +5,7 @@ from basefile import BaseFile
 from dcm import DicomFile
 from parrec import ParrecFile
 from fif import FifFile
+from niprov.cnt import NeuroscanFile
 
 
 class FileFactory(object):
@@ -16,6 +17,7 @@ class FileFactory(object):
 
     formats = {'.par':('nibabel', ParrecFile),
                '.dcm':('dicom', DicomFile),
+               '.cnt':(None, NeuroscanFile),
                '.fif':('mne',FifFile)}
 
     def __init__(self, libs=Dependencies(), listener=Commandline()):

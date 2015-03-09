@@ -23,6 +23,8 @@ class Dependencies(object):
 
 
     def hasDependency(self, libname):
+        if libname is None:
+            return True # don't need dependency
         return getattr(self, libname)
 
     

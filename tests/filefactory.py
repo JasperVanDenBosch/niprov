@@ -84,6 +84,13 @@ class FileFactoryTests(unittest.TestCase):
         fileCreated = factory.fromProvenance(inProvenanceDcm)
         niprov.files.DicomFile.assert_called_with('some.dcm', provenance=inProvenanceDcm)
 
+    def test_If_cnt_passed_uses_NeuroscanFile(self):
+        from niprov.files import FileFactory
+        from niprov.cnt import NeuroscanFile
+        factory = FileFactory(libs=self.libs, listener=self.log)
+        fileCreated = factory.locatedAt('example.cnt')
+        self.assertIsInstance(fileCreated, NeuroscanFile)
+
 
 
 

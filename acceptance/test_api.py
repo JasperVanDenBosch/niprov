@@ -18,4 +18,6 @@ class ApiTests(unittest.TestCase):
         niprov.discover('testdata')
         provenance = niprov.report(forFile='testdata/dicom/T1.dcm')
         self.assertEqual(provenance['dimensions'], [80, 80, 10])
+        provenance = niprov.report(forFile='testdata/eeg/stub.cnt')
+#        self.assertEqual(provenance['subject'], 'Jane Doe')
 

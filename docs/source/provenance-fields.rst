@@ -17,11 +17,11 @@ Overview of provenance attributes collected:
 +-----------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-transient`      | yes         | yes         | yes     | yes   | yes | yes |
 +-----------------------------+-------------+-------------+---------+-------+-----+-----+
-| :ref:`field-acquired`       |             | inherited   | yes     | yes   | yes |     |
+| :ref:`field-acquired`       |             | inherited   | yes     | yes   | yes | yes |
 +-----------------------------+-------------+-------------+---------+-------+-----+-----+
-| :ref:`field-subject`        |             | inherited   | yes     | yes   | yes |     |
+| :ref:`field-subject`        |             | inherited   | yes     | yes   | yes | yes |
 +-----------------------------+-------------+-------------+---------+-------+-----+-----+
-| :ref:`field-dimensions`     |             |             | yes     | yes   | yes |     |
+| :ref:`field-dimensions`     |             |             | yes     | yes   | yes | yes |
 +-----------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-project`        |             | inherited   |         |       | yes |     |
 +-----------------------------+-------------+-------------+---------+-------+-----+-----+

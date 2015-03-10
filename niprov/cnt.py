@@ -1,3 +1,4 @@
+from struct import unpack
 from datetime import datetime, time
 from niprov.basefile import BaseFile
 
@@ -15,7 +16,13 @@ class NeuroscanFile(BaseFile):
     def inspect(self):
         provenance = super(NeuroscanFile, self).inspect()
         header = self._read()
-        provenance['subject'] = header.patient
+        provenance['subject'] = header.patient.translate(None, '\x00')
+        nchannels = unpack('H',header.nchannels)[0]
+        numsamples = unpack('I',header.numsamples)[0]
+        provenance['dimensions'] = [nchannels, numsamples]
+        acqstring = (header.date+' '+header.time).translate(None, '\x00')
+        dtformat = '%d/%m/%y %H:%M:%S'
+        provenance['acquired'] = datetime.strptime(acqstring, dtformat)
         return provenance
 
     def _fread(self, fhandle, size, dtype):

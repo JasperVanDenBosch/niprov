@@ -29,12 +29,13 @@ class DicomFile(BaseFile):
             provenance['filesInSeries'] = [self.path]
             if hasattr(img, 'NumberOfFrames'):
                 provenance['multiframeDicom'] = True
-                provenance['dimensions'] = [int(img.Rows), int(img.Columns), 
-                    int(img.NumberOfFrames)]
+                nframes = int(img.NumberOfFrames)
             else:
                 provenance['multiframeDicom'] = False
+                nframes = len(provenance['filesInSeries'])
+            if hasattr(img, 'Rows'):
                 provenance['dimensions'] = [int(img.Rows), int(img.Columns), 
-                    len(provenance['filesInSeries'])]
+                    nframes]
             if hasattr(img, 'AcquisitionDateTime'):
                 acqstring = img.AcquisitionDateTime.split('.')[0]
                 dateformat = '%Y%m%d%H%M%S'
@@ -71,7 +72,7 @@ class DicomFile(BaseFile):
         self._updateNfilesDependentFields()
 
     def _updateNfilesDependentFields(self):
-        if not self.provenance['multiframeDicom']:
+        if (not self.provenance['multiframeDicom']) and 'dimensions' in self.provenance:
             nfiles = len(self.provenance['filesInSeries'])
             self.provenance['dimensions'][2] = nfiles
         

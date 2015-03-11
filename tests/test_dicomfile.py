@@ -52,6 +52,16 @@ class DicomTests(BaseFileTests):
         self.file.addFile(Mock())
         self.assertEqual(out['dimensions'], [11, 12, 2])
 
+    def test_File_without_Rows(self):
+        del(self.img.Rows)
+        out = self.file.inspect()
+        assert not self.log.fileError.called
+        self.assertNotIn('dimensions', out)
+        del(self.img.NumberOfFrames)
+        out = self.file.inspect()
+        self.file.addFile(Mock())
+        assert not self.log.fileError.called
+
     def test_If_error_during_inspection_prints_filename(self):
         attributeErrorImage = MagicMock()
         attributeErrorImage.Rows = PropertyMock(side_effect=AttributeError)

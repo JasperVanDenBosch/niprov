@@ -1,5 +1,5 @@
 import unittest
-from mock import Mock
+from mock import Mock, MagicMock, PropertyMock
 from datetime import datetime
 from tests.basefile import BaseFileTests
 
@@ -51,6 +51,13 @@ class DicomTests(BaseFileTests):
         self.assertEqual(out['dimensions'], [11, 12, 1])
         self.file.addFile(Mock())
         self.assertEqual(out['dimensions'], [11, 12, 2])
+
+    def test_If_error_during_inspection_prints_filename(self):
+        attributeErrorImage = MagicMock()
+        attributeErrorImage.Rows = PropertyMock(side_effect=AttributeError)
+        self.libs.dicom.read_file.return_value = attributeErrorImage
+        out = self.file.inspect()
+        self.log.fileError.assert_called_with(self.path)
 
     def setupPydicom(self):
         self.img = Mock()

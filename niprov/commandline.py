@@ -18,7 +18,9 @@ class Commandline(object):
         print(template.format(lib, fpath))
 
     def fileError(self, fpath):
-        print('[provenance] Error opening file: {0}'.format(fpath))
+        import traceback
+        traceback.print_exc()
+        print('[provenance] Error inspecting file: {0}'.format(fpath))
 
     def interpretedRecording(self, new, transform, parents):
         template = ('[provenance] Recorded the command [{1}] to create [{0}] '+

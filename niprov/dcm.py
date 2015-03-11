@@ -23,31 +23,31 @@ class DicomFile(BaseFile):
         provenance = super(DicomFile, self).inspect()
         try:
             img = self.libs.dicom.read_file(self.path)
+            provenance['subject'] = img.PatientID
+            provenance['protocol'] = img.SeriesDescription
+            provenance['seriesuid'] = img.SeriesInstanceUID
+            provenance['filesInSeries'] = [self.path]
+            if hasattr(img, 'NumberOfFrames'):
+                provenance['multiframeDicom'] = True
+                provenance['dimensions'] = [int(img.Rows), int(img.Columns), 
+                    int(img.NumberOfFrames)]
+            else:
+                provenance['multiframeDicom'] = False
+                provenance['dimensions'] = [int(img.Rows), int(img.Columns), 
+                    len(provenance['filesInSeries'])]
+            if hasattr(img, 'AcquisitionDateTime'):
+                acqstring = img.AcquisitionDateTime.split('.')[0]
+                dateformat = '%Y%m%d%H%M%S'
+                provenance['acquired'] = datetime.strptime(acqstring,dateformat)
+            else:
+                dateformat = '%Y%m%d'
+                acqdate = datetime.strptime(img.SeriesDate, dateformat)
+                acqtime = datetime.fromtimestamp(float(img.SeriesTime)).time()
+                provenance['acquired'] = datetime.combine(acqdate, acqtime) 
+            return provenance
         except:
             self.listener.fileError(self.path)
             return provenance
-        provenance['subject'] = img.PatientID
-        provenance['protocol'] = img.SeriesDescription
-        provenance['seriesuid'] = img.SeriesInstanceUID
-        provenance['filesInSeries'] = [self.path]
-        if hasattr(img, 'NumberOfFrames'):
-            provenance['multiframeDicom'] = True
-            provenance['dimensions'] = [int(img.Rows), int(img.Columns), 
-                int(img.NumberOfFrames)]
-        else:
-            provenance['multiframeDicom'] = False
-            provenance['dimensions'] = [int(img.Rows), int(img.Columns), 
-                len(provenance['filesInSeries'])]
-        if hasattr(img, 'AcquisitionDateTime'):
-            acqstring = img.AcquisitionDateTime.split('.')[0]
-            dateformat = '%Y%m%d%H%M%S'
-            provenance['acquired'] = datetime.strptime(acqstring,dateformat)
-        else:
-            dateformat = '%Y%m%d'
-            acqdate = datetime.strptime(img.SeriesDate, dateformat)
-            acqtime = datetime.fromtimestamp(float(img.SeriesTime)).time()
-            provenance['acquired'] = datetime.combine(acqdate, acqtime) 
-        return provenance
 
     def getSeriesId(self):
         """

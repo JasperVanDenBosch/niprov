@@ -47,6 +47,11 @@ report.add_argument('--html', dest='format', action='store_const',
 report = subparsers.add_parser('version',
     help='Show niprov software version.')
 
+rename = subparsers.add_parser('rename',
+    help='Rename dicom files without extension.')
+rename.add_argument('directory', 
+    help='Directory in which to look for files to rename.')
+
 args = parser.parse_args()
 if args.command == 'discover':
     niprov.discover(args.root)
@@ -63,3 +68,5 @@ elif args.command == 'report':
 elif args.command == 'version':
     import pkg_resources
     print(pkg_resources.get_distribution("niprov").version)
+elif args.command == 'rename':
+    niprov.renameDicoms(args.directory)

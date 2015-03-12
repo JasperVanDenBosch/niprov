@@ -29,6 +29,7 @@ Submodules
    niprov.nifti
    niprov.parrec
    niprov.recording
+   niprov.renaming
    niprov.reporting
 
 

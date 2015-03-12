@@ -33,6 +33,9 @@ class Commandline(object):
     def knownFile(self, fpath):
         print('[provenance] File already known: '+fpath)
 
+    def renamedDicom(self, fpath):
+        print('[provenance] Renamed dicom file: '+fpath)
+
 SUFFIXES = {1: 'st', 2: 'nd', 3: 'rd'}
 def ordinal(num):
     if 10 <= num % 100 <= 20:

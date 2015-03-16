@@ -14,11 +14,7 @@ class NiftiFile(BaseFile):
         Attach the current provenance to the file by injecting it as a 
         json-encoded extension to the nifti header.
         """
-        try:
-            img = self.libs.nibabel.load(self.path)
-        except:
-            self.listener.fileError(self.path)
-            return
+        img = self.libs.nibabel.load(self.path)
         provstr = self.serializer.serialize(self.provenance)
         ext = self.libs.nibabel.nifti1.Nifti1Extension('comment', provstr)
         hdr = img.get_header()

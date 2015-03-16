@@ -22,11 +22,6 @@ class DicomTests(BaseFileTests):
         self.assertEqual(out['protocol'], 'T1 SENSE')
         self.assertEqual(out['acquired'], datetime(2014, 8, 5, 12, 19, 14))
 
-    def test_If_error_during_inspection_tells_listener_and_returns_None(self):
-        self.libs.dicom.read_file.side_effect = ValueError
-        out = self.file.inspect()
-        self.log.fileError.assert_called_with(self.path)
-
     def test_if_doesnt_have_acqDateTime_get_seriesDatetime(self):
         del(self.img.AcquisitionDateTime)
         self.img.SeriesDate = '20120416'
@@ -61,13 +56,6 @@ class DicomTests(BaseFileTests):
         out = self.file.inspect()
         self.file.addFile(Mock())
         assert not self.log.fileError.called
-
-    def test_If_error_during_inspection_prints_filename(self):
-        attributeErrorImage = MagicMock()
-        attributeErrorImage.Rows = PropertyMock(side_effect=AttributeError)
-        self.libs.dicom.read_file.return_value = attributeErrorImage
-        out = self.file.inspect()
-        self.log.fileError.assert_called_with(self.path)
 
     def setupPydicom(self):
         self.img = Mock()

@@ -11,11 +11,7 @@ class FifFile(BaseFile):
 
     def inspect(self):
         provenance = super(FifFile, self).inspect()
-        try:
-            img = self.libs.mne.io.Raw(self.path, allow_maxshield=True)
-        except:
-            self.listener.fileError(self.path)
-            return provenance
+        img = self.libs.mne.io.Raw(self.path, allow_maxshield=True)
         sub = img.info['subject_info']
         if sub is not None:
             provenance['subject'] = sub['first_name']+' '+sub['last_name']

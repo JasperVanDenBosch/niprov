@@ -81,6 +81,12 @@ class DiscoveryTests(unittest.TestCase):
         self.repo.update.assert_called_with(series)
         self.listener.fileFoundInSeries.assert_called_with(self.img2, series)
 
+    def test_If_inspect_raises_exceptions_tells_listener_and_doesnt_save(self):
+        self.img1.inspect.side_effect = IOError
+        self.discover('root')
+        self.assertNotCalledWith(self.repo.add, self.img1.provenance)
+        self.listener.fileError.assert_called_with(self.img1.path)
+
     def assertNotCalledWith(self, m, *args, **kwargs):
         c = mock.call(*args, **kwargs)
         assert c not in m.call_args_list, "Unexpectedly found call: "+str(c)

@@ -16,11 +16,6 @@ class FifTests(BaseFileTests):
             filesystem=self.filesys, hasher=self.hasher, dependencies=self.libs,
             serializer=self.json)
 
-    def test_If_error_during_inspection_tells_listener_and_returns_None(self):
-        self.libs.mne.io.Raw.side_effect = ValueError
-        out = self.file.inspect()
-        self.log.fileError.assert_called_with(self.path)
-
     def test_Gets_basic_info_from_mne_and_returns_it(self):
         out = self.file.inspect()
         self.assertEqual(out['subject'], 'John Doeish')

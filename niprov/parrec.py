@@ -11,11 +11,7 @@ class ParrecFile(BaseFile):
 
     def inspect(self):
         provenance = super(ParrecFile, self).inspect()
-        try:
-            img = self.libs.nibabel.load(self.path)
-        except:
-            self.listener.fileError(self.path)
-            return provenance
+        img = self.libs.nibabel.load(self.path)
         provenance['subject'] = img.header.general_info['patient_name']
         provenance['protocol'] = img.header.general_info['protocol_name']
         acqstring = img.header.general_info['exam_date']

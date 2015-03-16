@@ -16,17 +16,11 @@ class ParrecTests(BaseFileTests):
             filesystem=self.filesys, hasher=self.hasher, dependencies=self.libs,
             serializer=self.json)
 
-    def test_If_error_during_inspection_tells_listener_and_returns_None(self):
-        self.libs.nibabel.load.side_effect = ValueError
-        out = self.file.inspect()
-        self.log.fileError.assert_called_with(self.path)
-
     def test_Gets_basic_info_from_nibabel_and_returns_it(self):
         out = self.file.inspect()
         self.assertEqual(out['subject'], 'John Doeish')
         self.assertEqual(out['protocol'], 'T1 SENSE')
         self.assertEqual(out['acquired'], datetime(2014, 8, 5, 11, 27, 34))
-
 
     def test_Gets_dimensions(self):
         out = self.file.inspect()

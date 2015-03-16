@@ -30,3 +30,9 @@ Register a file to the provenance database without inspecting it:
 
     provenance add 'motionvars.mat'
 
+
+Rename dicom files that don't have an extension (or niprov ignores them):
+::
+
+    provenance rename /raw_data/dicoms/
+

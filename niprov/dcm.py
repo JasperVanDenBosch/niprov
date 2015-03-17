@@ -43,7 +43,8 @@ class DicomFile(BaseFile):
             dateformat = '%Y%m%d'
             acqdate = datetime.strptime(img.SeriesDate, dateformat)
             acqtime = datetime.fromtimestamp(float(img.SeriesTime)).time()
-            provenance['acquired'] = datetime.combine(acqdate, acqtime) 
+            combined = datetime.combine(acqdate, acqtime)
+            provenance['acquired'] = combined.replace(microsecond=0)
         return provenance
 
 

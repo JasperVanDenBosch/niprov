@@ -6,10 +6,6 @@ import pkg_resources as pkgr
 
 class HtmlExporter(object):
 
-    _expectedFields = ['acquired','subject','protocol']
-    _allfields = ['path','parent','acquired','created','subject','project','protocol',
-        'transformation','code','logtext','size','hash']
-
     def __init__(self, filesys, listener, externals):
         self.filesys = filesys
         self.listener = listener

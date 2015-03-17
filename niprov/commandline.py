@@ -38,7 +38,7 @@ class Commandline(object):
 
     def discoveryFinished(self, nnew, nadded, nfailed, ntotal):
         print('\nDiscovered {0} new, added {1} to series, failed to read {2}, '
-            'processed {3} total files.\n'.format(nnew, nadded, nfailed, ntotal))
+           'processed {3} total files.\n'.format(nnew, nadded, nfailed, ntotal))
 
 SUFFIXES = {1: 'st', 2: 'nd', 3: 'rd'}
 def ordinal(num):

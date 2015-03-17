@@ -21,6 +21,12 @@ class ApiTests(unittest.TestCase):
         provenance = niprov.report(forFile='testdata/eeg/stub.cnt')
         self.assertEqual(provenance['subject'], 'Jane Doe')
 
+    def test_Export_terminal(self):
+        import niprov
+        niprov.discover('testdata')
+        niprov.report(format='stdout')
+        niprov.report(format='stdout', forFile='testdata/dicom/T1.dcm')
+
     def test_Rename(self):
         try:
             import niprov

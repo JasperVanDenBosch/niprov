@@ -14,6 +14,12 @@ class ExportFactoryTests(unittest.TestCase):
         exporter = ExportFactory().createExporter(None)
         self.assertIsInstance(exporter, DummyExporter)
 
+    def test_StdOut(self):
+        from niprov.exporters import ExportFactory
+        from niprov.stdout import StandardOutputExporter
+        exporter = ExportFactory().createExporter('stdout')
+        self.assertIsInstance(exporter, StandardOutputExporter)
+
 
 
 

@@ -87,6 +87,16 @@ class DiscoveryTests(unittest.TestCase):
         self.assertNotCalledWith(self.repo.add, self.img1.provenance)
         self.listener.fileError.assert_called_with(self.img1.path)
 
+    def test_Gives_listener_summary(self):
+        self.filesys.walk.return_value = [('root',[],['a','b','c','d','e','f','g','h'])]
+        a,b,c,d,e,f,g,h = [Mock() for x in range(8)]
+        g.inspect.side_effect = IOError
+        self.fileFactory.locatedAt.side_effect = [a,b,c,d,e,f,g,h]
+        self.repo.knows.side_effect = lambda i: True if (i in [a,c]) else False
+        self.repo.knowsSeries.side_effect = lambda i: True if (i in [b,e,f]) else False
+        self.discover('root')
+        self.listener.discoveryFinished.assert_called_with(nnew=2, nadded=3, nfailed=1, ntotal=8)
+
     def assertNotCalledWith(self, m, *args, **kwargs):
         c = mock.call(*args, **kwargs)
         assert c not in m.call_args_list, "Unexpectedly found call: "+str(c)

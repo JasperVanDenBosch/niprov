@@ -21,14 +21,20 @@ def discover(root, filefilter=FileFilter(), filesys=Filesystem(),
         root (str): The top directory in which to look for new files.
     """
     dirs = filesys.walk(root)
+    ntotal = 0
+    nnew = 0
+    nadded = 0
+    nfailed = 0
     for (root, sdirs, files) in dirs:
         for filename in files:
             filepath = os.path.join(root, filename)
             if filefilter.include(filename):
+                ntotal = ntotal + 1
                 img = file.locatedAt(filepath)
                 if repository.knows(img):
                     listener.knownFile(img.path)
                 elif repository.knowsSeries(img):
+                    nadded = nadded + 1
                     series = repository.getSeries(img)
                     series.addFile(img)
                     repository.update(series)
@@ -37,8 +43,12 @@ def discover(root, filefilter=FileFilter(), filesys=Filesystem(),
                     try:
                         img.inspect()
                     except:
+                        nfailed = nfailed + 1
                         listener.fileError(img.path)
                     else:
+                        nnew = nnew + 1
                         repository.add(img.provenance)
                         listener.fileFound(img)
-       
+    listener.discoveryFinished(nnew=nnew, nadded=nadded, nfailed=nfailed, 
+        ntotal=ntotal)
+

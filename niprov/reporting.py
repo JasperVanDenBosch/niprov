@@ -5,7 +5,7 @@ from niprov.exporters import ExportFactory
 from niprov.commandline import Commandline
 
 
-def report(format=None, forFile=None, forSubject=None, 
+def report(medium=None, forFile=None, forSubject=None, 
         repository=JsonFile(), exportFactory=ExportFactory(), 
         listener=Commandline()):
     """Publish or simply return provenance for selected files.
@@ -24,7 +24,7 @@ def report(format=None, forFile=None, forSubject=None,
     Returns:
         Provenance reported. Either a list of dicts, or a dict.
     """
-    exporter = exportFactory.createExporter(format)
+    exporter = exportFactory.createExporter(medium)
     if forFile:
         if not repository.knowsByPath(forFile):
             listener.unknownFile(forFile)

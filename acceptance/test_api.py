@@ -8,10 +8,12 @@ class ApiTests(unittest.TestCase):
         self.dbpath = os.path.expanduser(os.path.join('~','provenance.json'))
         if os.path.exists(self.dbpath):
             shutil.move(self.dbpath, self.dbpath.replace('.json','.backup.json'))
+        os.mkdir('temp')
 
     def tearDown(self):
         if os.path.exists(self.dbpath):
             shutil.move(self.dbpath, self.dbpath.replace('.json','.test.json'))
+        shutil.rmtree('temp')
 
     def test_Discover(self):
         import niprov
@@ -24,8 +26,27 @@ class ApiTests(unittest.TestCase):
     def test_Export_terminal(self):
         import niprov
         niprov.discover('testdata')
-        niprov.report(format='stdout')
-        niprov.report(format='stdout', forFile='testdata/dicom/T1.dcm')
+        niprov.report(medium='stdout')
+        niprov.report(medium='stdout', forFile='testdata/dicom/T1.dcm')
+
+#    def test_Narrative_file(self):
+#        import niprov
+#        niprov.discover('testdata')
+#        text = niprov.report(format='narrative', forFile='testdata/dicom/T1.dcm')
+#        self.assertEqual(text, ("A T2 image was recorded. A spatial smoothing "
+#            "was then applied. A t-test was then applied."))
+
+#    def test_Narrative_pipeline(self):
+#        import niprov
+#        niprov.discover('testdata')
+#        self.touch('temp/smoothed.test')
+#        niprov.log('temp/smoothed.test','spatial smoothing',
+#            'testdata/parrec/T2.PAR')
+#        self.touch('temp/stats.test')
+#        niprov.log('temp/stats.test','t-test','temp/smoothed.test')
+#        text = niprov.report(format='narrative', forPipeline='temp/stats.test')
+#        self.assertEqual(text, ("A T2 image was recorded. A spatial smoothing "
+#            "was then applied. A t-test was then applied."))
 
     def test_Rename(self):
         try:
@@ -50,5 +71,9 @@ class ApiTests(unittest.TestCase):
 
     def clearDicomfiles(self):
         shutil.rmtree('dicomdir')
+
+    def touch(self, path):
+        with open(path,'w') as tempfile:
+            tempfile.write('0')
 
 

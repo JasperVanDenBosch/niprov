@@ -40,12 +40,12 @@ report.add_argument('--file', default=None,
     help='Report on the file at this location.')
 report.add_argument('--subject', default=None,
     help='Report on files for this subject.')
-report.add_argument('--html', dest='format', action='store_const',
+report.add_argument('--html', dest='medium', action='store_const',
     const='html', default=None,
     help='Export provenance as html file(s).')
-report.add_argument('--stdout', dest='format', action='store_const',
+report.add_argument('--stdout', dest='medium', action='store_const',
     const='stdout', default=None,
-    help='Export provenance on the terminal. (default format)')
+    help='Export provenance on the terminal. (default medium)')
 
 report = subparsers.add_parser('version',
     help='Show niprov software version.')
@@ -65,9 +65,9 @@ elif args.command == 'record':
 elif args.command == 'add':
     niprov.add(args.new)
 elif args.command == 'report':
-    if args.format is None:
-        args.format = 'stdout'
-    niprov.report(format=args.format, forFile=args.file, forSubject=args.subject)
+    if args.medium is None:
+        args.medium = 'stdout'
+    niprov.report(medium=args.medium, forFile=args.file, forSubject=args.subject)
 elif args.command == 'version':
     import pkg_resources
     print(pkg_resources.get_distribution("niprov").version)

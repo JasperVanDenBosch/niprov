@@ -44,7 +44,7 @@ class ReportingTests(unittest.TestCase):
         repo = Mock()
         niprov.report(repository=repo, exportFactory=factory)
         factory.createExporter.assert_any_call(None)
-        niprov.report(format='html', repository=repo, exportFactory=factory)
+        niprov.report(medium='html', repository=repo, exportFactory=factory)
         factory.createExporter.assert_any_call('html')
 
     def test_Passes_provenance_to_exporter(self):

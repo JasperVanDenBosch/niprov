@@ -33,9 +33,8 @@ class ApiTests(unittest.TestCase):
         import niprov
         niprov.discover('testdata')
         text = niprov.report(form='narrative', forFile='testdata/dicom/T1.dcm')
-        self.assertEqual(text, ("This is a T1 image.") )
-
-# It was recorded August 5, " "2014. The participant's name is 05aug14test. It is 155KB in size."))
+        self.assertEqual(text, ("This is a T1 image. It was recorded August 5, " 
+            "2014. The participant's name is 05aug14test. It is 158KB in size. "))
 
 #    def test_Narrative_pipeline(self):
 #        import niprov

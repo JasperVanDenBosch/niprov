@@ -1,9 +1,10 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 import copy
+from niprov.exporter import BaseExporter
 
 
-class StandardOutputExporter(object):
+class StandardOutputExporter(BaseExporter):
 
     _expectedFields = ['acquired','subject','protocol','dimensions','path']
 
@@ -19,7 +20,7 @@ class StandardOutputExporter(object):
             self.exportSummary(record)
         print('\n')
 
-    def export(self, provenance):
+    def exportSingle(self, provenance):
         """Publish the provenance for one image on the commandline.
 
         Args:

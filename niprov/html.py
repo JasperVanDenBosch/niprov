@@ -2,9 +2,10 @@
 # -*- coding: UTF-8 -*-
 from mako.lookup import TemplateLookup
 import pkg_resources as pkgr
+from niprov.exporter import BaseExporter
 
 
-class HtmlExporter(object):
+class HtmlExporter(BaseExporter):
 
     def __init__(self, filesys, listener, externals):
         self.filesys = filesys
@@ -24,7 +25,7 @@ class HtmlExporter(object):
             htmlfile.write(template.render(provenance=provenance))
         self.externals.run(['firefox', 'provenance.html'])
 
-    def export(self, provenance):
+    def exportSingle(self, provenance):
         """Publish the provenance for one image in an html file and display in Firefox.
 
         Args:

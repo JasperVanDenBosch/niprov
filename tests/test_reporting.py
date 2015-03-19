@@ -17,8 +17,8 @@ class ReportingTests(unittest.TestCase):
 
     def test_Without_specifics_returns_all_files(self):
         out = self.report()
-        self.exporter.exportList.assert_called_with(self.repo.all())
-        self.assertEqual(out, self.exporter.exportList())
+        self.exporter.export.assert_called_with(self.repo.all())
+        self.assertEqual(out, self.exporter.export())
 
     def test_Can_report_on_one_file_specifically(self):
         out = self.report(forFile='afile.f')
@@ -27,9 +27,9 @@ class ReportingTests(unittest.TestCase):
 
     def test_Can_report_on_all_files_for_subject(self):
         out = self.report(forSubject='Jane Doe')
-        self.exporter.exportList.assert_called_with(
+        self.exporter.export.assert_called_with(
             self.repo.bySubject('Jane Doe'))
-        self.assertEqual(out, self.exporter.exportList())
+        self.assertEqual(out, self.exporter.export())
 
     def test_Obtains_exporter_from_factorye(self):
         import niprov
@@ -45,9 +45,9 @@ class ReportingTests(unittest.TestCase):
         factory = Mock()
         repo = Mock()
         niprov.report(repository=repo, exportFactory=factory)
-        factory.createExporter().exportList.assert_any_call(repo.all())
+        factory.createExporter().export.assert_any_call(repo.all())
         niprov.report(forSubject='Jane', repository=repo, exportFactory=factory)
-        factory.createExporter().exportList.assert_any_call(repo.bySubject())
+        factory.createExporter().export.assert_any_call(repo.bySubject())
 
     def test_Passes_single_item_of_provenance_to_exporter(self):
         import niprov

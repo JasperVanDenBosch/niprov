@@ -31,11 +31,9 @@ def report(medium=None, form=None, forFile=None, forSubject=None,
             listener.unknownFile(forFile)
             return
         provenance = repository.byPath(forFile)
-        return exporter.export(provenance)
     elif forSubject:
         provenance = repository.bySubject(forSubject)
-        return exporter.exportList(provenance)
     else:
         provenance = repository.all()
-        return exporter.exportList(provenance)
+    return exporter.export(provenance)
 

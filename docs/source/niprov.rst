@@ -11,9 +11,11 @@ Submodules
    niprov.capturing
    niprov.cnt
    niprov.commandline
-   niprov.dependencies
    niprov.dcm
+   niprov.dependencies
+   niprov.directexporter
    niprov.discovery
+   niprov.exporter
    niprov.exporters
    niprov.externals
    niprov.fif
@@ -26,11 +28,13 @@ Submodules
    niprov.jsonfile
    niprov.jsonserializing
    niprov.logging
+   niprov.narrator
    niprov.nifti
    niprov.parrec
    niprov.recording
    niprov.renaming
    niprov.reporting
+   niprov.stdout
 
 
 

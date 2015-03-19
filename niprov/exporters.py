@@ -4,6 +4,7 @@ from niprov.filesystem import Filesystem
 from niprov.commandline import Commandline
 from niprov.html import HtmlExporter
 from niprov.stdout import StandardOutputExporter
+from niprov.directexporter import DirectExporter
 from niprov.externals import Externals
 
 
@@ -21,7 +22,7 @@ class ExportFactory(object):
             format (str): One of 'stdout' or 'html' or None.
         """
         if format is None:
-            return DummyExporter()
+            return DirectExporter()
         elif format == 'html':
             return HtmlExporter(self.filesys, self.listener, Externals())
         elif format == 'stdout':
@@ -29,14 +30,3 @@ class ExportFactory(object):
         else:
             raise ValueError('Unknown format: '+str(format))
 
-
-class DummyExporter(object):
-
-    def __init__(self, **kwargs):
-        pass
-
-    def exportList(self, provenance):
-        pass
-
-    def export(self, provenance):
-        pass

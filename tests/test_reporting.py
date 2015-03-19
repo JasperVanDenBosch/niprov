@@ -7,36 +7,29 @@ class ReportingTests(unittest.TestCase):
         self.factory = Mock()
         self.repo = Mock()
         self.listener = Mock()
+        self.exporter = Mock()
+        self.factory.createExporter.return_value = self.exporter
 
     def report(self, *args, **kwargs):
         import niprov
-        niprov.report(*args, repository=self.repo, exportFactory=self.factory,
+        return niprov.report(*args, repository=self.repo, exportFactory=self.factory,
             listener=self.listener, **kwargs)
 
     def test_Without_specifics_returns_all_files(self):
-        import niprov
-        log = Mock()
-        repo = Mock()
-        out = niprov.report(repository=repo, exportFactory=Mock())
-        self.assertEqual(out, repo.all())
+        out = self.report()
+        self.exporter.exportList.assert_called_with(self.repo.all())
+        self.assertEqual(out, self.exporter.exportList())
 
     def test_Can_report_on_one_file_specifically(self):
-        import niprov
-        log = Mock()
-        repo = Mock()
-        repo.byPath.side_effect = lambda x: ('prov for', x)
-        out = niprov.report(forFile='afile.f', repository=repo, 
-            exportFactory=Mock())
-        self.assertEqual(out, repo.byPath('afile.f'))
+        out = self.report(forFile='afile.f')
+        self.exporter.export.assert_called_with(self.repo.byPath('afile.f'))
+        self.assertEqual(out, self.exporter.export())
 
     def test_Can_report_on_all_files_for_subject(self):
-        import niprov
-        log = Mock()
-        repo = Mock()
-        repo.bySubject.side_effect = lambda x: ('prov for', x)
-        out = niprov.report(forSubject='Jane Doe', repository=repo, 
-            exportFactory=Mock())
-        self.assertEqual(out, repo.bySubject('Jane Doe'))
+        out = self.report(forSubject='Jane Doe')
+        self.exporter.exportList.assert_called_with(
+            self.repo.bySubject('Jane Doe'))
+        self.assertEqual(out, self.exporter.exportList())
 
     def test_Obtains_exporter_from_factorye(self):
         import niprov

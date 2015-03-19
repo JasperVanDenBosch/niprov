@@ -5,7 +5,7 @@ from niprov.exporters import ExportFactory
 from niprov.commandline import Commandline
 
 
-def report(medium=None, forFile=None, forSubject=None, 
+def report(medium=None, form=None, forFile=None, forSubject=None, 
         repository=JsonFile(), exportFactory=ExportFactory(), 
         listener=Commandline()):
     """Publish or simply return provenance for selected files.
@@ -16,8 +16,9 @@ def report(medium=None, forFile=None, forSubject=None,
     files is reported.
 
     Args:
-        format (str): The format in which to publish the provenance. 
-            Currently only 'html'.
+        medium (str): The medium in which to publish the provenance. 
+            One of 'html' (save as html and open in firefox),
+                'stdout' (print the provenance to the terminal)
         forFile (str): Select one file based on this path.
         forSubject (str): Select files regarding this subject.
 
@@ -30,11 +31,11 @@ def report(medium=None, forFile=None, forSubject=None,
             listener.unknownFile(forFile)
             return
         provenance = repository.byPath(forFile)
-        exporter.export(provenance)
+        return exporter.export(provenance)
     elif forSubject:
         provenance = repository.bySubject(forSubject)
-        exporter.exportList(provenance)
+        return exporter.exportList(provenance)
     else:
         provenance = repository.all()
-        exporter.exportList(provenance)
-    return provenance
+        return exporter.exportList(provenance)
+

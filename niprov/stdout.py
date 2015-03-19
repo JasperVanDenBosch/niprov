@@ -20,14 +20,14 @@ class StandardOutputExporter(BaseExporter):
             self.exportSummary(record)
         print('\n')
 
-    def exportSingle(self, provenance):
+    def exportSingle(self, img):
         """Publish the provenance for one image on the commandline.
 
         Args:
             provenance (dict): Provenance for one image file
         """
         print('\n')
-        for field, value in provenance.items():
+        for field, value in img.provenance.items():
             print('{0:24} {1}'.format(field+':', str(value)))
         print('\n')
 

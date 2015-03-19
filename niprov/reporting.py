@@ -25,7 +25,7 @@ def report(medium=None, form=None, forFile=None, forSubject=None,
     Returns:
         Provenance reported. Either a list of dicts, or a dict.
     """
-    exporter = exportFactory.createExporter(medium)
+    exporter = exportFactory.createExporter(medium, form)
     if forFile:
         if not repository.knowsByPath(forFile):
             listener.unknownFile(forFile)

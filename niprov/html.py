@@ -7,7 +7,8 @@ from niprov.exporter import BaseExporter
 
 class HtmlExporter(BaseExporter):
 
-    def __init__(self, filesys, listener, externals):
+    def __init__(self, form, filesys, listener, externals, **kwargs):
+        super(HtmlExporter, self).__init__(form, **kwargs)
         self.filesys = filesys
         self.listener = listener
         self.externals = externals
@@ -25,7 +26,7 @@ class HtmlExporter(BaseExporter):
             htmlfile.write(template.render(provenance=provenance))
         self.externals.run(['firefox', 'provenance.html'])
 
-    def exportSingle(self, provenance):
+    def exportSingle(self, img):
         """Publish the provenance for one image in an html file and display in Firefox.
 
         Args:
@@ -33,6 +34,6 @@ class HtmlExporter(BaseExporter):
         """
         template = self.templates.get_template('single.mako')
         with self.filesys.open('provenance.html','w') as htmlfile:
-            htmlfile.write(template.render(provenance=provenance))
+            htmlfile.write(template.render(provenance=img.provenance))
         self.externals.run(['firefox', 'provenance.html'])
 

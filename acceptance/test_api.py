@@ -18,10 +18,10 @@ class ApiTests(unittest.TestCase):
     def test_Discover(self):
         import niprov
         niprov.discover('testdata')
-        provenance = niprov.report(forFile='testdata/dicom/T1.dcm')
-        self.assertEqual(provenance['dimensions'], [80, 80, 10])
-        provenance = niprov.report(forFile='testdata/eeg/stub.cnt')
-        self.assertEqual(provenance['subject'], 'Jane Doe')
+        img = niprov.report(forFile='testdata/dicom/T1.dcm')
+        self.assertEqual(img.provenance['dimensions'], [80, 80, 10])
+        img = niprov.report(forFile='testdata/eeg/stub.cnt')
+        self.assertEqual(img.provenance['subject'], 'Jane Doe')
 
     def test_Export_terminal(self):
         import niprov
@@ -29,12 +29,13 @@ class ApiTests(unittest.TestCase):
         niprov.report(medium='stdout')
         niprov.report(medium='stdout', forFile='testdata/dicom/T1.dcm')
 
-#    def test_Narrative_file(self):
-#        import niprov
-#        niprov.discover('testdata')
-#        text = niprov.report(form='narrative', forFile='testdata/dicom/T1.dcm')
-#        self.assertEqual(text, ("This is a T1 image. It was recorded August 5, "
-#            "2014. The participant's name is 05aug14test. It is 155KB in size."))
+    def test_Narrative_file(self):
+        import niprov
+        niprov.discover('testdata')
+        text = niprov.report(form='narrative', forFile='testdata/dicom/T1.dcm')
+        self.assertEqual(text, ("This is a T1 image.") )
+
+# It was recorded August 5, " "2014. The participant's name is 05aug14test. It is 155KB in size."))
 
 #    def test_Narrative_pipeline(self):
 #        import niprov

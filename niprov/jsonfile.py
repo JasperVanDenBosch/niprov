@@ -107,9 +107,9 @@ class JsonFile(object):
         """
         for record in self.all():
             if record['path'] == path:
-                return record
+                return self.factory.fromProvenance(record)
             elif 'filesInSeries' in record and path in record['filesInSeries']:
-                return record
+                return self.factory.fromProvenance(record)
         else:
             raise IndexError('No file with that path known.')
 

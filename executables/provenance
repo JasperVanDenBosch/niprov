@@ -46,6 +46,9 @@ report.add_argument('--html', dest='medium', action='store_const',
 report.add_argument('--stdout', dest='medium', action='store_const',
     const='stdout', default=None,
     help='Export provenance on the terminal. (default medium)')
+report.add_argument('--narrative', dest='form', action='store_const',
+    const='narrative', default=None,
+    help='Provenance in story form instead of key-value pairs.')
 
 report = subparsers.add_parser('version',
     help='Show niprov software version.')
@@ -67,7 +70,8 @@ elif args.command == 'add':
 elif args.command == 'report':
     if args.medium is None:
         args.medium = 'stdout'
-    niprov.report(medium=args.medium, forFile=args.file, forSubject=args.subject)
+    niprov.report(medium=args.medium, form=args.form, forFile=args.file, 
+        forSubject=args.subject)
 elif args.command == 'version':
     import pkg_resources
     print(pkg_resources.get_distribution("niprov").version)

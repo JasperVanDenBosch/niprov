@@ -19,5 +19,13 @@ class BaseExporterTests(unittest.TestCase):
         exp.exportSingle.assert_called_with(sentinel.p1)
         self.assertEqual(out, exp.exportSingle())
 
+    def test_If_created_with_narrative_calls_exportNarrative(self):
+        from niprov.exporter import BaseExporter
+        exp = BaseExporter(form='narrative')
+        exp.exportNarrative = Mock()
+        out = exp.export(sentinel.p1)
+        exp.exportNarrative.assert_called_with(sentinel.p1)
+        self.assertEqual(out, exp.exportNarrative())
+
 
 

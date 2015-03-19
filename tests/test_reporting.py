@@ -31,14 +31,16 @@ class ReportingTests(unittest.TestCase):
             self.repo.bySubject('Jane Doe'))
         self.assertEqual(out, self.exporter.export())
 
-    def test_Obtains_exporter_from_factorye(self):
+    def test_Obtains_exporter_from_factory(self):
         import niprov
         factory = Mock()
         repo = Mock()
         niprov.report(repository=repo, exportFactory=factory)
-        factory.createExporter.assert_any_call(None)
+        factory.createExporter.assert_any_call(None, None)
         niprov.report(medium='html', repository=repo, exportFactory=factory)
-        factory.createExporter.assert_any_call('html')
+        factory.createExporter.assert_any_call('html', None)
+        niprov.report(form='narrative', repository=repo, exportFactory=factory)
+        factory.createExporter.assert_any_call(None, 'narrative')
 
     def test_Passes_provenance_to_exporter(self):
         import niprov

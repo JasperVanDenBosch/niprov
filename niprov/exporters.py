@@ -14,19 +14,20 @@ class ExportFactory(object):
         self.listener = Commandline()
         self.filesys = Filesystem()
 
-    def createExporter(self, format):
+    def createExporter(self, medium, form):
         """
-        Return an object that can publish provenance in a specific format.
+        Return an object that can publish provenance in a specific medium.
 
         Args:
-            format (str): One of 'stdout' or 'html' or None.
+            medium (str): One of 'stdout' or 'html' or None.
+            form (str): One of 'narrative' or None
         """
-        if format is None:
-            return DirectExporter()
-        elif format == 'html':
-            return HtmlExporter(self.filesys, self.listener, Externals())
-        elif format == 'stdout':
-            return StandardOutputExporter()
+        if medium is None:
+            return DirectExporter(form)
+        elif medium == 'html':
+            return HtmlExporter(form, self.filesys, self.listener, Externals())
+        elif medium == 'stdout':
+            return StandardOutputExporter(form)
         else:
-            raise ValueError('Unknown format: '+str(format))
+            raise ValueError('Unknown medium: '+str(medium))
 

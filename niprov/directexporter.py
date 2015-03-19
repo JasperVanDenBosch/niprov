@@ -1,16 +1,17 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+from niprov.exporter import BaseExporter
 
 
-class DirectExporter(object):
+class DirectExporter(BaseExporter):
     """Dummy  Exporter class which simply returns the provenance passed.
     """
-
-    def __init__(self, **kwargs):
-        pass
 
     def exportList(self, provenance):
         return provenance
 
-    def export(self, provenance):
+    def exportSingle(self, provenance):
         return provenance
+
+    def exportNarrative(self, provenance):
+        return self.narrator.narrate(provenance)

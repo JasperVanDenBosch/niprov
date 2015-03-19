@@ -5,6 +5,7 @@ from mock import Mock
 from datetime import datetime
 import json
 import random
+import copy
 
 
 class StorageTests(unittest.TestCase):
@@ -23,7 +24,8 @@ class StorageTests(unittest.TestCase):
         repo2 = JsonFile(factory=self.fileFactory)
         repo2.datafile = self.templocation
         out = repo2.byPath(provenance['path'])
-        self.assertEqual(out, provenance)
+        self.fileFactory.fromProvenance.assert_called_with(provenance)
+        self.assertEqual(out, self.fileFactory.fromProvenance())
 
     def test_If_file_doesnt_exist_all_returns_empty_list(self):
         from niprov.jsonfile import JsonFile
@@ -125,9 +127,7 @@ class StorageTests(unittest.TestCase):
         repo.datafile = self.templocation
         provenance = self.sampleProvenanceRecord()
         repo.add(provenance)
-        repo2 = JsonFile(factory=self.fileFactory)
-        repo2.datafile = self.templocation
-        intermediate = repo2.byPath(provenance['path'])
+        intermediate = copy.deepcopy(provenance)
         intermediate['newfield'] = 'newval'
         intermediate['subject'] = 'Jane Newman'
         repo3 = JsonFile(factory=self.fileFactory)
@@ -139,7 +139,7 @@ class StorageTests(unittest.TestCase):
         repo4 = JsonFile(factory=self.fileFactory)
         repo4.datafile = self.templocation
         out = repo4.byPath(provenance['path'])
-        self.assertEqual(out, intermediate)
+        self.fileFactory.fromProvenance.assert_called_with( intermediate)
 
     def test_ByPath_also_returns_series_if_filepath_among_it(self):
         from niprov.jsonfile import JsonFile
@@ -151,7 +151,7 @@ class StorageTests(unittest.TestCase):
         repo2 = JsonFile(factory=self.fileFactory)
         repo2.datafile = self.templocation
         out = repo2.byPath('sfile1.f')
-        self.assertEqual(out, provenance)
+        self.fileFactory.fromProvenance.assert_called_with(provenance)
         with self.assertRaises(IndexError):
             repo2.byPath('sfile3.f')
 

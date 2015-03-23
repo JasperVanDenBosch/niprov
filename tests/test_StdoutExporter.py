@@ -15,5 +15,5 @@ class StdoutExporterTests(TestCase):
                 narrator=narrator)
             out = exporter.exportNarrative(sentinel.one)
             narrator.narrate.assert_called_with(sentinel.one)
-            mprint.assert_called_with(narrator.narrate())
+            mprint.assert_any_call(narrator.narrate())
 

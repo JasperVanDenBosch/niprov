@@ -17,21 +17,29 @@ log = subparsers.add_parser('log',
     'transformation of existing files. Multiple new and parent files allowed.')
 log.add_argument('transformation', 
     help='Name of the transformation applied.')
-log.add_argument('--new','-n', nargs='+',
+log.add_argument('--new','-n', nargs='+', required=True,
     help='Path to a resulting image.')
-log.add_argument('--parent','-p', nargs='+',
+log.add_argument('--parent','-p', nargs='+', required=True,
     help='Path to an image that was the basis of the transformation.')
-log.add_argument('--code', default=None,
-    help='Code used to generate the new image.')
 log.add_argument('--transient', action='store_const', const=True, default=False, 
     help='Indicate that the file may not exist now or may be temporary.')
+log.add_argument('--code', default=None,
+    help='Code used to generate the new image.')
+log.add_argument('--logtext', default=None,
+    help='Feedback printed during transformation.')
+log.add_argument('--script', default=None,
+    help='Path to the code file used for the transformation.')
 
 record = subparsers.add_parser('record',
     help='Run shell commands and log provenance for files created by it.')
-record.add_argument('code', nargs=argparse.REMAINDER,
-    help='Shell commands that result in a new image.')
 record.add_argument('--transient', action='store_const', const=True, default=False, 
     help='Indicate that the file may not exist now or may be temporary.')
+record.add_argument('--new','-n', nargs='*',
+    help='Path to a resulting image.')
+record.add_argument('--parent','-p', nargs='*',
+    help='Path to an image that was the basis of the transformation.')
+record.add_argument('code', nargs=argparse.REMAINDER,
+    help='Shell commands that result in a new image.')
 
 add = subparsers.add_parser('add', 
     help='Simply register the file for future reference.')
@@ -69,9 +77,10 @@ if args.command == 'discover':
     niprov.discover(args.root)
 elif args.command == 'log':
     niprov.log(args.new, args.transformation, args.parent, code=args.code, 
-        transient=args.transient)
+        transient=args.transient, logtext=args.logtext, script=args.script)
 elif args.command == 'record':
-    niprov.record(args.code, transient=args.transient)
+    niprov.record(args.code, new=args.new, parents=args.parent, 
+        transient=args.transient)
 elif args.command == 'add':
     niprov.add(args.new, transient=args.transient)
 elif args.command == 'report':

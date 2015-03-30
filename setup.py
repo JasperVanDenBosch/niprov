@@ -10,7 +10,7 @@ except (IOError, ImportError):
    README = ''
 
 setup(name='niprov',
-      version='0.1.post4',
+      version='0.1.post5',
       author='Jasper J.F. van den Bosch',
       author_email='japsai@gmail.com',
       description='provenance for neuroimaging data',

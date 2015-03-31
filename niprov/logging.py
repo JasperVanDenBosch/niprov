@@ -63,7 +63,7 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     if logtext:
         commonProvenance['logtext'] = logtext
     if repository.knowsByPath(parents[0]):
-        parentProvenance = repository.byPath(parents[0])
+        parentProvenance = repository.byPath(parents[0]).provenance
         for field in ['acquired','subject','protocol']:
             if field in parentProvenance:
                 commonProvenance[field] = parentProvenance[field]

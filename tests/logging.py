@@ -8,8 +8,9 @@ class loggingTests(unittest.TestCase):
     def setUp(self):
         self.repo = Mock()
         self.repo.knowsByPath.return_value = True
-        self.repo.byPath.return_value = {'acquired':dt.now(),'subject':'JD',
-            'protocol':'X'}
+        img = Mock()
+        img.provenance = {'acquired':dt.now(),'subject':'JD', 'protocol':'X'}
+        self.repo.byPath.return_value = img
         self.filesys = Mock()
         self.listener = Mock()
 
@@ -35,7 +36,9 @@ class loggingTests(unittest.TestCase):
         parent = '/p/f1'
         parents = [parent]
         parentProv = {'acquired':dt.now(),'subject':'JB','protocol':'T3'}
-        self.repo.byPath.side_effect = lambda x: {parent:parentProv}[x]
+        parentImg = Mock()
+        parentImg.provenance = parentProv
+        self.repo.byPath.side_effect = lambda x: {parent:parentImg}[x]
         provenance = self.log('new', 'trans', parents)
         self.assertEqual(provenance['acquired'], parentProv['acquired'])
         self.assertEqual(provenance['subject'], parentProv['subject'])
@@ -108,7 +111,9 @@ class loggingTests(unittest.TestCase):
         assert not self.repo.add.called
 
     def test_Doesnt_complain_if_parent_is_missing_basic_fields(self):
-        self.repo.byPath.return_value = {'acquired':dt.now()} #missing subject
+        img = Mock()
+        img.provenance = {'acquired':dt.now()} #missing subject
+        self.repo.byPath.return_value = img
         provenance = self.log('new', 'trans', ['/p/f1parent'])
         self.assertNotIn('subject', provenance)
 

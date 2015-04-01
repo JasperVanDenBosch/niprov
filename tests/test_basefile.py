@@ -50,6 +50,14 @@ class BaseFileTests(unittest.TestCase):
         img = self.constructor(self.path, provenance=prov)
         self.assertEqual(prov, img.provenance)
 
+    def test_Inspect_leaves_existing_fields_updates_others(self):
+        prov = {'aprop':'aval','size':9876}
+        img = self.constructor(self.path, provenance=prov, 
+            filesystem=self.filesys, hasher=self.hasher)
+        img.inspect()
+        self.assertEqual(img.provenance['aprop'], 'aval')
+        self.assertEqual(img.provenance['size'], self.filesys.getsize(self.path))
+
 
 #ATTACH
 # check if we have provenance to attach

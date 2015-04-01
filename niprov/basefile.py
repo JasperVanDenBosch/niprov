@@ -13,19 +13,18 @@ class BaseFile(object):
         self.path = fpath
         if provenance:
             self.provenance = provenance
+        else:
+            self.provenance = {'path':self.path}
         self.listener = listener
         self.filesystem = filesystem
         self.hasher = hasher
         self.serializer = serializer
 
     def inspect(self):
-        provenance = {}
-        provenance['path'] = self.path
-        provenance['size'] = self.filesystem.getsize(self.path)
-        provenance['created'] = self.filesystem.getctime(self.path)
-        provenance['hash'] = self.hasher.digest(self.path)
-        self.provenance = provenance
-        return provenance
+        self.provenance['size'] = self.filesystem.getsize(self.path)
+        self.provenance['created'] = self.filesystem.getctime(self.path)
+        self.provenance['hash'] = self.hasher.digest(self.path)
+        return self.provenance
 
     def attach(self):
         """

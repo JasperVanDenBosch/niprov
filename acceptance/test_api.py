@@ -29,6 +29,16 @@ class ApiTests(unittest.TestCase):
         niprov.report(medium='stdout')
         niprov.report(medium='stdout', forFile='testdata/dicom/T1.dcm')
 
+    def test_Log(self):
+        import niprov
+        niprov.discover('testdata')
+        newfile = 'temp/smoothed.test'
+        self.touch(newfile)
+        niprov.log(newfile, 'test', 'testdata/eeg/stub.cnt')
+        img = niprov.report(forFile=newfile)
+        self.assertEqual(img.provenance['subject'], 'Jane Doe')
+        self.assertEqual(img.provenance['size'], os.path.getsize(newfile))
+
     def test_Narrative_file(self):
         import niprov
         niprov.discover('testdata')

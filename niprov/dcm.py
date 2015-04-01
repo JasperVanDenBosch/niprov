@@ -20,32 +20,32 @@ class DicomFile(BaseFile):
         Returns:
             dict: Provenance for the inspected file.
         """
-        provenance = super(DicomFile, self).inspect()
+        super(DicomFile, self).inspect()
         img = self.libs.dicom.read_file(self.path)
-        provenance['subject'] = img.PatientID
-        provenance['protocol'] = img.SeriesDescription
-        provenance['seriesuid'] = img.SeriesInstanceUID
-        provenance['filesInSeries'] = [self.path]
+        self.provenance['subject'] = img.PatientID
+        self.provenance['protocol'] = img.SeriesDescription
+        self.provenance['seriesuid'] = img.SeriesInstanceUID
+        self.provenance['filesInSeries'] = [self.path]
         if hasattr(img, 'NumberOfFrames'):
-            provenance['multiframeDicom'] = True
+            self.provenance['multiframeDicom'] = True
             nframes = int(img.NumberOfFrames)
         else:
-            provenance['multiframeDicom'] = False
-            nframes = len(provenance['filesInSeries'])
+            self.provenance['multiframeDicom'] = False
+            nframes = len(self.provenance['filesInSeries'])
         if hasattr(img, 'Rows'):
-            provenance['dimensions'] = [int(img.Rows), int(img.Columns), 
+            self.provenance['dimensions'] = [int(img.Rows), int(img.Columns), 
                 nframes]
         if hasattr(img, 'AcquisitionDateTime'):
             acqstring = img.AcquisitionDateTime.split('.')[0]
             dateformat = '%Y%m%d%H%M%S'
-            provenance['acquired'] = datetime.strptime(acqstring,dateformat)
+            self.provenance['acquired'] = datetime.strptime(acqstring,dateformat)
         else:
             dateformat = '%Y%m%d'
             acqdate = datetime.strptime(img.SeriesDate, dateformat)
             acqtime = datetime.fromtimestamp(float(img.SeriesTime)).time()
             combined = datetime.combine(acqdate, acqtime)
-            provenance['acquired'] = combined.replace(microsecond=0)
-        return provenance
+            self.provenance['acquired'] = combined.replace(microsecond=0)
+        return self.provenance
 
 
     def getSeriesId(self):
@@ -56,7 +56,7 @@ class DicomFile(BaseFile):
         Returns:
             str: A string uniquely identifying files belonging to this series.
         """
-        if not hasattr(self, 'provenance'):
+        if not 'seriesuid' in self.provenance:
             self.inspect()
         return self.provenance['seriesuid']
 

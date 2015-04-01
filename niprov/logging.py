@@ -3,13 +3,14 @@
 from niprov.jsonfile import JsonFile
 from niprov.filesystem import Filesystem
 from niprov.commandline import Commandline
+from niprov.files import FileFactory
 import errno
 import copy
 
 
 def log(new, transformation, parents, code=None, logtext=None, transient=False,
         script=None, provenance=None, repository=JsonFile(), filesys=Filesystem(),
-        listener=Commandline()):
+        listener=Commandline(), factory=FileFactory()):
     """
     Register a transformation that creates a new image (or several).
 
@@ -72,20 +73,23 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
         return
 
     #do things specific to each new file
-    provenance = []
+    newImages = []
     for newfile in new:
-        singleProvenance = copy.deepcopy(commonProvenance)
-        singleProvenance['path'] = newfile
         if not transient and not filesys.fileExists(newfile):
             raise IOError(errno.ENOENT, 'File not found', newfile)
-        repository.add(singleProvenance)
-        provenance.append(singleProvenance)
+        singleProvenance = copy.deepcopy(commonProvenance)
+        singleProvenance['path'] = newfile
+        img = factory.fromProvenance(singleProvenance)
+        if not transient:
+            img.inspect()
+        repository.add(img.provenance)
+        newImages.append(img)
 
     #only return one dict if only one new file was created
     if len(new) == 1:
-        return singleProvenance
+        return img
 
-    return provenance
+    return newImages
 
 
 

@@ -1,7 +1,7 @@
 import unittest
 from mock import Mock, MagicMock, PropertyMock
 from datetime import datetime
-from tests.basefile import BaseFileTests
+from tests.test_basefile import BaseFileTests
 
 
 class DicomTests(BaseFileTests):
@@ -12,6 +12,7 @@ class DicomTests(BaseFileTests):
         self.setupPydicom()
         from niprov.dcm import DicomFile
         self.constructor = DicomFile
+        self.ckwargs = {'dependencies':self.libs}
         self.file = DicomFile(self.path, listener=self.log, 
             filesystem=self.filesys, hasher=self.hasher, dependencies=self.libs,
             serializer=self.json)

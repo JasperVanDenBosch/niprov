@@ -12,6 +12,7 @@ class BaseFileTests(unittest.TestCase):
         self.path = 'example.abc'
         from niprov.basefile import BaseFile
         self.constructor = BaseFile
+        self.ckwargs = {}
         self.file = BaseFile(self.path, listener=self.log, 
             filesystem=self.filesys, hasher=self.hasher, serializer=self.json)
 
@@ -53,7 +54,7 @@ class BaseFileTests(unittest.TestCase):
     def test_Inspect_leaves_existing_fields_updates_others(self):
         prov = {'aprop':'aval','size':9876}
         img = self.constructor(self.path, provenance=prov, 
-            filesystem=self.filesys, hasher=self.hasher)
+            filesystem=self.filesys, hasher=self.hasher, **self.ckwargs)
         img.inspect()
         self.assertEqual(img.provenance['aprop'], 'aval')
         self.assertEqual(img.provenance['size'], self.filesys.getsize(self.path))

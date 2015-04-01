@@ -1,7 +1,7 @@
 import unittest
 from mock import Mock
 from datetime import datetime
-from tests.basefile import BaseFileTests
+from tests.test_basefile import BaseFileTests
 
 
 class ParrecTests(BaseFileTests):
@@ -12,6 +12,7 @@ class ParrecTests(BaseFileTests):
         self.setupNibabel()
         from niprov.parrec import ParrecFile
         self.constructor = ParrecFile
+        self.ckwargs = {'dependencies':self.libs}
         self.file = ParrecFile(self.path, listener=self.log, 
             filesystem=self.filesys, hasher=self.hasher, dependencies=self.libs,
             serializer=self.json)

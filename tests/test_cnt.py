@@ -1,7 +1,7 @@
 import unittest
 from mock import Mock
 from datetime import datetime
-from tests.basefile import BaseFileTests
+from tests.test_basefile import BaseFileTests
 
 
 class CNTTests(BaseFileTests):

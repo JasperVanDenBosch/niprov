@@ -28,6 +28,7 @@ Submodules
    niprov.jsonfile
    niprov.jsonserializing
    niprov.logging
+   niprov.mnefun
    niprov.narrator
    niprov.nifti
    niprov.parrec

@@ -1,28 +1,48 @@
 import unittest
 from mock import Mock, patch
 
+
 class MnefunTests(unittest.TestCase):
 
     def setUp(self):
-        pass
+        self.listener = Mock()
+        self.libs = Mock()
 
     def test_Discovers_fetched_raw_files(self):
-        import niprov.mnefun
-        p = Mock()
-        p.work_dir = '/root'
-        p.subjects = ['johndoe','janedoe']
-        p.raw_dir = 'rawdir'
-        with patch('niprov.mnefun.discover') as discover:
-            niprov.mnefun.handler('Pulling raw files from acquisition machine', 
-                None, None, p)
+        import niprov.mnefunsupport
+        params = Mock()
+        params.work_dir = '/root'
+        params.subjects = ['johndoe','janedoe']
+        params.raw_dir = 'rawdir'
+        def fetch_raw_files():
+            pass
+        with patch('niprov.mnefunsupport.discover') as discover:
+            niprov.mnefunsupport.handler('Pulling raw files from acquisition machine', 
+                fetch_raw_files, None, params, listener=self.listener)
             discover.assert_any_call('/root/johndoe/rawdir')
             discover.assert_any_call('/root/janedoe/rawdir')
+            self.listener.mnefunEventReceived.assert_called_with('fetch_raw_files')
 
-#    def test_Logs_sss_operation(self):
-#        import niprov.mnefun
-#        with patch('niprov.mnefun.log') as log:
-#            niprov.mnefun.handler('Doing epoch EQ/DQ', None, None, None)
-#            log.assert_called_with()
+    def test_Logs_sss_operation(self):
+        import niprov.mnefunsupport
+        params = Mock()
+        params.subjects = ['s1','s2']
+        fnames = {'raw':{'s1':['subj 1 raw file 1','subj 1 raw file 2'],
+                        's2':['subj 2 raw file 1','subj 2 raw file 2']},
+                'sss': {'s1':['subj 1 sss file 1','subj 1 sss file 2'],
+                        's2':['subj 2 sss file 1','subj 2 sss file 2']}}
+        self.libs.mnefun.get_raw_fnames.side_effect = lambda p, s, t: fnames[t][s]
+        def fetch_sss_files():
+            pass
+        with patch('niprov.mnefunsupport.log') as log:
+            niprov.mnefunsupport.handler('Pulling SSS files from remote workstation', 
+                fetch_sss_files, None, params, listener=self.listener, libs=self.libs)
+            log.assert_any_call(fnames['sss']['s1'][0],
+                                'Signal Space Separation',
+                                fnames['raw']['s1'][0])
+            log.assert_any_call(fnames['sss']['s2'][1],
+                                'Signal Space Separation',
+                                fnames['raw']['s2'][1])
 
 #new, 
 #transformation, 
@@ -32,13 +52,6 @@ class MnefunTests(unittest.TestCase):
 #transient=False,
 #script=None, 
 #provenance=None
-
-#    fetch_raw : bool
-#        Fetch raw recording files from acquisition machine.
-
-#    fetch_sss : bool
-#        Fetch SSS files from SSS workstation.
-
 
 #    gen_ssp : bool
 #        Generate SSP vectors.

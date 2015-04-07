@@ -1,7 +1,7 @@
 niprov.mnefun module
 ====================
 
-.. automodule:: niprov.mnefun
+.. automodule:: niprov.mnefunsupport
     :members:
     :undoc-members:
     :show-inheritance:

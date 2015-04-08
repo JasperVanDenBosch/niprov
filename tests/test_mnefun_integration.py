@@ -44,6 +44,27 @@ class MnefunTests(unittest.TestCase):
                                 'Signal Space Separation',
                                 fnames['raw']['s2'][1])
 
+    def test_Logs_ssp_operation(self):
+        import niprov.mnefunsupport
+        params = Mock()
+        params.subjects = ['s1','s2']
+        fnames = {'pca':{'s1':['subj 1 pca file 1','subj 1 pca file 2'],
+                        's2':['subj 2 pca file 1','subj 2 pca file 2']},
+                'sss': {'s1':['subj 1 sss file 1','subj 1 sss file 2'],
+                        's2':['subj 2 sss file 1','subj 2 sss file 2']}}
+        self.libs.mnefun.get_raw_fnames.side_effect = lambda p, s, t: fnames[t][s]
+        def apply_ssp():
+            pass
+        with patch('niprov.mnefunsupport.log') as log:
+            niprov.mnefunsupport.handler('Apply SSP vectors and filtering.', 
+                apply_ssp, None, params, listener=self.listener, libs=self.libs)
+            log.assert_any_call(fnames['pca']['s1'][0],
+                                'Signal Space Projection',
+                                fnames['sss']['s1'][0])
+            log.assert_any_call(fnames['pca']['s2'][1],
+                                'Signal Space Projection',
+                                fnames['sss']['s2'][1])
+
 #new, 
 #transformation, 
 #parents, 
@@ -53,10 +74,6 @@ class MnefunTests(unittest.TestCase):
 #script=None, 
 #provenance=None
 
-#    gen_ssp : bool
-#        Generate SSP vectors.
-#    apply_ssp : bool
-#        Apply SSP vectors and filtering.
 #    write_epochs : bool
 #        Write epochs to disk.
 #    gen_covs : bool

@@ -33,8 +33,15 @@ def handler(text, func, out, params, listener=Commandline(),
             sssfiles = libs.mnefun.get_raw_fnames(params, subj, 'sss')
             for rawfile, sssfile in zip(rawfiles, sssfiles):
                 log(sssfile, 'Signal Space Separation', rawfile)
-        elif funcname == 'apply_ssp':
+        elif funcname == 'apply_preprocessing_combined':
             sssfiles = libs.mnefun.get_raw_fnames(params, subj, 'sss')
             pcafiles = libs.mnefun.get_raw_fnames(params, subj, 'pca')
             for sssfile, pcafile in zip(sssfiles, pcafiles):
                 log(pcafile, 'Signal Space Projection', sssfile)
+        elif funcname == 'save_epochs':
+            pcafiles = libs.mnefun.get_raw_fnames(params, subj, 'pca')
+            evtfiles = libs.mnefun._paths.get_epochs_evokeds_fnames(params, 
+                subj, params.analyses)
+            for evtfile in evtfiles:
+                log(evtfile, 'Epoching', pcafiles)
+

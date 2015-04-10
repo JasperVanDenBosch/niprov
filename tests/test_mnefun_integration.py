@@ -53,17 +53,43 @@ class MnefunTests(unittest.TestCase):
                 'sss': {'s1':['subj 1 sss file 1','subj 1 sss file 2'],
                         's2':['subj 2 sss file 1','subj 2 sss file 2']}}
         self.libs.mnefun.get_raw_fnames.side_effect = lambda p, s, t: fnames[t][s]
-        def apply_ssp():
+        def apply_preprocessing_combined():
             pass
         with patch('niprov.mnefunsupport.log') as log:
             niprov.mnefunsupport.handler('Apply SSP vectors and filtering.', 
-                apply_ssp, None, params, listener=self.listener, libs=self.libs)
+                apply_preprocessing_combined, None, params, 
+                listener=self.listener, libs=self.libs)
             log.assert_any_call(fnames['pca']['s1'][0],
                                 'Signal Space Projection',
                                 fnames['sss']['s1'][0])
             log.assert_any_call(fnames['pca']['s2'][1],
                                 'Signal Space Projection',
                                 fnames['sss']['s2'][1])
+
+    def test_Logs_epoch_operation(self):
+        import niprov.mnefunsupport
+        params = Mock()
+        params.subjects = ['s1','s2']
+        params.analyses = ['a']
+        fnames = {'pca':{'s1':['subj 1 pca file 1','subj 1 pca file 2'],
+                        's2':['subj 2 pca file 1','subj 2 pca file 2']}}
+        epochfnames = {'s1':['s1 evt 1','s1 evt 2','s1 evt 3'],
+                        's2':['s2 evt 1','s2 evt 2','s2 evt 3']}
+        self.libs.mnefun.get_raw_fnames.side_effect = \
+            lambda p, s, t: fnames[t][s]
+        self.libs.mnefun._paths.get_epochs_evokeds_fnames.side_effect = \
+            lambda p, s, a: epochfnames[s]
+        def save_epochs():
+            pass
+        with patch('niprov.mnefunsupport.log') as log:
+            niprov.mnefunsupport.handler('Doing epoch EQ/DQ', 
+                save_epochs, None, params, listener=self.listener, libs=self.libs)
+            log.assert_any_call(epochfnames['s1'][0], #any event file
+                                'Epoching',
+                                fnames['pca']['s1']) #all raw files for subj
+            log.assert_any_call(epochfnames['s2'][1], #any event file
+                                'Epoching',
+                                fnames['pca']['s2']) #all raw files for subj
 
 #new, 
 #transformation, 

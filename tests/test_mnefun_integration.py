@@ -10,7 +10,9 @@ class MnefunTests(unittest.TestCase):
 
     def test_Discovers_fetched_raw_files(self):
         import niprov.mnefunsupport
-        params = Mock()
+        class MockParams(object):
+            pass
+        params = MockParams()
         params.work_dir = '/root'
         params.subjects = ['johndoe','janedoe']
         params.raw_dir = 'rawdir'
@@ -25,7 +27,9 @@ class MnefunTests(unittest.TestCase):
 
     def test_Logs_sss_operation(self):
         import niprov.mnefunsupport
-        params = Mock()
+        class MockParams(object):
+            pass
+        params = MockParams()
         params.subjects = ['s1','s2']
         fnames = {'raw':{'s1':['subj 1 raw file 1','subj 1 raw file 2'],
                         's2':['subj 2 raw file 1','subj 2 raw file 2']},
@@ -39,14 +43,16 @@ class MnefunTests(unittest.TestCase):
                 fetch_sss_files, None, params, listener=self.listener, libs=self.libs)
             log.assert_any_call(fnames['sss']['s1'][0],
                                 'Signal Space Separation',
-                                fnames['raw']['s1'][0])
+                                fnames['raw']['s1'][0], provenance = {'mnefun':{}})
             log.assert_any_call(fnames['sss']['s2'][1],
                                 'Signal Space Separation',
-                                fnames['raw']['s2'][1])
+                                fnames['raw']['s2'][1], provenance = {'mnefun':{}})
 
     def test_Logs_ssp_operation(self):
         import niprov.mnefunsupport
-        params = Mock()
+        class MockParams(object):
+            pass
+        params = MockParams()
         params.subjects = ['s1','s2']
         fnames = {'pca':{'s1':['subj 1 pca file 1','subj 1 pca file 2'],
                         's2':['subj 2 pca file 1','subj 2 pca file 2']},
@@ -61,14 +67,16 @@ class MnefunTests(unittest.TestCase):
                 listener=self.listener, libs=self.libs)
             log.assert_any_call(fnames['pca']['s1'][0],
                                 'Signal Space Projection',
-                                fnames['sss']['s1'][0])
+                                fnames['sss']['s1'][0], provenance = {'mnefun':{}})
             log.assert_any_call(fnames['pca']['s2'][1],
                                 'Signal Space Projection',
-                                fnames['sss']['s2'][1])
+                                fnames['sss']['s2'][1], provenance = {'mnefun':{}})
 
     def test_Logs_epoch_operation(self):
         import niprov.mnefunsupport
-        params = Mock()
+        class MockParams(object):
+            pass
+        params = MockParams()
         params.subjects = ['s1','s2']
         params.analyses = ['a']
         fnames = {'pca':{'s1':['subj 1 pca file 1','subj 1 pca file 2'],
@@ -86,19 +94,36 @@ class MnefunTests(unittest.TestCase):
                 save_epochs, None, params, listener=self.listener, libs=self.libs)
             log.assert_any_call(epochfnames['s1'][0], #any event file
                                 'Epoching',
-                                fnames['pca']['s1']) #all raw files for subj
+                                fnames['pca']['s1'], provenance = {'mnefun':{}}) #all raw files for subj
             log.assert_any_call(epochfnames['s2'][1], #any event file
                                 'Epoching',
-                                fnames['pca']['s2']) #all raw files for subj
+                                fnames['pca']['s2'], provenance = {'mnefun':{}}) #all raw files for subj
 
-#new, 
-#transformation, 
-#parents, 
-#code=None, 
-#logtext=None, 
-#transient=False,
-#script=None, 
-#provenance=None
+    def test_Log_seeded_with_params_based_custom_provenance(self):
+        import niprov.mnefunsupport
+        class MockParams(object):
+            pass
+        params = MockParams()
+        params.tmin = -0.2
+        params.quat_tol = 5e-2
+        params.subjects = ['s1','s2']
+        fnames = {'raw':{'s1':['subj 1 raw file 1','subj 1 raw file 2'],
+                        's2':['subj 2 raw file 1','subj 2 raw file 2']},
+                'sss': {'s1':['subj 1 sss file 1','subj 1 sss file 2'],
+                        's2':['subj 2 sss file 1','subj 2 sss file 2']}}
+        self.libs.mnefun.get_raw_fnames.side_effect = lambda p, s, t: fnames[t][s]
+        def fetch_sss_files():
+            pass
+        with patch('niprov.mnefunsupport.log') as log:
+            niprov.mnefunsupport.handler('Pulling SSS files from remote workstation', 
+                fetch_sss_files, None, params, listener=self.listener, libs=self.libs)
+            log.assert_called_with(fnames['sss']['s2'][1],
+                                'Signal Space Separation',
+                                fnames['raw']['s2'][1], 
+                                provenance={'mnefun':{
+                                    'tmin':-0.2,
+                                    'quat_tol':5e-2}})
+
 
 #    write_epochs : bool
 #        Write epochs to disk.

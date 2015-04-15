@@ -13,6 +13,8 @@ class BaseFile(object):
         self.path = fpath
         if provenance:
             self.provenance = provenance
+            if 'path' not in provenance:
+                self.provenance['path'] = self.path
         else:
             self.provenance = {'path':self.path}
         self.listener = listener

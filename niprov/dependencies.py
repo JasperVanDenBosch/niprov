@@ -20,6 +20,11 @@ class Dependencies(object):
             self.mne = mne
         except:
             self.mne = None
+        try:
+            import mnefun
+            self.mnefun = mnefun
+        except:
+            self.mnefun = None
 
 
     def hasDependency(self, libname):

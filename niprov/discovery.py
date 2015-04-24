@@ -4,51 +4,30 @@ import os
 from niprov.filesystem import Filesystem
 from niprov.commandline import Commandline
 from niprov.filefilter import FileFilter
-from niprov.jsonfile import JsonFile
-from niprov.files import FileFactory
+from niprov.adding import add
 
 
 def discover(root, filefilter=FileFilter(), filesys=Filesystem(), 
-        listener=Commandline(), repository=JsonFile(), file=FileFactory()):
+        listener=Commandline()):
     """
-    Search a directory for image files, inspect them and store provenance.
+    Search a directory for image files, and add them to your provenance collection.
 
     Files are only included if they match the filters in the 
     'discovery-filter.txt' file.
-    If a file is already known, it will be ignored and the listener informed.
+    Refer to niprov.add for details on what happens to individual files.
 
     Args:
         root (str): The top directory in which to look for new files.
     """
     dirs = filesys.walk(root)
-    ntotal = 0
-    nnew = 0
-    nadded = 0
-    nfailed = 0
+    stats = {'total':0, 'new':0, 'series':0, 'failed':0, 'known':0}
     for (root, sdirs, files) in dirs:
         for filename in files:
             filepath = os.path.join(root, filename)
             if filefilter.include(filename):
-                ntotal = ntotal + 1
-                img = file.locatedAt(filepath)
-                if repository.knows(img):
-                    listener.knownFile(img.path)
-                elif repository.knowsSeries(img):
-                    nadded = nadded + 1
-                    series = repository.getSeries(img)
-                    series.addFile(img)
-                    repository.update(series)
-                    listener.fileFoundInSeries(img, series)
-                else:
-                    try:
-                        img.inspect()
-                    except:
-                        nfailed = nfailed + 1
-                        listener.fileError(img.path)
-                    else:
-                        nnew = nnew + 1
-                        repository.add(img.provenance)
-                        listener.fileFound(img)
-    listener.discoveryFinished(nnew=nnew, nadded=nadded, nfailed=nfailed, 
-        ntotal=ntotal)
+                stats['total'] = stats['total'] + 1
+                (p, status) = add(filepath, transient=False)
+                stats[status] = stats[status] + 1
+    listener.discoveryFinished(nnew=stats['new'], nadded=stats['series'], 
+        nfailed=stats['failed'], ntotal=stats['total'])
 

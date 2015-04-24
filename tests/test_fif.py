@@ -27,19 +27,33 @@ class FifTests(BaseFileTests):
         out = self.file.inspect()
         self.assertEqual(out['dimensions'], [123, 91])
 
+    def test_Attach_method(self):
+        self.file.provenance = {'foo':'bar'}
+        self.json.serialize.side_effect = lambda p: str(p)
+        self.file.attach()
+        self.assertIn('existing bla bla ', #original string+added space 
+            self.img.info['description'])
+        self.assertIn('NIPROV:'+str(self.file.provenance), 
+            self.img.info['description'])
+        self.libs.mne.io.write_info.assert_called_with(self.file.path, 
+            self.img.info)
+
     def setupMne(self):
         TS = 1422522595.76096
         self.acquired = datetime.fromtimestamp(TS)
-        img = Mock()
-        img.info = {
+        self.img = Mock()
+        self.img.info = {
             'meas_date':(TS,),
             'proj_name':'worlddom',
             'subject_info':{'first_name':'John','last_name':'Doeish'},
             'nchan':123,
-            'sfreq':200}
-        img.first_samp = 10
-        img.last_samp = 100
-        self.libs.mne.io.Raw.return_value = img
+            'sfreq':200,
+            'description':'existing bla bla'}
+        self.img.first_samp = 10
+        self.img.last_samp = 100
+        self.libs.mne.io.Raw.return_value = self.img
+        self.libs.mne.io.read_info.return_value = self.img.info
         self.libs.hasDependency.return_value = True
+
 
 

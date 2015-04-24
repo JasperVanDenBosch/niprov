@@ -51,6 +51,12 @@ class BaseFileTests(unittest.TestCase):
         img = self.constructor(self.path, provenance=prov)
         self.assertEqual(prov, img.provenance)
 
+    def test_Construct_with_provenance_adds_path_if_not_set(self):
+        prov = {'aprop':'aval'}
+        img = self.constructor(self.path, provenance=prov)
+        self.assertIn('path', img.provenance)
+        self.assertEqual(self.path, img.provenance['path'])
+
     def test_Inspect_leaves_existing_fields_updates_others(self):
         prov = {'aprop':'aval','size':9876}
         img = self.constructor(self.path, provenance=prov, 

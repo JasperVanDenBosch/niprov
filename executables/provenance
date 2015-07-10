@@ -38,7 +38,7 @@ record.add_argument('--new','-n', nargs='*',
     help='Path to a resulting image.')
 record.add_argument('--parent','-p', nargs='*',
     help='Path to an image that was the basis of the transformation.')
-record.add_argument('code', nargs=argparse.REMAINDER,
+record.add_argument('code',
     help='Shell commands that result in a new image.')
 
 add = subparsers.add_parser('add', 

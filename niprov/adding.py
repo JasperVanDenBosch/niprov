@@ -3,10 +3,11 @@
 from niprov.commandline import Commandline
 from niprov.jsonfile import JsonFile
 from niprov.files import FileFactory
+from niprov.options import NiprovOptions
 
 
-def add(filepath, transient=False, listener=Commandline(), repository=JsonFile(), 
-    file=FileFactory()):
+def add(filepath, transient=False, opts=NiprovOptions(), listener=Commandline(),
+        repository=JsonFile(), file=FileFactory()):
     """
     Simply register the file.
 
@@ -23,6 +24,8 @@ def add(filepath, transient=False, listener=Commandline(), repository=JsonFile()
             is only temporary and future checks should not expect it to be 
             physically present. Defaults to False, assuming that the file 
             remains.
+        opts (NiprovOptions): General settings for niprov. 
+            See :py:mod:`niprov.options`
 
     Returns:
         tuple: Tuple of new provenance and status. Status is a string with one 
@@ -31,9 +34,12 @@ def add(filepath, transient=False, listener=Commandline(), repository=JsonFile()
             'series': The file was deemed part of a series and has been added.
             'failed': There was an error inspecting the file.
             'known': The file was already known to niprov, nothing happened.
+            'dryrun': Function called with opts.dryrun, database not touched.
     """
     img = file.locatedAt(filepath, provenance={'transient':transient})
-    if repository.knows(img):
+    if opts.dryrun:
+        status = 'dryrun'
+    elif repository.knows(img):
         listener.knownFile(img.path)
         status = 'known'
     elif repository.knowsSeries(img):

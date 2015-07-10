@@ -6,6 +6,8 @@ from mock import Mock
 class addTests(unittest.TestCase):
 
     def setUp(self):
+        self.opts = Mock()
+        self.opts.dryrun = False
         self.repo = Mock()
         self.repo.knows.return_value = False
         self.repo.knowsSeries.return_value = False
@@ -17,7 +19,7 @@ class addTests(unittest.TestCase):
     def add(self, path, transient=False):
         from niprov.adding import add
         return add(path, transient=transient, repository=self.repo, 
-            listener=self.listener, file=self.fileFactory)
+            opts=self.opts, listener=self.listener, file=self.fileFactory)
 
     def assertNotCalledWith(self, m, *args, **kwargs):
         c = mock.call(*args, **kwargs)
@@ -79,6 +81,14 @@ class addTests(unittest.TestCase):
         self.assertNotCalledWith(self.repo.add, self.img.provenance)
         self.listener.fileError.assert_called_with(self.img.path)
         self.assertEqual(status, 'failed')
+
+    def test_If_dryrun_doesnt_talk_to_repo_and_status_is_test(self):
+        self.opts.dryrun = True
+        (provenance, status) = self.add('p/afile.f')
+        assert not self.repo.add.called
+        assert not self.repo.update.called
+        assert not self.img.inspect.called
+        self.assertEqual(status, 'dryrun')
 
 
 

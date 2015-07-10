@@ -30,6 +30,7 @@ Submodules
    niprov.logging
    niprov.mnefunsupport
    niprov.narrator
+   niprov.options
    niprov.nifti
    niprov.parrec
    niprov.recording

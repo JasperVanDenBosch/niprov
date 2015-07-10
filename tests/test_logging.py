@@ -8,6 +8,8 @@ class loggingTests(unittest.TestCase):
     def setUp(self):
         self.repo = Mock()
         self.repo.knowsByPath.return_value = True
+        self.opts = Mock()
+        self.opts.dryrun = False
         img = Mock()
         img.provenance = {'acquired':dt.now(),'subject':'JD', 'protocol':'X'}
         self.repo.byPath.return_value = img
@@ -24,7 +26,8 @@ class loggingTests(unittest.TestCase):
     def log(self, *args, **kwargs):
         from niprov.logging import log
         return log(*args, repository=self.repo, filesys=self.filesys, 
-            listener=self.listener, factory=self.factory, **kwargs)
+            listener=self.listener, factory=self.factory, opts=self.opts, 
+            **kwargs)
 
     def test_Returns_img(self):
         parents = ['/p/f1']
@@ -126,4 +129,18 @@ class loggingTests(unittest.TestCase):
         assert not self.newimg.inspect.called
         provenance = self.log(new, trans, parents)
         self.newimg.inspect.assert_called_with()
+
+    def test_On_dryrun_all_new_files_are_transient(self):
+        parents = ['/p/f1']
+        new = ['/p/f2','/p/f3']
+        trans = 'Something cool'
+        self.opts.dryrun = True
+        provenance = self.log(new, trans, parents)
+        assert not self.newimg.inspect.called
+        self.assertEqual(self.provenancesCreated[0]['transient'], True)
+
+    def test_On_dryrun_provenance_not_saved_to_repo(self):
+        self.opts.dryrun = True
+        provenance = self.log('new', 'trans', 'old')
+        assert not self.repo.add.called
 

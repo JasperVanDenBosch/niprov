@@ -9,13 +9,16 @@ class RecordingTests(unittest.TestCase):
     def setUp(self):
         import niprov.recording as recording
         self.log = Mock()
+        self.opts = Mock()
+        self.opts.dryrun = False
         self.sub = Mock()
         self.listener = Mock()
         recording.log = self.log
         self.recording = recording
 
     def record(self, cmd, **kwargs):
-        self.recording.record(cmd, externals=self.sub, listener=self.listener, **kwargs)
+        self.recording.record(cmd, externals=self.sub, listener=self.listener, 
+            opts=self.opts, **kwargs)
 
     def test_Executes_commands(self):
         cmd = ['mytransform','-out','newfile.f','-in','oldfile.f']
@@ -27,21 +30,21 @@ class RecordingTests(unittest.TestCase):
         self.record(cmd)
         self.log.assert_called_with(['newfile.f'],'mytransform',['oldfile.f'], 
             transient=False, code=' '.join(cmd), logtext=self.sub.run().output, 
-            script=None, provenance={})
+            script=None, opts=self.opts, provenance={})
 
     def test_If_parent_or_new_provided_override_parsed(self):
         cmd = ['mytransform','-out','newfile.f','-in','oldfile.f']
         self.record(cmd, parents=['customParent'], new='customNew')
         self.log.assert_called_with(['customNew'],'mytransform',['customParent'],
             transient=False, code=' '.join(cmd), logtext=self.sub.run().output, 
-            script=None, provenance={})
+            script=None, opts=self.opts, provenance={})
 
     def test_Passes_transient_flag(self):
         cmd = ['mytransform','-out','newfile.f','-in','oldfile.f']
         self.record(cmd, transient=True)
         self.log.assert_called_with(['newfile.f'],'mytransform',['oldfile.f'], 
             transient=True, code=' '.join(cmd), logtext=self.sub.run().output, 
-            script=None, provenance={})
+            script=None, opts=self.opts, provenance={})
 
     def test_Informs_listener_about_interpretation(self):
         cmd = ['mytransform','-out','newfile.f','-in','oldfile.f']
@@ -55,7 +58,7 @@ class RecordingTests(unittest.TestCase):
         self.sub.run.assert_called_with(cmd.split())
         self.log.assert_called_with(['newfile.f'],'mytransform',['oldfile.f'], 
             transient=False, code=cmd, logtext=self.sub.run().output, 
-            script=None, provenance={})
+            script=None, opts=self.opts, provenance={})
 
     def test_Python_code(self):
         myfunc = Mock()
@@ -68,7 +71,7 @@ class RecordingTests(unittest.TestCase):
         self.log.assert_called_with(['new.f'],myfunc.func_name,['old.f'], 
             transient=False, code=None, logtext='', 
             script=myfunc.func_code.co_filename,
-            provenance={'args':args, 'kwargs':kwargs})
+            opts=self.opts, provenance={'args':args, 'kwargs':kwargs})
 
     def test_Python_code_output_captured(self):
         def myfunc():
@@ -79,8 +82,30 @@ class RecordingTests(unittest.TestCase):
         self.log.assert_called_with(['new.f'],myfunc.func_name,['old.f'], 
             transient=False, code=None, logtext='Hello MyFunc\n', 
             script=myfunc.func_code.co_filename,
-            provenance={'args':args, 'kwargs':kwargs})
+            opts=self.opts, provenance={'args':args, 'kwargs':kwargs})
 
+    def test_On_dryrun_doesnt_execute_python_code(self):
+        myfunc = Mock()
+        myfunc.side_effect = lambda a,b,one=None,two=None: None
+        myfunc.func_name = 'myfunc'
+        args = ['foo','bar']
+        kwargs = {'one':'foz','two':'baz'}
+        self.opts.dryrun = True
+        self.record(myfunc, args=args, kwargs=kwargs)
+        assert not myfunc.called, "Passed function was called on dry run."
+
+    def test_On_dryrun_doesnt_execute_commands(self):
+        self.opts.dryrun = True
+        cmd = ['mytransform','-out','newfile.f','-in','oldfile.f']
+        self.record(cmd)
+        assert not self.sub.run.called, "Command was executed on dry run."
+
+    def test_Passes_opts_to_log(self):
+        cmd = ['mytransform','-out','newfile.f','-in','oldfile.f']
+        self.record(cmd, transient=True)
+        self.log.assert_called_with(['newfile.f'],'mytransform',['oldfile.f'], 
+            transient=True, code=' '.join(cmd), logtext=self.sub.run().output, 
+            script=None, provenance={}, opts=self.opts)
 
         
 

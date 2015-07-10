@@ -4,13 +4,15 @@ from niprov.jsonfile import JsonFile
 from niprov.filesystem import Filesystem
 from niprov.commandline import Commandline
 from niprov.files import FileFactory
+from niprov.options import NiprovOptions
 import errno
 import copy
 
 
 def log(new, transformation, parents, code=None, logtext=None, transient=False,
-        script=None, provenance=None, repository=JsonFile(), filesys=Filesystem(),
-        listener=Commandline(), factory=FileFactory()):
+        script=None, provenance=None, opts=NiprovOptions(), 
+        repository=JsonFile(), filesys=Filesystem(), listener=Commandline(), 
+        factory=FileFactory()):
     """
     Register a transformation that creates a new image (or several).
 
@@ -37,6 +39,8 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
             remains.
         provenance (dict, optional): Add the key-value pairs in this dictionary 
             to the provenance record for the new files.
+        opts (NiprovOptions): General settings for niprov. 
+            See :py:mod:`niprov.options`
 
     Raises:
       IOError: '[Errno 2] File not found' is raised if the new file does not
@@ -52,6 +56,9 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
         parents = [parents]
     if provenance is None:
         provenance = {}
+
+    if opts.dryrun:
+        transient = True
 
     #gather provenance common to all new files
     commonProvenance = provenance
@@ -75,14 +82,15 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     #do things specific to each new file
     newImages = []
     for newfile in new:
-        if not transient and not filesys.fileExists(newfile):
-            raise IOError(errno.ENOENT, 'File not found', newfile)
         singleProvenance = copy.deepcopy(commonProvenance)
         singleProvenance['path'] = newfile
         img = factory.fromProvenance(singleProvenance)
         if not transient:
+            if not filesys.fileExists(newfile):
+                raise IOError(errno.ENOENT, 'File not found', newfile)
             img.inspect()
-        repository.add(img.provenance)
+        if not opts.dryrun:
+            repository.add(img.provenance)
         newImages.append(img)
 
     #only return one dict if only one new file was created

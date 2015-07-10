@@ -3,11 +3,13 @@
 from niprov.externals import Externals
 from niprov.logging import log
 from niprov.commandline import Commandline
+from niprov.options import NiprovOptions
 from capturing import OutputCapture
 
 
 def record(command, new=None, parents=None, transient=False, args=None, 
-    kwargs=None, externals=Externals(), listener=Commandline()):
+    kwargs=None, externals=Externals(), listener=Commandline(), 
+    opts=NiprovOptions()):
     """Execute a command and log it as provenance for the newly created file.
 
     Args:
@@ -24,6 +26,8 @@ def record(command, new=None, parents=None, transient=False, args=None,
             remains.
         args (list, optional): Positional arguments to be passed to command.
         kwargs (dict, optional): Keyword arguments to be passed to command.
+        opts (NiprovOptions): General settings for niprov. 
+            See :py:mod:`niprov.options`
 
     Returns:
         dict: New provenance
@@ -69,16 +73,19 @@ def record(command, new=None, parents=None, transient=False, args=None,
     listener.interpretedRecording(new, transformation, parents)
 
     # run transformation
-    if isinstance(command, (list, tuple)):
-        result = externals.run(command)
-        output = result.output
+    if opts.dryrun:
+        output = None
     else:
-        with OutputCapture() as captured:
-            command(*args, **kwargs)
-        output = captured.output
+        if isinstance(command, (list, tuple)):
+            result = externals.run(command)
+            output = result.output
+        else:
+            with OutputCapture() as captured:
+                command(*args, **kwargs)
+            output = captured.output
 
     # defer the rest to log()
     return log(new, transformation, parents, code=code, transient=transient,
-        logtext=output, script=script, provenance=provenance)
+        logtext=output, script=script, provenance=provenance, opts=opts)
 
 

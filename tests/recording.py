@@ -107,5 +107,12 @@ class RecordingTests(unittest.TestCase):
             transient=True, code=' '.join(cmd), logtext=self.sub.run().output, 
             script=None, provenance={}, opts=self.opts)
 
+    def test_Abbreviated_versions_of_out_and_in(self):
+        cmd = ['mytransform','-o','newfile.f','-i','oldfile.f']
+        self.record(cmd)
+        self.log.assert_called_with(['newfile.f'],'mytransform',['oldfile.f'], 
+            transient=False, code=' '.join(cmd), logtext=self.sub.run().output, 
+            script=None, opts=self.opts, provenance={})
+
         
 

@@ -60,9 +60,9 @@ def record(command, new=None, parents=None, transient=False, args=None,
         parsingNew = len(new) == 0
         parsingParents = len(parents) == 0
         for c in range(len(command)):
-            if command[c] in ['-out'] and parsingNew:
+            if command[c] in ['-out','-o'] and parsingNew:
                 new.append(command[c+1])
-            if command[c] in ['-in'] and parsingParents:
+            if command[c] in ['-in','-i'] and parsingParents:
                 parents.append(command[c+1])
     else:
         transformation = command.func_name

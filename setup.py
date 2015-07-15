@@ -27,4 +27,5 @@ setup(name='niprov',
             'Topic :: Scientific/Engineering'],
       package_data={'niprov': ['discovery-filter.txt']},
       include_package_data=True,
+      install_requires=['mako']
       )

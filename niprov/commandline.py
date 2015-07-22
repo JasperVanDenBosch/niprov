@@ -4,6 +4,9 @@
 
 class Commandline(object):
 
+    def setOptions(self, opts):
+        self.opts = opts
+
     def fileFound(self, image):
         template = '[provenance] {0}'
         print(template.format(image.path))
@@ -42,6 +45,9 @@ class Commandline(object):
 
     def mnefunEventReceived(self, operationName):
         print('[provenance] Mnefun operation: '+operationName)
+
+    def receivedBashCommand(self, command):
+        print('[provenance] Recording command: \n'+(' '.join(command)))
 
 SUFFIXES = {1: 'st', 2: 'nd', 3: 'rd'}
 def ordinal(num):

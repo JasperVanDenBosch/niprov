@@ -114,5 +114,18 @@ class RecordingTests(unittest.TestCase):
             transient=False, code=' '.join(cmd), logtext=self.sub.run().output, 
             script=None, opts=self.opts, provenance={})
 
-        
+    def test_Gives_listener_options(self):
+        self.record(['mytransform','-out','newfile.f','-in','oldfile.f'])
+        self.listener.setOptions.assert_called_with(self.opts)
+
+    def test_Passes_listener_bash_command(self):
+        def myfunc():
+            print('Hello MyFunc')
+        args = []
+        kwargs = {}
+        self.record(myfunc, args=args, kwargs=kwargs, new='new.f', parents=['old.f'])
+        assert not self.listener.receivedBashCommand.called
+        cmd = ['mytransform','-o','newfile.f','-i','oldfile.f']
+        self.record(cmd)
+        self.listener.receivedBashCommand.assert_called_with(cmd)
 

@@ -32,6 +32,7 @@ def record(command, new=None, parents=None, transient=False, args=None,
     Returns:
         dict: New provenance
     """
+    listener.setOptions(opts)
 
     # initialize mutable defaults:
     if new is None:
@@ -53,7 +54,8 @@ def record(command, new=None, parents=None, transient=False, args=None,
 
     # gather tranformation provenance
     provenance = {}
-    if isinstance(command, (list, tuple)):
+    if isinstance(command, (list, tuple)): #command bash command list
+        listener.receivedBashCommand(command)
         transformation = command[0]
         code = ' '.join(command)
         script = None
@@ -64,7 +66,7 @@ def record(command, new=None, parents=None, transient=False, args=None,
                 new.append(command[c+1])
             if command[c] in ['-in','-i'] and parsingParents:
                 parents.append(command[c+1])
-    else:
+    else:                                   #command is python code
         transformation = command.func_name
         script = command.func_code.co_filename
         code = None

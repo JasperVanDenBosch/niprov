@@ -42,3 +42,9 @@ List files marked for approval:
 
     provenance todo
 
+
+Approve a file:
+::
+
+    provenance approve /path/to/myfile.img
+

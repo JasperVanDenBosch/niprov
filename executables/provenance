@@ -75,6 +75,11 @@ rename.add_argument('directory',
 todo = subparsers.add_parser('todo',
     help='Show files marked for approval.')
 
+approve = subparsers.add_parser('approve',
+    help='Mark one file as having passed QC.')
+approve.add_argument('filepath', 
+    help='Where the file resides.')
+
 args = parser.parse_args()
 if args.command == 'discover':
     niprov.discover(args.root)
@@ -98,3 +103,5 @@ elif args.command == 'rename':
     niprov.renameDicoms(args.directory)
 elif args.command == 'todo':
     niprov.markedForApproval()
+elif args.command == 'approve':
+    niprov.approve(args.filepath)

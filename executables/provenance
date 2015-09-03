@@ -64,13 +64,16 @@ report.add_argument('--narrative', dest='form', action='store_const',
     const='narrative', default=None,
     help='Provenance in story form instead of key-value pairs.')
 
-report = subparsers.add_parser('version',
+version = subparsers.add_parser('version',
     help='Show niprov software version.')
 
 rename = subparsers.add_parser('rename',
     help='Rename dicom files without extension.')
 rename.add_argument('directory', 
     help='Directory in which to look for files to rename.')
+
+todo = subparsers.add_parser('todo',
+    help='Show files marked for approval.')
 
 args = parser.parse_args()
 if args.command == 'discover':
@@ -93,3 +96,5 @@ elif args.command == 'version':
     print(pkg_resources.get_distribution("niprov").version)
 elif args.command == 'rename':
     niprov.renameDicoms(args.directory)
+elif args.command == 'todo':
+    niprov.markedForApproval()

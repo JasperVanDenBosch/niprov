@@ -7,6 +7,7 @@ Submodules
 .. toctree::
 
    niprov.adding
+   niprov.approval
    niprov.basefile
    niprov.capturing
    niprov.cnt

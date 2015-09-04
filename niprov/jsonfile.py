@@ -143,5 +143,19 @@ class JsonFile(object):
                 return self.factory.fromProvenance(record)
         else:
             raise IndexError('No provenance record for that series.')
+
+    def byApproval(self, approvalStatus):
+        allRecords = self.all()
+        matches = []
+        for prov in allRecords:
+            if 'approval' in prov:
+                if prov['approval'] == approvalStatus:
+                    matches.append(prov)
+        return [self.factory.fromProvenance(r) for r in matches]
+
+    def updateApproval(self, fpath, approvalStatus):
+        img = self.byPath(fpath)
+        img.provenance['approval'] = approvalStatus
+        self.update(img)
        
 

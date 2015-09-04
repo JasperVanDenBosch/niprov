@@ -21,7 +21,6 @@ def markedForApproval(repository=JsonFile(), listener=Commandline()):
     listener.filesMarkedForApproval(markedFiles)
     return markedFiles
 
-
 def approve(filepath, repository=JsonFile()):
     """Mark this file as approved.
 

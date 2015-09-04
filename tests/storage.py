@@ -155,6 +155,28 @@ class StorageTests(unittest.TestCase):
         with self.assertRaises(IndexError):
             repo2.byPath('sfile3.f')
 
+    def test_byApproval_calls_all_and_filters_based_on_approval(self):
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(factory=self.fileFactory)
+        img1 = self.imgWithApproval('xyz')
+        img2 = self.imgWithoutApproval()
+        img3 = self.imgWithApproval('xyz')
+        img4 = self.imgWithApproval('abc')
+        repo.all = Mock()
+        repo.all.return_value = [img1, img2, img3, img4]
+        returned = repo.byApproval('xyz')
+        self.assertEqual(returned, [img1, img3])
+
+    def imgWithApproval(self, approvalStatus):
+        img = Mock()
+        img.provenance = {}
+        img.provenance['approval'] = approvalStatus
+        return img
+
+    def imgWithoutApproval(self):
+        img = Mock()
+        img.provenance = {}
+        return img
 
     def sampleProvenanceRecord(self):
         record = {}

@@ -6,6 +6,7 @@ class ApprovalTests(unittest.TestCase):
 
     def setUp(self):
         self.repo = Mock()
+        self.listener = Mock()
 
     def test_markForApproval_tells_repo_to_set_approval_to_pending(self):
         import niprov
@@ -20,13 +21,15 @@ class ApprovalTests(unittest.TestCase):
 
     def test_markedForApproval_lists_files_marked(self):
         import niprov
-        markedFiles = niprov.markedForApproval(repository=self.repo)
+        markedFiles = niprov.markedForApproval(repository=self.repo,
+            listener=self.listener)
         self.repo.byApproval.assert_called_with('pending')
         self.assertEqual(self.repo.byApproval(), markedFiles)
-        
-#        marked = niprov.markedForApproval()
-#        for f in ['f1','f2','f3','f4']:
-#            self.assertIn(f, marked)
-#        self.assertNotIn('f5', marked)
 
+    def test_markedForApproval_tells_listener_about_files(self):
+        import niprov
+        markedFiles = niprov.markedForApproval(repository=self.repo,
+            listener=self.listener)
+        self.listener.filesMarkedForApproval.assert_called_with(
+            markedFiles)
 

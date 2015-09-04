@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 from niprov.jsonfile import JsonFile
+from niprov.commandline import Commandline
 
 
 def markForApproval(files, repository=JsonFile()):
@@ -13,10 +14,12 @@ def markForApproval(files, repository=JsonFile()):
     for filepath in files:
         repository.updateApproval(filepath,'pending')
 
-def markedForApproval(repository=JsonFile()):
+def markedForApproval(repository=JsonFile(), listener=Commandline()):
     """List files marked for approval by a human.
     """
-    return repository.byApproval('pending')
+    markedFiles = repository.byApproval('pending')
+    listener.filesMarkedForApproval(markedFiles)
+    return markedFiles
 
 
 def approve(filepath, repository=JsonFile()):

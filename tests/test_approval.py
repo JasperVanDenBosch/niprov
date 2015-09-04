@@ -33,4 +33,22 @@ class ApprovalTests(unittest.TestCase):
         self.listener.filesMarkedForApproval.assert_called_with(
             markedFiles)
 
-#haveBeenApproved
+    def test_selectApproved(self):
+        import niprov
+        a1 = self.mockImg()
+        a1.provenance['approval'] = 'granted'
+        a2 = self.mockImg()
+        a2.provenance['approval'] = 'granted'
+        b1 = self.mockImg()
+        c1 = self.mockImg()
+        c1.provenance['approval'] = 'pending'
+        self.repo.byPath.side_effect = lambda p: {'a1':a1,'b1':b1,'a2':a2,'c1':c1}[p]
+        selected = niprov.selectApproved(['a1','b1','a2','c1'], 
+            repository=self.repo)
+        self.assertEqual(selected, [a1.path, a2.path])
+
+    def mockImg(self):
+        img = Mock()
+        img.provenance = {}
+        return img
+

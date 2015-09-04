@@ -36,3 +36,15 @@ Rename dicom files that don't have an extension (or niprov ignores them):
 
     provenance rename /raw_data/dicoms/
 
+
+List files marked for approval:
+::
+
+    provenance todo
+
+
+Approve a file:
+::
+
+    provenance approve /path/to/myfile.img
+

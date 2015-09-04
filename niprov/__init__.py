@@ -5,3 +5,5 @@ from niprov.logging import log
 from niprov.recording import record
 from niprov.adding import add
 from niprov.renaming import renameDicoms
+from niprov.approval import (markForApproval, markedForApproval, approve, 
+    selectApproved)

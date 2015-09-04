@@ -49,6 +49,11 @@ class Commandline(object):
     def receivedBashCommand(self, command):
         print('[provenance] Recording command: \n'+(' '.join(command)))
 
+    def filesMarkedForApproval(self, images):
+        print('[provenance] Files marked for approval:')
+        for img in images:
+            print(img.path)
+
 SUFFIXES = {1: 'st', 2: 'nd', 3: 'rd'}
 def ordinal(num):
     if 10 <= num % 100 <= 20:

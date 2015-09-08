@@ -1,6 +1,6 @@
 
 
-class NiprovOptions(object):
+class Configuration(object):
     """General settings for niprov.
 
     Attributes:

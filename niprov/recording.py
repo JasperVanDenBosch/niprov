@@ -3,13 +3,13 @@
 from niprov.externals import Externals
 from niprov.logging import log
 from niprov.commandline import Commandline
-from niprov.options import NiprovOptions
+from niprov.config import Configuration
 from capturing import OutputCapture
 
 
 def record(command, new=None, parents=None, transient=False, args=None, 
     kwargs=None, externals=Externals(), listener=Commandline(), 
-    opts=NiprovOptions()):
+    opts=Configuration()):
     """Execute a command and log it as provenance for the newly created file.
 
     Args:
@@ -26,8 +26,8 @@ def record(command, new=None, parents=None, transient=False, args=None,
             remains.
         args (list, optional): Positional arguments to be passed to command.
         kwargs (dict, optional): Keyword arguments to be passed to command.
-        opts (NiprovOptions): General settings for niprov. 
-            See :py:mod:`niprov.options`
+        opts (Configuration): General settings for niprov. 
+            See :py:mod:`niprov.config`
 
     Returns:
         dict: New provenance

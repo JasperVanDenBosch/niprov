@@ -53,6 +53,7 @@ Contents:
 
    commandline-usage
    code-examples
+   configuration
    provenance-fields
    niprov
 

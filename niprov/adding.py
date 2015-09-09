@@ -3,10 +3,10 @@
 from niprov.commandline import Commandline
 from niprov.jsonfile import JsonFile
 from niprov.files import FileFactory
-from niprov.options import NiprovOptions
+from niprov.config import Configuration
 
 
-def add(filepath, transient=False, opts=NiprovOptions(), listener=Commandline(),
+def add(filepath, transient=False, opts=Configuration(), listener=Commandline(),
         repository=JsonFile(), file=FileFactory()):
     """
     Simply register the file.
@@ -24,8 +24,8 @@ def add(filepath, transient=False, opts=NiprovOptions(), listener=Commandline(),
             is only temporary and future checks should not expect it to be 
             physically present. Defaults to False, assuming that the file 
             remains.
-        opts (NiprovOptions): General settings for niprov. 
-            See :py:mod:`niprov.options`
+        opts (Configuration): General settings for niprov. 
+            See :py:mod:`niprov.config`
 
     Returns:
         tuple: Tuple of new provenance and status. Status is a string with one 

@@ -4,13 +4,13 @@ from niprov.jsonfile import JsonFile
 from niprov.filesystem import Filesystem
 from niprov.commandline import Commandline
 from niprov.files import FileFactory
-from niprov.options import NiprovOptions
+from niprov.config import Configuration
 import errno
 import copy
 
 
 def log(new, transformation, parents, code=None, logtext=None, transient=False,
-        script=None, provenance=None, opts=NiprovOptions(), 
+        script=None, provenance=None, opts=Configuration(), 
         repository=JsonFile(), filesys=Filesystem(), listener=Commandline(), 
         factory=FileFactory()):
     """
@@ -39,8 +39,8 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
             remains.
         provenance (dict, optional): Add the key-value pairs in this dictionary 
             to the provenance record for the new files.
-        opts (NiprovOptions): General settings for niprov. 
-            See :py:mod:`niprov.options`
+        opts (Configuration): General settings for niprov. 
+            See :py:mod:`niprov.config`
 
     Raises:
       IOError: '[Errno 2] File not found' is raised if the new file does not

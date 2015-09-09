@@ -3,18 +3,18 @@ Configuration
 
 Niprov can be configured through a text file with configuration directives.
 This file is located at ~/niprov.cfg.
+Alternatively, the settings can be changed in code:
+::
+
+    from niprov.config import Configuration
+    conf = Configuration
+    conf.verbose = True
+    niprov.log(x,y,z, opts=conf)
 
 
-``database-type``
-    *Default:* ``file``
 
-    Which database backend to use. Currently just ``file``.
 
-``database-url``
-    *Default:* ``~/provenance.json``
-
-    URL of the database. If ``database-type`` is ``file``, this is the path to
-    the file.
+See niprov.config.Configuration for details on the individual settings.
 
 
 

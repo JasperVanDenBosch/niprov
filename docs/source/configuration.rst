@@ -14,7 +14,7 @@ Alternatively, the settings can be changed in code:
 
 
 
-See niprov.config.Configuration for details on the individual settings.
+See :class:`niprov.config.Configuration` for details on the individual settings.
 
 
 

@@ -12,6 +12,7 @@ Submodules
    niprov.capturing
    niprov.cnt
    niprov.commandline
+   niprov.config
    niprov.dcm
    niprov.dependencies
    niprov.directexporter
@@ -31,7 +32,6 @@ Submodules
    niprov.logging
    niprov.mnefunsupport
    niprov.narrator
-   niprov.options
    niprov.nifti
    niprov.parrec
    niprov.recording

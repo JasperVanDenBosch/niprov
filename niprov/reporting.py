@@ -18,7 +18,7 @@ def report(medium=None, form=None, forFile=None, forSubject=None,
     Args:
         medium (str): The medium in which to publish the provenance. 
             One of 'html' (save as html and open in firefox),
-                'stdout' (print the provenance to the terminal)
+            'stdout' (print the provenance to the terminal)
         forFile (str): Select one file based on this path.
         forSubject (str): Select files regarding this subject.
 

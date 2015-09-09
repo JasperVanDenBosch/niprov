@@ -26,8 +26,7 @@ def handler(text, func, out, params, listener=Commandline(),
     fetch_raw_files: Runs discover on the subjects' raw data dirs.
     fetch_sss_files,
     apply_preprocessing_combined,
-    save_epochs:
-        For these steps, runs log for the new files.
+    save_epochs: For these steps, runs log for the new files.
     """
     funcname = func.func_name
     listener.mnefunEventReceived(funcname)

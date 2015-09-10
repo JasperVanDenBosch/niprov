@@ -4,6 +4,9 @@
 
 class Commandline(object):
 
+    def __init__(self, settings=None):
+        self.settings = settings
+
     def setOptions(self, opts):
         self.opts = opts
 

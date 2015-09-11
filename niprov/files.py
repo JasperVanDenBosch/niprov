@@ -1,5 +1,5 @@
 import os
-from niprov.dependencies import Dependencies
+from niprov.libraries import Libraries
 from niprov.commandline import Commandline
 from basefile import BaseFile
 from dcm import DicomFile
@@ -11,7 +11,7 @@ from niprov.cnt import NeuroscanFile
 class FileFactory(object):
     """Creates customized File objects.
 
-    Based on dependencies (python packages) installed and the filename, will
+    Based on libraries (python packages) installed and the filename, will
     return an object that derives from niprov.basefile.BaseFile.
     """
 
@@ -20,7 +20,7 @@ class FileFactory(object):
                '.cnt':(None, NeuroscanFile),
                '.fif':('mne',FifFile)}
 
-    def __init__(self, libs=Dependencies(), listener=Commandline()):
+    def __init__(self, libs=Libraries(), listener=Commandline()):
         self.libs = libs
         self.listener = listener
     

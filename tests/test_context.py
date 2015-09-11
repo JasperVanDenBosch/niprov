@@ -31,7 +31,7 @@ class ContextTests(unittest.TestCase):
         context.reconfigure(None)
         self.assertFalse(context.getListener().settings.verbose)
 
-    def test_Reconfigure_creates_new_dependencies_with_new_Configuration(self):
+    def test_Reconfigure_creates_new_libraries_with_new_Configuration(self):
         from niprov import Context, Configuration
         context = Context()
         self.assertFalse(context.getListener().settings.verbose)

@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 
-class Dependencies(object):
+class Libraries(object):
 
     def __init__(self):
         try:

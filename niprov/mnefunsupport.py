@@ -13,13 +13,13 @@ This module provides handlers to attach to mnefun events.
 """
 import os
 from niprov.commandline import Commandline
-from niprov.dependencies import Dependencies
+from niprov.libraries import Libraries
 from niprov.discovery import discover
 from niprov.logging import log
 
 
 def handler(text, func, out, params, listener=Commandline(), 
-    libs=Dependencies()):
+    libs=Libraries()):
     """mnefun on_process handler
 
     Responds to the following mnefun steps:

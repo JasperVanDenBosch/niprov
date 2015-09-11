@@ -1,13 +1,13 @@
 from datetime import datetime
 from niprov.basefile import BaseFile
-from niprov.dependencies import Dependencies
+from niprov.libraries import Libraries
 
 
 class ParrecFile(BaseFile):
 
-    def __init__(self, fpath, dependencies=Dependencies(), **kwargs):
+    def __init__(self, fpath, libraries=Libraries(), **kwargs):
         super(ParrecFile, self).__init__(fpath, **kwargs)
-        self.libs = dependencies
+        self.libs = libraries
 
     def inspect(self):
         provenance = super(ParrecFile, self).inspect()

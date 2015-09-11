@@ -12,9 +12,9 @@ class ParrecTests(BaseFileTests):
         self.setupNibabel()
         from niprov.parrec import ParrecFile
         self.constructor = ParrecFile
-        self.ckwargs = {'dependencies':self.libs}
+        self.ckwargs = {'libraries':self.libs}
         self.file = ParrecFile(self.path, listener=self.log, 
-            filesystem=self.filesys, hasher=self.hasher, dependencies=self.libs,
+            filesystem=self.filesys, hasher=self.hasher, libraries=self.libs,
             serializer=self.json)
 
     def test_Gets_basic_info_from_nibabel_and_returns_it(self):

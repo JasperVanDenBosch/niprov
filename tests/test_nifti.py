@@ -15,7 +15,7 @@ class NiftiTests(BaseFileTests):
         from niprov.nifti import NiftiFile
         self.constructor = NiftiFile
         self.file = NiftiFile(self.path, listener=self.log, 
-            filesystem=self.filesys, hasher=self.hasher, dependencies=self.libs,
+            filesystem=self.filesys, hasher=self.hasher, libraries=self.libs,
             serializer=self.json)
 
     def setupNibabel(self):

@@ -12,9 +12,9 @@ class FifTests(BaseFileTests):
         self.setupMne()
         from niprov.fif import FifFile
         self.constructor = FifFile
-        self.ckwargs = {'dependencies':self.libs}
+        self.ckwargs = {'libraries':self.libs}
         self.file = FifFile(self.path, listener=self.log, 
-            filesystem=self.filesys, hasher=self.hasher, dependencies=self.libs,
+            filesystem=self.filesys, hasher=self.hasher, libraries=self.libs,
             serializer=self.json)
 
     def test_Gets_basic_info_from_mne_and_returns_it(self):

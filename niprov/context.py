@@ -3,8 +3,8 @@ from niprov.commandline import Commandline
 from niprov.jsonfile import JsonFile
 from niprov.mongo import MongoRepository
 from niprov.files import FileFactory
-import niprov.adding
-import niprov.approval
+#import niprov.adding
+#import niprov.approval
 
 class Context(object):
 

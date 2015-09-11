@@ -1,5 +1,5 @@
 from niprov.commandline import Commandline
-from niprov.dependencies import Dependencies
+from niprov.libraries import Libraries
 from niprov.filesystem import Filesystem
 from niprov.hashing import Hasher
 from niprov.jsonserializing import JsonSerializer

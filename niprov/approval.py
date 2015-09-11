@@ -1,44 +1,44 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from niprov.context import Context
+from niprov.dependencies import Dependencies
 
 
-def markForApproval(files, context=Context()):
+def markForApproval(files, dependencies=Dependencies()):
     """Mark a list of files for approval by a human.
 
     Args:
         files (list): List of paths of files tracked by niprov to mark for
             approval.
     """
-    repository = context.getRepository()
+    repository = dependencies.getRepository()
     for filepath in files:
         repository.updateApproval(filepath,'pending')
 
-def markedForApproval(context=Context()):
+def markedForApproval(dependencies=Dependencies()):
     """List files marked for approval by a human.
     """
-    repository = context.getRepository() 
-    listener = context.getListener() 
+    repository = dependencies.getRepository() 
+    listener = dependencies.getListener() 
     markedFiles = repository.byApproval('pending')
     listener.filesMarkedForApproval(markedFiles)
     return markedFiles
 
-def approve(filepath, context=Context()):
+def approve(filepath, dependencies=Dependencies()):
     """Mark this file as approved.
 
     Args:
         filepath (str): Path to the tracked file that has been found valid.
     """
-    repository = context.getRepository() 
+    repository = dependencies.getRepository() 
     repository.updateApproval(filepath,'granted')
 
-def selectApproved(files, context=Context()):
+def selectApproved(files, dependencies=Dependencies()):
     """Return only files that have approval status 'granted'.
 
     Args:
         files (list): List of paths of files to check for approval status.
     """
-    repository = context.getRepository() 
+    repository = dependencies.getRepository() 
     selection = []
     for filepath in files:
         img = repository.byPath(filepath)

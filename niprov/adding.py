@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from niprov.context import Context
+from niprov.dependencies import Dependencies
 
 
-def add(filepath, transient=False, context=Context()):
+def add(filepath, transient=False, dependencies=Dependencies()):
     """
     Simply register the file.
 
@@ -30,10 +30,10 @@ def add(filepath, transient=False, context=Context()):
             'known': The file was already known to niprov, nothing happened.
             'dryrun': Function called with opts.dryrun, database not touched.
     """
-    file = context.getFileFactory()
-    repository = context.getRepository()
-    listener = context.getListener()
-    opts = context.config
+    opts = dependencies.getConfiguration()
+    file = dependencies.getFileFactory()
+    repository = dependencies.getRepository()
+    listener = dependencies.getListener()
 
     img = file.locatedAt(filepath, provenance={'transient':transient})
     if opts.dryrun:

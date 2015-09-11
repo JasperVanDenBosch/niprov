@@ -7,30 +7,30 @@ class ApprovalTests(unittest.TestCase):
     def setUp(self):
         self.repo = Mock()
         self.listener = Mock()
-        self.context = Mock()
-        self.context.getRepository.return_value = self.repo
-        self.context.getListener.return_value = self.listener
+        self.dependencies = Mock()
+        self.dependencies.getRepository.return_value = self.repo
+        self.dependencies.getListener.return_value = self.listener
 
     def test_markForApproval_tells_repo_to_set_approval_to_pending(self):
         import niprov
-        niprov.markForApproval(['f1','f2'], context=self.context)
+        niprov.markForApproval(['f1','f2'], dependencies=self.dependencies)
         self.repo.updateApproval.assert_any_call('f1','pending')
         self.repo.updateApproval.assert_any_call('f2','pending')
 
     def test_Approve_tells_repo_to_set_approval_to_granted(self):
         import niprov
-        niprov.approve('fx12', context=self.context)
+        niprov.approve('fx12', dependencies=self.dependencies)
         self.repo.updateApproval.assert_any_call('fx12','granted')
 
     def test_markedForApproval_lists_files_marked(self):
         import niprov
-        markedFiles = niprov.markedForApproval(context=self.context)
+        markedFiles = niprov.markedForApproval(dependencies=self.dependencies)
         self.repo.byApproval.assert_called_with('pending')
         self.assertEqual(self.repo.byApproval(), markedFiles)
 
     def test_markedForApproval_tells_listener_about_files(self):
         import niprov
-        markedFiles = niprov.markedForApproval(context=self.context)
+        markedFiles = niprov.markedForApproval(dependencies=self.dependencies)
         self.listener.filesMarkedForApproval.assert_called_with(
             markedFiles)
 
@@ -45,7 +45,7 @@ class ApprovalTests(unittest.TestCase):
         c1.provenance['approval'] = 'pending'
         self.repo.byPath.side_effect = lambda p: {'a1':a1,'b1':b1,'a2':a2,'c1':c1}[p]
         selected = niprov.selectApproved(['a1','b1','a2','c1'], 
-            context=self.context)
+            dependencies=self.dependencies)
         self.assertEqual(selected, [a1.path, a2.path])
 
     def mockImg(self):

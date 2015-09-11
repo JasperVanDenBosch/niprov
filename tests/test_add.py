@@ -15,15 +15,15 @@ class addTests(unittest.TestCase):
         self.fileFactory = Mock()
         self.fileFactory.locatedAt.return_value = self.img
         self.listener = Mock()
-        self.context = Mock()
-        self.context.getRepository.return_value = self.repo
-        self.context.getFileFactory.return_value = self.fileFactory
-        self.context.getListener.return_value = self.listener
-        self.context.config = self.opts
+        self.dependencies = Mock()
+        self.dependencies.getRepository.return_value = self.repo
+        self.dependencies.getFileFactory.return_value = self.fileFactory
+        self.dependencies.getListener.return_value = self.listener
+        self.dependencies.getConfiguration.return_value = self.opts
 
     def add(self, path, transient=False):
         from niprov.adding import add
-        return add(path, transient=transient, context=self.context)
+        return add(path, transient=transient, dependencies=self.dependencies)
 
     def assertNotCalledWith(self, m, *args, **kwargs):
         c = mock.call(*args, **kwargs)

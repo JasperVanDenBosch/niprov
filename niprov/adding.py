@@ -1,9 +1,5 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from niprov.commandline import Commandline
-from niprov.jsonfile import JsonFile
-from niprov.files import FileFactory
-from niprov.config import Configuration
 from niprov.context import Context
 
 

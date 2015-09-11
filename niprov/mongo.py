@@ -1,0 +1,4 @@
+
+
+class MongoRepository(object):
+    pass

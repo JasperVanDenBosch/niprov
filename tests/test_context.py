@@ -16,7 +16,13 @@ class ContextTests(unittest.TestCase):
         self.assertTrue(context.getListener().settings.verbose)
 
     def test_Changing_storage_setting_changes_repository_provided(self):
-        pass
+        from niprov import Context
+        from niprov.jsonfile import JsonFile
+        from niprov.mongo import MongoRepository
+        context = Context()
+        self.assertIsInstance(context.getRepository(), JsonFile)
+        context.settings.database_type = 'MongoDB'
+        self.assertIsInstance(context.getRepository(), MongoRepository)
 
     def test_Reconfigure_with_None_does_nothing(self):
         from niprov import Context
@@ -33,3 +39,10 @@ class ContextTests(unittest.TestCase):
         newSettings.verbose = True
         context.reconfigure(newSettings)
         self.assertTrue(context.getListener().settings.verbose)
+
+    def test_Filefactory_provided(self):
+        from niprov import Context
+        from niprov.files import FileFactory
+        context = Context()
+        self.assertIsInstance(context.getFileFactory(), FileFactory)
+

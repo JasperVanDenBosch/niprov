@@ -8,19 +8,19 @@ import niprov.adding
 class Context(object):
 
     def __init__(self):
-        self.settings = Configuration()
+        self.config = Configuration()
 
     def reconfigure(self, newConfiguration):
         if newConfiguration is not None:
-            self.settings = newConfiguration
+            self.config = newConfiguration
 
     def getListener(self):
-        return Commandline(self.settings)
+        return Commandline(self.config)
 
     def getRepository(self):
-        if self.settings.database_type == 'file':
+        if self.config.database_type == 'file':
             return JsonFile()
-        elif self.settings.database_type == 'MongoDB':
+        elif self.config.database_type == 'MongoDB':
             return MongoRepository()
 
     def getFileFactory(self):

@@ -8,7 +8,7 @@ class Commandline(object):
         self.settings = settings
 
     def setOptions(self, opts):
-        self.opts = opts
+        self.settings = opts
 
     def fileFound(self, image):
         template = '[provenance] {0}'

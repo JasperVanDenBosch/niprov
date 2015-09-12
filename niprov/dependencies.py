@@ -1,8 +1,4 @@
 from niprov.config import Configuration
-from niprov.commandline import Commandline
-from niprov.jsonfile import JsonFile
-from niprov.mongo import MongoRepository
-from niprov.files import FileFactory
 
 
 class Dependencies(object):
@@ -20,14 +16,33 @@ class Dependencies(object):
     def getConfiguration(self):
         return self.config
 
+    def getFileFactory(self):
+        import niprov.files
+        return niprov.files.FileFactory()
+
+    def getFilesystem(self):
+        import niprov.filesystem
+        return niprov.filesystem.Filesystem()
+
+    def getHasher(self):
+        import niprov.hashing
+        return niprov.hashing.Hasher()
+
     def getListener(self):
-        return Commandline(self.config)
+        import niprov.commandline
+        return niprov.commandline.Commandline(self.config)
 
     def getRepository(self):
+        import niprov.jsonfile
+        import niprov.mongo
         if self.config.database_type == 'file':
-            return JsonFile()
+            return niprov.jsonfile.JsonFile()
         elif self.config.database_type == 'MongoDB':
-            return MongoRepository()
+            return niprov.mongo.MongoRepository()
 
-    def getFileFactory(self):
-        return FileFactory()
+    def getSerializer(self):
+        import niprov.jsonserializing
+        return niprov.jsonserializing.JsonSerializer()
+
+
+

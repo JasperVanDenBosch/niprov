@@ -2,6 +2,7 @@ from niprov.dependencies import Dependencies
 from niprov.config import Configuration
 import niprov.adding
 import niprov.approval
+import niprov.discovery
 
 class Context(object):
 
@@ -12,6 +13,10 @@ class Context(object):
     def add(self, filepath, transient=False):
         """See :py:mod:`niprov.config`  """
         return niprov.adding.add(filepath, transient, dependencies=self.deps)
+
+    def discover(self, root):
+        """See :py:mod:`niprov.discovery`  """
+        return niprov.discovery.discover(root, dependencies=self.deps)
 
     def markForApproval(self, files):
         """See :py:mod:`niprov.approval`  """

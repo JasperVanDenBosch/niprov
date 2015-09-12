@@ -1,12 +1,13 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 import pkg_resources
-from niprov.filesystem import Filesystem
+from niprov.dependencies import Dependencies
 
 
 class FileFilter(object):
 
-    def __init__(self, filesys=Filesystem()):
+    def __init__(self, dependencies=Dependencies()):
+        filesys = dependencies.getFilesystem()
         filterfile = pkg_resources.resource_filename(
             'niprov','discovery-filter.txt')
         self.filters = filesys.readlines(filterfile)

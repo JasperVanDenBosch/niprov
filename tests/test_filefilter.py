@@ -7,10 +7,12 @@ class FileFilterTests(unittest.TestCase):
 
     def test_reads_extensions_from_default_file(self):
         import niprov.filefilter
+        dependencies = Mock()
         filesys = Mock()
+        dependencies.getFilesystem.return_value = filesys
         filesys.readlines.return_value = ['.abc','.def']
         niprov.filefilter.pkg_resources = Mock()
-        filt = niprov.filefilter.FileFilter(filesys=filesys)
+        filt = niprov.filefilter.FileFilter(dependencies=dependencies)
         niprov.filefilter.pkg_resources.resource_filename.assert_called_with(
             'niprov','discovery-filter.txt')
         filesys.readlines.assert_called_with(

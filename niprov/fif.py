@@ -5,9 +5,9 @@ from niprov.libraries import Libraries
 
 class FifFile(BaseFile):
 
-    def __init__(self, fpath, libraries=Libraries(), **kwargs):
+    def __init__(self, fpath, **kwargs):
         super(FifFile, self).__init__(fpath, **kwargs)
-        self.libs = libraries
+        self.libs = self.dependencies.getLibraries()
 
     def inspect(self):
         provenance = super(FifFile, self).inspect()

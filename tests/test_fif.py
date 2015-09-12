@@ -9,13 +9,11 @@ class FifTests(BaseFileTests):
     def setUp(self):
         super(FifTests, self).setUp()
         self.libs = Mock()
+        self.dependencies.getLibraries.return_value = self.libs
         self.setupMne()
         from niprov.fif import FifFile
         self.constructor = FifFile
-        self.ckwargs = {'libraries':self.libs}
-        self.file = FifFile(self.path, listener=self.log, 
-            filesystem=self.filesys, hasher=self.hasher, libraries=self.libs,
-            serializer=self.json)
+        self.file = FifFile(self.path, dependencies=self.dependencies)
 
     def test_Gets_basic_info_from_mne_and_returns_it(self):
         out = self.file.inspect()

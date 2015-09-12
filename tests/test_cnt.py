@@ -11,8 +11,7 @@ class CNTTests(BaseFileTests):
         self.filesys.open.return_value = MockFile()
         from niprov.cnt import NeuroscanFile
         self.constructor = NeuroscanFile
-        self.file = NeuroscanFile(self.path, listener=self.log, 
-            filesystem=self.filesys, hasher=self.hasher, serializer=self.json)
+        self.file = NeuroscanFile(self.path, dependencies=self.dependencies)
 
     def test_Inspect_parses_experimental_basics(self):
         out = self.file.inspect()

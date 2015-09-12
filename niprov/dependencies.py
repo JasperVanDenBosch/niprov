@@ -28,6 +28,10 @@ class Dependencies(object):
         import niprov.hashing
         return niprov.hashing.Hasher()
 
+    def getLibraries(self):
+        import niprov.libraries
+        return niprov.libraries.Libraries()
+
     def getListener(self):
         import niprov.commandline
         return niprov.commandline.Commandline(self.config)

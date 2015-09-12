@@ -10,11 +10,15 @@ class BaseFileTests(unittest.TestCase):
         self.filesys = Mock()
         self.json = Mock()
         self.path = 'example.abc'
+        self.dependencies = Mock()
+        self.dependencies.getListener.return_value = self.log
+        self.dependencies.getHasher.return_value = self.hasher
+        self.dependencies.getFilesystem.return_value = self.filesys
+        self.dependencies.getSerializer.return_value = self.json
         from niprov.basefile import BaseFile
         self.constructor = BaseFile
         self.ckwargs = {}
-        self.file = BaseFile(self.path, listener=self.log, 
-            filesystem=self.filesys, hasher=self.hasher, serializer=self.json)
+        self.file = BaseFile(self.path, dependencies=self.dependencies)
 
     def test_Saves_file_path_along_with_provenance(self):
         out = self.file.inspect()
@@ -60,7 +64,7 @@ class BaseFileTests(unittest.TestCase):
     def test_Inspect_leaves_existing_fields_updates_others(self):
         prov = {'aprop':'aval','size':9876}
         img = self.constructor(self.path, provenance=prov, 
-            filesystem=self.filesys, hasher=self.hasher, **self.ckwargs)
+            dependencies=self.dependencies, **self.ckwargs)
         img.inspect()
         self.assertEqual(img.provenance['aprop'], 'aval')
         self.assertEqual(img.provenance['size'], self.filesys.getsize(self.path))

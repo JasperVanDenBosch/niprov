@@ -9,13 +9,11 @@ class DicomTests(BaseFileTests):
     def setUp(self):
         super(DicomTests, self).setUp()
         self.libs = Mock()
+        self.dependencies.getLibraries.return_value = self.libs
         self.setupPydicom()
         from niprov.dcm import DicomFile
         self.constructor = DicomFile
-        self.ckwargs = {'libraries':self.libs}
-        self.file = DicomFile(self.path, listener=self.log, 
-            filesystem=self.filesys, hasher=self.hasher, libraries=self.libs,
-            serializer=self.json)
+        self.file = DicomFile(self.path, dependencies=self.dependencies)
 
     def test_Gets_basic_info_from_pydicom_and_returns_it(self):
         out = self.file.inspect()

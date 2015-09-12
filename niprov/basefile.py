@@ -1,15 +1,9 @@
-from niprov.commandline import Commandline
-from niprov.libraries import Libraries
-from niprov.filesystem import Filesystem
-from niprov.hashing import Hasher
-from niprov.jsonserializing import JsonSerializer
+from niprov.dependencies import Dependencies
 
 
 class BaseFile(object):
 
-    def __init__(self, fpath, provenance=None, listener=Commandline(), 
-            filesystem=Filesystem(), hasher=Hasher(), 
-            serializer=JsonSerializer()):
+    def __init__(self, fpath, provenance=None, dependencies=Dependencies()):
         self.path = fpath
         if provenance:
             self.provenance = provenance
@@ -17,10 +11,11 @@ class BaseFile(object):
                 self.provenance['path'] = self.path
         else:
             self.provenance = {'path':self.path}
-        self.listener = listener
-        self.filesystem = filesystem
-        self.hasher = hasher
-        self.serializer = serializer
+        self.dependencies = dependencies
+        self.listener = dependencies.getListener()
+        self.filesystem = dependencies.getFilesystem()
+        self.hasher = dependencies.getHasher()
+        self.serializer = dependencies.getSerializer()
 
     def inspect(self):
         self.provenance['size'] = self.filesystem.getsize(self.path)

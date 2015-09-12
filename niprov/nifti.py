@@ -5,9 +5,9 @@ from niprov.libraries import Libraries
 
 class NiftiFile(BaseFile):
 
-    def __init__(self, fpath, libraries=Libraries(), **kwargs):
+    def __init__(self, fpath, **kwargs):
         super(NiftiFile, self).__init__(fpath, **kwargs)
-        self.libs = libraries
+        self.libs = self.dependencies.getLibraries()
 
     def attach(self):
         """

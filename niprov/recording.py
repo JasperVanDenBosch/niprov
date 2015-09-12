@@ -32,7 +32,7 @@ def record(command, new=None, parents=None, transient=False, args=None,
     Returns:
         dict: New provenance
     """
-    listener.setOptions(opts)
+    listener.setOptions(opts) #after refactoring this out, get rid of it on Cli.
 
     # initialize mutable defaults:
     if new is None:

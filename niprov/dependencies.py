@@ -20,6 +20,10 @@ class Dependencies(object):
         import niprov.files
         return niprov.files.FileFactory()
 
+    def getFileFilter(self):
+        import niprov.filefilter
+        return niprov.filefilter.FileFilter()
+
     def getFilesystem(self):
         import niprov.filesystem
         return niprov.filesystem.Filesystem()

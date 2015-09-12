@@ -12,12 +12,15 @@ class DiscoveryTests(unittest.TestCase):
         self.filt = Mock()
         self.add = Mock()
         self.add.return_value = (Mock(), 'new')
+        self.dependencies = Mock()
+        self.dependencies.getFilesystem.return_value = self.filesys
+        self.dependencies.getListener.return_value = self.listener
+        self.dependencies.getFileFilter.return_value = self.filt
 
     def discover(self, path):
         import niprov.discovery
         niprov.discovery.add = self.add
-        niprov.discovery.discover(path, filesys=self.filesys, 
-            listener=self.listener, filefilter=self.filt)
+        niprov.discovery.discover(path, dependencies=self.dependencies)
 
     def test_Calls_add_on_files_encountered(self):
         self.setupFilter('.x')

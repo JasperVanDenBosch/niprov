@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from niprov.filesystem import Filesystem
-from niprov.commandline import Commandline
+from niprov.dependencies import Dependencies
 from niprov.html import HtmlExporter
 from niprov.stdout import StandardOutputExporter
 from niprov.directexporter import DirectExporter
@@ -10,9 +9,9 @@ from niprov.externals import Externals
 
 class ExportFactory(object):
 
-    def __init__(self):
-        self.listener = Commandline()
-        self.filesys = Filesystem()
+    def __init__(self, dependencies=Dependencies()):
+        self.listener = dependencies.getListener()
+        self.filesys = dependencies.getFilesystem()
 
     def createExporter(self, medium, form):
         """

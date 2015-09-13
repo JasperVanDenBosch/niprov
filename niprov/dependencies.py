@@ -16,6 +16,10 @@ class Dependencies(object):
     def getConfiguration(self):
         return self.config
 
+    def getExternals(self):
+        import niprov.externals
+        return niprov.externals.Externals()
+
     def getFileFactory(self):
         import niprov.files
         return niprov.files.FileFactory()
@@ -39,6 +43,10 @@ class Dependencies(object):
     def getListener(self):
         import niprov.commandline
         return niprov.commandline.Commandline(self.config)
+
+    def getNarrator(self):
+        import niprov.narrator
+        return niprov.narrator.Narrator()
 
     def getRepository(self):
         import niprov.jsonfile

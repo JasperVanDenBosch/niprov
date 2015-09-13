@@ -19,8 +19,12 @@ class HtmlTests(unittest.TestCase):
         niprov.html.TemplateLookup = self.templateLookupConstructor
         niprov.html.TemplateLookup.return_value = self.templateLookup
         (self.filesys, self.filehandle) = self.setupFilesys()
-        self.exporter = niprov.html.HtmlExporter(None, self.filesys, self.log, 
-            self.externals)
+        self.dependencies = Mock()
+        self.dependencies.getListener.return_value = self.log
+        self.dependencies.getExternals.return_value = self.externals
+        self.dependencies.getFilesystem.return_value = self.filesys
+        self.exporter = niprov.html.HtmlExporter(None, 
+            dependencies=self.dependencies)
 
     def test_Looks_for_templates_in_right_place(self):
         self.templateLookupConstructor.assert_called_with(

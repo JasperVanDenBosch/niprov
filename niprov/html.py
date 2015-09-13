@@ -7,11 +7,11 @@ from niprov.exporter import BaseExporter
 
 class HtmlExporter(BaseExporter):
 
-    def __init__(self, form, filesys, listener, externals, **kwargs):
-        super(HtmlExporter, self).__init__(form, **kwargs)
-        self.filesys = filesys
-        self.listener = listener
-        self.externals = externals
+    def __init__(self, form, dependencies):
+        super(HtmlExporter, self).__init__(form, dependencies=dependencies)
+        self.filesys = dependencies.getFilesystem()
+        self.listener = dependencies.getListener()
+        self.externals = dependencies.getExternals()
         templateDir = pkgr.resource_filename('niprov', 'templates')
         self.templates = TemplateLookup([templateDir])
 

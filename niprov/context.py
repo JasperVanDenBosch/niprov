@@ -3,6 +3,7 @@ from niprov.config import Configuration
 import niprov.adding
 import niprov.approval
 import niprov.discovery
+import niprov.inspection
 
 class Context(object):
 
@@ -17,6 +18,10 @@ class Context(object):
     def discover(self, root):
         """See :py:mod:`niprov.discovery`  """
         return niprov.discovery.discover(root, dependencies=self.deps)
+
+    def inspect(self, fpath):
+        """See :py:mod:`niprov.inspection`  """
+        return niprov.inspection.inspect(fpath, dependencies=self.deps)
 
     def markForApproval(self, files):
         """See :py:mod:`niprov.approval`  """

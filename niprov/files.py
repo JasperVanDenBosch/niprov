@@ -1,6 +1,5 @@
 import os
-from niprov.libraries import Libraries
-from niprov.commandline import Commandline
+from niprov.dependencies import Dependencies
 from basefile import BaseFile
 from dcm import DicomFile
 from parrec import ParrecFile
@@ -20,9 +19,9 @@ class FileFactory(object):
                '.cnt':(None, NeuroscanFile),
                '.fif':('mne',FifFile)}
 
-    def __init__(self, libs=Libraries(), listener=Commandline()):
-        self.libs = libs
-        self.listener = listener
+    def __init__(self, dependencies=Dependencies()):
+        self.libs = dependencies.getLibraries()
+        self.listener = dependencies.getListener()
     
     def locatedAt(self, path, provenance=None):
         """Return an object to represent the image file at the given path.

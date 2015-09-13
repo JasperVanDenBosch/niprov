@@ -52,7 +52,7 @@ class Dependencies(object):
         import niprov.jsonfile
         import niprov.mongo
         if self.config.database_type == 'file':
-            return niprov.jsonfile.JsonFile()
+            return niprov.jsonfile.JsonFile(dependencies=self)
         elif self.config.database_type == 'MongoDB':
             return niprov.mongo.MongoRepository()
 

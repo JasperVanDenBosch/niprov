@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 import unittest
-from mock import Mock
+from mock import Mock, patch
 from datetime import datetime
 import json
 import random
@@ -14,56 +14,72 @@ class StorageTests(unittest.TestCase):
         r = random.randint(1000,9999)
         self.templocation = '/var/tmp/provenance-{0}.json'.format(r)
         self.fileFactory = Mock()
+        self.serializer = Mock()
+        self.filesys = Mock()
+        self.dependencies = Mock()
+        from niprov.jsonserializing import JsonSerializer
+        from niprov.files import FileFactory
+        from niprov.filesystem import Filesystem
+        self.dependencies.getSerializer.return_value = JsonSerializer()
+        self.dependencies.getFileFactory.return_value = FileFactory()
+        self.dependencies.getFilesystem.return_value = Filesystem()
+#        self.dependencies.getSerializer.return_value = self.serializer
+#        self.dependencies.getFileFactory.return_value = self.fileFactory
+#        self.dependencies.getFilesystem.return_value = self.filesys
+        
+
+    def makeRepo(self):
+        from niprov.jsonfile import JsonFile
+        with patch('niprov.jsonfile.os') as os:
+            return JsonFile(dependencies=self.dependencies)
 
     def test_Can_add_file_and_retrieve_it(self):
-        from niprov.jsonfile import JsonFile
-        repo = JsonFile(factory=self.fileFactory)
+        self.dependencies.getFileFactory.return_value = self.fileFactory
+        repo = self.makeRepo()
         repo.datafile = self.templocation
         provenance = self.sampleProvenanceRecord()
         repo.add(provenance)
-        repo2 = JsonFile(factory=self.fileFactory)
+        repo2 = self.makeRepo()
         repo2.datafile = self.templocation
         out = repo2.byPath(provenance['path'])
         self.fileFactory.fromProvenance.assert_called_with(provenance)
         self.assertEqual(out, self.fileFactory.fromProvenance())
 
     def test_If_file_doesnt_exist_all_returns_empty_list(self):
-        from niprov.jsonfile import JsonFile
-        filesys = Mock()
-        filesys.read.side_effect = IOError(
+        self.dependencies.getFilesystem.return_value = self.filesys
+        self.filesys.read.side_effect = IOError(
             "[Errno 2] No such file or directory: 'provenance.json'")
-        repo = JsonFile(filesys)
+        repo = self.makeRepo()
         repo.datafile = self.templocation
         out = repo.all()
         self.assertEqual(out, [])
 
     def test_If_no_provenance_known_for_file_byPath_raises_IndexError(self):
-        from niprov.jsonfile import JsonFile
-        serializer = Mock()
-        serializer.deserializeList.return_value = []
-        repo = JsonFile(json=serializer)
+        self.dependencies.getSerializer.return_value = self.serializer
+        self.serializer.deserializeList.return_value = []
+        repo = self.makeRepo()
         repo.datafile = self.templocation
         with self.assertRaises(IndexError):
             repo.byPath('nothere')
 
-    def test_Can_add_file_and_ask_whether_its_known(self):
-        from niprov.jsonfile import JsonFile
-        repo = JsonFile(factory=self.fileFactory)
+    def test_Can_add_file_and_ask_whether_its_known_byPath(self):
+        self.dependencies.getFileFactory.return_value = self.fileFactory
+        repo = self.makeRepo()
         repo.datafile = self.templocation
         provenance = self.sampleProvenanceRecord()
         repo.add(provenance)
-        repo2 = JsonFile(factory=self.fileFactory)
+        repo2 = self.makeRepo()
         repo2.datafile = self.templocation
         self.assertFalse(repo2.knowsByPath('nonexisting'))
         self.assertTrue(repo2.knowsByPath(provenance['path']))
 
     def test_Can_add_file_and_ask_whether_its_known(self):
-        from niprov.jsonfile import JsonFile
-        repo = JsonFile(factory=self.fileFactory)
+        self.dependencies.getFileFactory.return_value = self.fileFactory
+        repo = self.makeRepo()
         repo.datafile = self.templocation
         provenance = self.sampleProvenanceRecord()
         repo.add(provenance)
-        repo2 = JsonFile(factory=self.fileFactory)
+        repo2 = self.makeRepo()
         repo2.datafile = self.templocation
         known = Mock()
         known.path = provenance['path']
@@ -73,14 +89,14 @@ class StorageTests(unittest.TestCase):
         self.assertTrue(repo2.knows(known))
 
     def test_Can_add_file_and_ask_whether_its_series_is_known(self):
-        from niprov.jsonfile import JsonFile
-        repo = JsonFile(factory=self.fileFactory)
+        self.dependencies.getFileFactory.return_value = self.fileFactory
+        repo = self.makeRepo()
         repo.datafile = self.templocation
         provenance = self.sampleProvenanceRecord()
         SUID = 'iamtheseries'
         provenance['seriesuid'] = SUID
         repo.add(provenance)
-        repo2 = JsonFile(factory=self.fileFactory)
+        repo2 = self.makeRepo()
         repo2.datafile = self.templocation
         knownSeries = Mock()
         knownSeries.path = 'apath1'
@@ -92,8 +108,8 @@ class StorageTests(unittest.TestCase):
         self.assertTrue(repo2.knowsSeries(knownSeries)) #but this file's series known
 
     def test_Can_add_file_and_ask_whether_its_series_is_known(self):
-        from niprov.jsonfile import JsonFile
-        repo = JsonFile(factory=self.fileFactory)
+        self.dependencies.getFileFactory.return_value = self.fileFactory
+        repo = self.makeRepo()
         repo.datafile = self.templocation
         provenance = self.sampleProvenanceRecord()
         provenance['seriesuid'] = None
@@ -103,8 +119,8 @@ class StorageTests(unittest.TestCase):
         self.assertFalse(repo.knowsSeries(noneSeries))
 
     def test_Can_get_provenance_for_series_with_getSeries(self):
-        from niprov.jsonfile import JsonFile
-        repo = JsonFile(factory=self.fileFactory)
+        self.dependencies.getFileFactory.return_value = self.fileFactory
+        repo = self.makeRepo()
         repo.datafile = self.templocation
         prov1 = self.sampleProvenanceRecord()
         prov2 = self.sampleProvenanceRecord()
@@ -122,33 +138,33 @@ class StorageTests(unittest.TestCase):
             repo.getSeries(img2)
 
     def test_Update(self):
-        from niprov.jsonfile import JsonFile
-        repo = JsonFile(factory=self.fileFactory)
+        self.dependencies.getFileFactory.return_value = self.fileFactory
+        repo = self.makeRepo()
         repo.datafile = self.templocation
         provenance = self.sampleProvenanceRecord()
         repo.add(provenance)
         intermediate = copy.deepcopy(provenance)
         intermediate['newfield'] = 'newval'
         intermediate['subject'] = 'Jane Newman'
-        repo3 = JsonFile(factory=self.fileFactory)
+        repo3 = self.makeRepo()
         repo3.datafile = self.templocation
         updatedImage = Mock()
         updatedImage.path = intermediate['path']
         updatedImage.provenance = intermediate
         repo3.update(updatedImage)
-        repo4 = JsonFile(factory=self.fileFactory)
+        repo4 = self.makeRepo()
         repo4.datafile = self.templocation
         out = repo4.byPath(provenance['path'])
         self.fileFactory.fromProvenance.assert_called_with( intermediate)
 
     def test_ByPath_also_returns_series_if_filepath_among_it(self):
-        from niprov.jsonfile import JsonFile
-        repo = JsonFile(factory=self.fileFactory)
+        self.dependencies.getFileFactory.return_value = self.fileFactory
+        repo = self.makeRepo()
         repo.datafile = self.templocation
         provenance = self.sampleProvenanceRecord()
         provenance['filesInSeries'] = ['sfile1.f','sfile2.f']
         repo.add(provenance)
-        repo2 = JsonFile(factory=self.fileFactory)
+        repo2 = self.makeRepo()
         repo2.datafile = self.templocation
         out = repo2.byPath('sfile1.f')
         self.fileFactory.fromProvenance.assert_called_with(provenance)
@@ -156,8 +172,7 @@ class StorageTests(unittest.TestCase):
             repo2.byPath('sfile3.f')
 
 #    def test_byApproval_calls_all_and_filters_based_on_approval(self):
-#        from niprov.jsonfile import JsonFile
-#        repo = JsonFile(factory=self.fileFactory)
+#        repo = self.makeRepo()
 #        img1 = self.imgWithApproval('xyz')
 #        img2 = self.imgWithoutApproval()
 #        img3 = self.imgWithApproval('xyz')

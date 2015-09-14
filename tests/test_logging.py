@@ -1,5 +1,5 @@
 import unittest
-from mock import Mock
+from mock import Mock, sentinel
 from datetime import datetime as dt
 
 
@@ -23,6 +23,7 @@ class loggingTests(unittest.TestCase):
             return self.newimg
         self.factory.fromProvenance.side_effect = lambda p : wrapProv(p)
         self.dependencies = Mock()
+        self.dependencies.reconfigureOrGetConfiguration.return_value = self.opts
         self.dependencies.getRepository.return_value = self.repo
         self.dependencies.getFilesystem.return_value = self.filesys
         self.dependencies.getListener.return_value = self.listener
@@ -147,4 +148,14 @@ class loggingTests(unittest.TestCase):
         self.opts.dryrun = True
         provenance = self.log('new', 'trans', 'old')
         assert not self.repo.add.called
+
+    def test_Calls_reconfigureOrGetConfiguration_on_dependencies(self):
+        outOpts = Mock()
+        outOpts.dryrun = True
+        self.dependencies.reconfigureOrGetConfiguration.return_value = outOpts
+        provenance = self.log(['/p/f1'], 'bla', ['/p/f2'], transient=True)
+        self.dependencies.reconfigureOrGetConfiguration.assert_called_with(
+            self.opts)
+        assert not self.repo.add.called
+        
 

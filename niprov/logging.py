@@ -50,6 +50,7 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     listener = dependencies.getListener()
     factory = dependencies.getFileFactory()
     filesys = dependencies.getFilesystem()
+    opts = dependencies.reconfigureOrGetConfiguration(opts)
 
     if isinstance(new, basestring):
         new = [new]

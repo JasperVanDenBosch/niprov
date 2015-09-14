@@ -1,9 +1,7 @@
 from niprov.dependencies import Dependencies
 from niprov.config import Configuration
-import niprov.adding
-import niprov.approval
-import niprov.discovery
-import niprov.inspection
+import niprov
+
 
 class Context(object):
 
@@ -22,6 +20,10 @@ class Context(object):
     def inspect(self, fpath):
         """See :py:mod:`niprov.inspection`  """
         return niprov.inspection.inspect(fpath, dependencies=self.deps)
+
+    def log(self, *args, **kwargs):
+        """See :py:mod:`niprov.logging`  """
+        return niprov.logging.log(*args, dependencies=self.deps, **kwargs)
 
     def markForApproval(self, files):
         """See :py:mod:`niprov.approval`  """

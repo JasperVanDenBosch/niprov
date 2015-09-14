@@ -22,11 +22,15 @@ class loggingTests(unittest.TestCase):
             self.provenancesCreated.append(p)
             return self.newimg
         self.factory.fromProvenance.side_effect = lambda p : wrapProv(p)
+        self.dependencies = Mock()
+        self.dependencies.getRepository.return_value = self.repo
+        self.dependencies.getFilesystem.return_value = self.filesys
+        self.dependencies.getListener.return_value = self.listener
+        self.dependencies.getFileFactory.return_value = self.factory
 
     def log(self, *args, **kwargs):
         from niprov.logging import log
-        return log(*args, repository=self.repo, filesys=self.filesys, 
-            listener=self.listener, factory=self.factory, opts=self.opts, 
+        return log(*args, dependencies=self.dependencies, opts=self.opts, 
             **kwargs)
 
     def test_Returns_img(self):

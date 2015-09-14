@@ -13,6 +13,7 @@ Submodules
    niprov.cnt
    niprov.commandline
    niprov.config
+   niprov.context
    niprov.dcm
    niprov.dependencies
    niprov.directexporter
@@ -29,6 +30,7 @@ Submodules
    niprov.inspection
    niprov.jsonfile
    niprov.jsonserializing
+   niprov.libraries
    niprov.logging
    niprov.mnefunsupport
    niprov.narrator

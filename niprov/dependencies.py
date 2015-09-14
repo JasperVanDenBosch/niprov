@@ -26,11 +26,11 @@ class Dependencies(object):
 
     def getFileFactory(self):
         import niprov.files
-        return niprov.files.FileFactory()
+        return niprov.files.FileFactory(dependencies=self)
 
     def getFileFilter(self):
         import niprov.filefilter
-        return niprov.filefilter.FileFilter()
+        return niprov.filefilter.FileFilter(dependencies=self)
 
     def getFilesystem(self):
         import niprov.filesystem
@@ -58,7 +58,7 @@ class Dependencies(object):
         if self.config.database_type == 'file':
             return niprov.jsonfile.JsonFile(dependencies=self)
         elif self.config.database_type == 'MongoDB':
-            return niprov.mongo.MongoRepository()
+            return niprov.mongo.MongoRepository(dependencies=self)
 
     def getSerializer(self):
         import niprov.jsonserializing

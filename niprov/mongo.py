@@ -1,4 +1,7 @@
+from niprov.dependencies import Dependencies
 
 
 class MongoRepository(object):
-    pass
+
+    def __init__(self, dependencies=Dependencies()):
+        pass

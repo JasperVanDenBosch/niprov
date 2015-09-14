@@ -1,14 +1,11 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 import os
-from niprov.filesystem import Filesystem
-from niprov.commandline import Commandline
-from niprov.filefilter import FileFilter
+from niprov.dependencies import Dependencies
 from niprov.adding import add
 
 
-def discover(root, filefilter=FileFilter(), filesys=Filesystem(), 
-        listener=Commandline()):
+def discover(root, dependencies=Dependencies()):
     """
     Search a directory for image files, and add them to your provenance collection.
 
@@ -19,6 +16,10 @@ def discover(root, filefilter=FileFilter(), filesys=Filesystem(),
     Args:
         root (str): The top directory in which to look for new files.
     """
+    filesys = dependencies.getFilesystem()
+    filefilter = dependencies.getFileFilter()
+    listener = dependencies.getListener()
+
     dirs = filesys.walk(root)
     stats = {'total':0, 'new':0, 'series':0, 'failed':0, 'known':0}
     for (root, sdirs, files) in dirs:

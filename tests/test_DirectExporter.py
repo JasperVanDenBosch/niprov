@@ -15,7 +15,9 @@ class DirectExporterTests(TestCase):
     def test_For_narrative_form_Returns_narrator_output(self):
         from niprov.directexporter import DirectExporter
         narrator = Mock()
-        exporter = DirectExporter(form='narrative',narrator=narrator)
+        dependencies = Mock()
+        dependencies.getNarrator.return_value = narrator
+        exporter = DirectExporter(form='narrative', dependencies=dependencies)
         out = exporter.exportNarrative(sentinel.one)
         narrator.narrate.assert_called_with(sentinel.one)
         self.assertEqual(out, narrator.narrate(sentinel.one))

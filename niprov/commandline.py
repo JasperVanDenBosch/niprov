@@ -4,8 +4,8 @@
 
 class Commandline(object):
 
-    def setOptions(self, opts):
-        self.opts = opts
+    def __init__(self, settings=None):
+        self.settings = settings
 
     def fileFound(self, image):
         template = '[provenance] {0}'

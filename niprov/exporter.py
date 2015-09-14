@@ -1,4 +1,4 @@
-from niprov.narrator import Narrator
+from niprov.dependencies import Dependencies
 
 
 class BaseExporter(object):
@@ -6,9 +6,9 @@ class BaseExporter(object):
     derived.
     """
 
-    def __init__(self, form=None, narrator=Narrator()):
+    def __init__(self, form=None, dependencies=Dependencies()):
         self.form = form
-        self.narrator = narrator
+        self.narrator = dependencies.getNarrator()
 
     def export(self, provenance):
         """Publish provenance.

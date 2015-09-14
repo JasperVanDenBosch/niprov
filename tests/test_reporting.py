@@ -9,11 +9,14 @@ class ReportingTests(unittest.TestCase):
         self.listener = Mock()
         self.exporter = Mock()
         self.factory.createExporter.return_value = self.exporter
+        self.dependencies = Mock()
+        self.dependencies.getExportFactory.return_value = self.factory
+        self.dependencies.getRepository.return_value = self.repo
+        self.dependencies.getListener.return_value = self.listener
 
     def report(self, *args, **kwargs):
         import niprov
-        return niprov.report(*args, repository=self.repo, exportFactory=self.factory,
-            listener=self.listener, **kwargs)
+        return niprov.report(*args, dependencies=self.dependencies, **kwargs)
 
     def test_Without_specifics_returns_all_files(self):
         out = self.report()
@@ -32,31 +35,22 @@ class ReportingTests(unittest.TestCase):
         self.assertEqual(out, self.exporter.export())
 
     def test_Obtains_exporter_from_factory(self):
-        import niprov
-        factory = Mock()
-        repo = Mock()
-        niprov.report(repository=repo, exportFactory=factory)
-        factory.createExporter.assert_any_call(None, None)
-        niprov.report(medium='html', repository=repo, exportFactory=factory)
-        factory.createExporter.assert_any_call('html', None)
-        niprov.report(form='narrative', repository=repo, exportFactory=factory)
-        factory.createExporter.assert_any_call(None, 'narrative')
+        self.report()
+        self.factory.createExporter.assert_any_call(None, None)
+        self.report(medium='html')
+        self.factory.createExporter.assert_any_call('html', None)
+        self.report(form='narrative')
+        self.factory.createExporter.assert_any_call(None, 'narrative')
 
     def test_Passes_provenance_to_exporter(self):
-        import niprov
-        factory = Mock()
-        repo = Mock()
-        niprov.report(repository=repo, exportFactory=factory)
-        factory.createExporter().export.assert_any_call(repo.all())
-        niprov.report(forSubject='Jane', repository=repo, exportFactory=factory)
-        factory.createExporter().export.assert_any_call(repo.bySubject())
+        self.report()
+        self.factory.createExporter().export.assert_any_call(self.repo.all())
+        self.report(forSubject='Jane')
+        self.factory.createExporter().export.assert_any_call(self.repo.bySubject())
 
     def test_Passes_single_item_of_provenance_to_exporter(self):
-        import niprov
-        factory = Mock()
-        repo = Mock()
-        niprov.report(forFile='xyz',repository=repo, exportFactory=factory)
-        factory.createExporter().export.assert_any_call(repo.byPath('xyz'))
+        self.report(forFile='xyz')
+        self.factory.createExporter().export.assert_any_call(self.repo.byPath('xyz'))
 
     def test_If_file_unknown_tells_listener(self):
         self.repo.knowsByPath.return_value = False

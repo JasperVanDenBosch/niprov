@@ -1,13 +1,10 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from niprov.jsonfile import JsonFile
-from niprov.exporters import ExportFactory
-from niprov.commandline import Commandline
+from niprov.dependencies import Dependencies
 
 
 def report(medium=None, form=None, forFile=None, forSubject=None, 
-        repository=JsonFile(), exportFactory=ExportFactory(), 
-        listener=Commandline()):
+        dependencies=Dependencies()):
     """Publish or simply return provenance for selected files.
 
     To get provenance on one specific file, pass its path as the 'forFile' 
@@ -25,6 +22,10 @@ def report(medium=None, form=None, forFile=None, forSubject=None,
     Returns:
         Provenance reported. Either a list of dicts, or a dict.
     """
+    exportFactory = dependencies.getExportFactory()
+    repository = dependencies.getRepository()
+    listener = dependencies.getListener()
+
     exporter = exportFactory.createExporter(medium, form)
     if forFile:
         if not repository.knowsByPath(forFile):

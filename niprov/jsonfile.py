@@ -1,19 +1,17 @@
-from niprov.filesystem import Filesystem
-from jsonserializing import JsonSerializer
-from niprov.files import FileFactory
 import os
+from niprov.dependencies import Dependencies
 
 
 class JsonFile(object):
     """Stores provenance in a local text file encoded as json.
     """
 
-    def __init__(self, filesys=Filesystem(), json=JsonSerializer(), 
-            factory=FileFactory()):
-        self.filesys = filesys
-        self.json = json
-        self.factory = factory
-        self.datafile = os.path.expanduser(os.path.join('~','provenance.json'))
+    def __init__(self, dependencies=Dependencies()):
+        self.filesys = dependencies.getFilesystem()
+        self.json = dependencies.getSerializer()
+        self.factory = dependencies.getFileFactory()
+        url = dependencies.getConfiguration().database_url
+        self.datafile = os.path.expanduser(url)
 
     def add(self, record):
         """Add the provenance for one file to storage.

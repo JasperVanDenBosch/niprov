@@ -9,14 +9,13 @@ class NiftiTests(BaseFileTests):
     def setUp(self):
         super(NiftiTests, self).setUp()
         self.libs = Mock()
+        self.dependencies.getLibraries.return_value = self.libs
         self.img = Mock()
         self.hdr = Mock()
         self.setupNibabel()
         from niprov.nifti import NiftiFile
         self.constructor = NiftiFile
-        self.file = NiftiFile(self.path, listener=self.log, 
-            filesystem=self.filesys, hasher=self.hasher, dependencies=self.libs,
-            serializer=self.json)
+        self.file = NiftiFile(self.path, dependencies=self.dependencies)
 
     def setupNibabel(self):
         # Extension constructor simply creates a tuple of arguments

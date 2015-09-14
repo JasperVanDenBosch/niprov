@@ -1,18 +1,13 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from niprov.jsonfile import JsonFile
-from niprov.filesystem import Filesystem
-from niprov.commandline import Commandline
-from niprov.files import FileFactory
+from niprov.dependencies import Dependencies
 from niprov.config import Configuration
 import errno
 import copy
 
 
 def log(new, transformation, parents, code=None, logtext=None, transient=False,
-        script=None, provenance=None, opts=Configuration(), 
-        repository=JsonFile(), filesys=Filesystem(), listener=Commandline(), 
-        factory=FileFactory()):
+        script=None, provenance=None, opts=None, dependencies=Dependencies()):
     """
     Register a transformation that creates a new image (or several).
 
@@ -50,6 +45,12 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
         dict or list: New provenance, if multiple files were created, this is 
             a list of dicts, otherwise, it is a single dict.
     """
+    repository = dependencies.getRepository()
+    listener = dependencies.getListener()
+    factory = dependencies.getFileFactory()
+    filesys = dependencies.getFilesystem()
+    opts = dependencies.reconfigureOrGetConfiguration(opts)
+
     if isinstance(new, basestring):
         new = [new]
     if isinstance(parents, basestring):

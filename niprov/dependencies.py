@@ -20,6 +20,10 @@ class Dependencies(object):
         import niprov.externals
         return niprov.externals.Externals()
 
+    def getExportFactory(self):
+        import niprov.exporters
+        return niprov.exporters.ExportFactory(dependencies=self)
+
     def getFileFactory(self):
         import niprov.files
         return niprov.files.FileFactory()

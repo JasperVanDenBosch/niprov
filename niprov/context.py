@@ -49,3 +49,6 @@ class Context(object):
         """See :py:mod:`niprov.recording`  """
         return niprov.recording.record(*args, dependencies=self.deps, **kwargs)
 
+    def report(self, *args, **kwargs):
+        """See :py:mod:`niprov.reporting`  """
+        return niprov.reporting.report(*args, dependencies=self.deps, **kwargs)

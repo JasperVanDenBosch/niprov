@@ -7,9 +7,6 @@ class Commandline(object):
     def __init__(self, settings=None):
         self.settings = settings
 
-    def setOptions(self, opts):
-        self.settings = opts
-
     def fileFound(self, image):
         template = '[provenance] {0}'
         print(template.format(image.path))

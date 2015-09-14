@@ -41,3 +41,7 @@ class Context(object):
         """See :py:mod:`niprov.approval`  """
         return niprov.approval.selectApproved(files, dependencies=self.deps)
 
+    def record(self, *args, **kwargs):
+        """See :py:mod:`niprov.recording`  """
+        return niprov.recording.record(*args, dependencies=self.deps, **kwargs)
+

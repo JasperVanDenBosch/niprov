@@ -7,8 +7,7 @@ import copy
 
 
 def log(new, transformation, parents, code=None, logtext=None, transient=False,
-        script=None, provenance=None, opts=Configuration(), 
-        dependencies=Dependencies()):
+        script=None, provenance=None, opts=None, dependencies=Dependencies()):
     """
     Register a transformation that creates a new image (or several).
 

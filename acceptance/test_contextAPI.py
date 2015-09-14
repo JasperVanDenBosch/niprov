@@ -25,7 +25,7 @@ class ContextApiTests(unittest.TestCase):
         provenance.discover('testdata')
         newfile = 'temp/smoothed.test'
         self.touch(newfile)
-#        provenance.log(newfile, 'test', 'testdata/eeg/stub.cnt')
+        provenance.log(newfile, 'test', 'testdata/eeg/stub.cnt')
 #        img = provenance.report(forFile=newfile)
 #        self.assertEqual(img.provenance['subject'], 'Jane Doe')
 #        self.assertEqual(img.provenance['size'], os.path.getsize(newfile))

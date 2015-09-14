@@ -15,9 +15,13 @@ class RecordingTests(unittest.TestCase):
         self.listener = Mock()
         recording.log = self.log
         self.recording = recording
+        self.dependencies = Mock()
+        self.dependencies.reconfigureOrGetConfiguration.return_value = self.opts
+        self.dependencies.getExternals.return_value = self.sub
+        self.dependencies.getListener.return_value = self.listener
 
     def record(self, cmd, **kwargs):
-        self.recording.record(cmd, externals=self.sub, listener=self.listener, 
+        self.recording.record(cmd, dependencies=self.dependencies, 
             opts=self.opts, **kwargs)
 
     def test_Executes_commands(self):
@@ -114,10 +118,6 @@ class RecordingTests(unittest.TestCase):
             transient=False, code=' '.join(cmd), logtext=self.sub.run().output, 
             script=None, opts=self.opts, provenance={})
 
-    def test_Gives_listener_options(self):
-        self.record(['mytransform','-out','newfile.f','-in','oldfile.f'])
-        self.listener.setOptions.assert_called_with(self.opts)
-
     def test_Passes_listener_bash_command(self):
         def myfunc():
             print('Hello MyFunc')
@@ -128,4 +128,14 @@ class RecordingTests(unittest.TestCase):
         cmd = ['mytransform','-o','newfile.f','-i','oldfile.f']
         self.record(cmd)
         self.listener.receivedBashCommand.assert_called_with(cmd)
+
+    def test_Calls_reconfigureOrGetConfiguration_on_dependencies(self):
+        cmd = ['mytransform','-out','newfile.f','-in','oldfile.f']
+        outOpts = Mock()
+        outOpts.dryrun = True
+        self.dependencies.reconfigureOrGetConfiguration.return_value = outOpts
+        self.record(cmd, transient=True)
+        self.dependencies.reconfigureOrGetConfiguration.assert_called_with(
+            self.opts)
+        assert not self.sub.run.called
 

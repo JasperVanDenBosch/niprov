@@ -1,15 +1,13 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from niprov.externals import Externals
 from niprov.logging import log
-from niprov.commandline import Commandline
+from niprov.dependencies import Dependencies
 from niprov.config import Configuration
 from capturing import OutputCapture
 
 
 def record(command, new=None, parents=None, transient=False, args=None, 
-    kwargs=None, externals=Externals(), listener=Commandline(), 
-    opts=Configuration()):
+    kwargs=None, opts=None, dependencies=Dependencies()):
     """Execute a command and log it as provenance for the newly created file.
 
     Args:
@@ -32,7 +30,9 @@ def record(command, new=None, parents=None, transient=False, args=None,
     Returns:
         dict: New provenance
     """
-    listener.setOptions(opts) #after refactoring this out, get rid of it on Cli.
+    externals = dependencies.getExternals()
+    listener = dependencies.getListener()
+    opts = dependencies.reconfigureOrGetConfiguration(opts)
 
     # initialize mutable defaults:
     if new is None:

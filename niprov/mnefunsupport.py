@@ -12,14 +12,12 @@ This module provides handlers to attach to mnefun events.
 
 """
 import os
-from niprov.commandline import Commandline
-from niprov.libraries import Libraries
+from niprov.dependencies import Dependencies
 from niprov.discovery import discover
 from niprov.logging import log
 
 
-def handler(text, func, out, params, listener=Commandline(), 
-    libs=Libraries()):
+def handler(text, func, out, params, dependencies=Dependencies()):
     """mnefun on_process handler
 
     Responds to the following mnefun steps:
@@ -28,6 +26,9 @@ def handler(text, func, out, params, listener=Commandline(),
     apply_preprocessing_combined,
     save_epochs: For these steps, runs log for the new files.
     """
+    listener = dependencies.getListener()
+    libs = dependencies.getLibraries()
+
     funcname = func.func_name
     listener.mnefunEventReceived(funcname)
     paramdict = {}

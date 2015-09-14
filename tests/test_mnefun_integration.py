@@ -7,6 +7,10 @@ class MnefunTests(unittest.TestCase):
     def setUp(self):
         self.listener = Mock()
         self.libs = Mock()
+        self.dependencies = Mock()
+        self.dependencies.getListener.return_value = self.listener
+        self.dependencies.getLibraries.return_value = self.libs
+
 
     def test_Discovers_fetched_raw_files(self):
         import niprov.mnefunsupport
@@ -20,7 +24,7 @@ class MnefunTests(unittest.TestCase):
             pass
         with patch('niprov.mnefunsupport.discover') as discover:
             niprov.mnefunsupport.handler('Pulling raw files from acquisition machine', 
-                fetch_raw_files, None, params, listener=self.listener)
+                fetch_raw_files, None, params, dependencies=self.dependencies)
             discover.assert_any_call('/root/johndoe/rawdir')
             discover.assert_any_call('/root/janedoe/rawdir')
             self.listener.mnefunEventReceived.assert_called_with('fetch_raw_files')
@@ -40,7 +44,7 @@ class MnefunTests(unittest.TestCase):
             pass
         with patch('niprov.mnefunsupport.log') as log:
             niprov.mnefunsupport.handler('Pulling SSS files from remote workstation', 
-                fetch_sss_files, None, params, listener=self.listener, libs=self.libs)
+                fetch_sss_files, None, params, dependencies=self.dependencies)
             log.assert_any_call(fnames['sss']['s1'][0],
                                 'Signal Space Separation',
                                 fnames['raw']['s1'][0], provenance = {'mnefun':{}})
@@ -64,7 +68,7 @@ class MnefunTests(unittest.TestCase):
         with patch('niprov.mnefunsupport.log') as log:
             niprov.mnefunsupport.handler('Apply SSP vectors and filtering.', 
                 apply_preprocessing_combined, None, params, 
-                listener=self.listener, libs=self.libs)
+                dependencies=self.dependencies)
             log.assert_any_call(fnames['pca']['s1'][0],
                                 'Signal Space Projection',
                                 fnames['sss']['s1'][0], provenance = {'mnefun':{}})
@@ -91,7 +95,7 @@ class MnefunTests(unittest.TestCase):
             pass
         with patch('niprov.mnefunsupport.log') as log:
             niprov.mnefunsupport.handler('Doing epoch EQ/DQ', 
-                save_epochs, None, params, listener=self.listener, libs=self.libs)
+                save_epochs, None, params, dependencies=self.dependencies)
             log.assert_any_call(epochfnames['s1'][0], #any event file
                                 'Epoching',
                                 fnames['pca']['s1'], provenance = {'mnefun':{}}) #all raw files for subj
@@ -116,7 +120,7 @@ class MnefunTests(unittest.TestCase):
             pass
         with patch('niprov.mnefunsupport.log') as log:
             niprov.mnefunsupport.handler('Pulling SSS files from remote workstation', 
-                fetch_sss_files, None, params, listener=self.listener, libs=self.libs)
+                fetch_sss_files, None, params, dependencies=self.dependencies)
             log.assert_called_with(fnames['sss']['s2'][1],
                                 'Signal Space Separation',
                                 fnames['raw']['s2'][1], 

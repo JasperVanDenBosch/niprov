@@ -51,8 +51,8 @@ class MongoRepository(object):
         Returns:
             :class:`.DicomFile`: Image object that caries provenance for the series.
         """
-        seriesId = image.getSeriesId()
-        record = self.db.provenance.find_one({'seriesuid':seriesId})
+        seriesUid = image.getSeriesId()
+        record = self.db.provenance.find_one({'seriesuid':seriesUid})
         return self.factory.fromProvenance(record)
 
     def knowsSeries(self, image):
@@ -68,4 +68,13 @@ class MongoRepository(object):
         seriesUid = image.getSeriesId()
         if seriesUid is None:
             return False
+        return self.db.provenance.find_one({'seriesuid':seriesUid}) is not None
+
+    def add(self, provenance):
+        """Add the provenance for one file to storage.
+
+        Args:
+            record (dict): Provenance for one image file.
+        """
+        self.db.provenance.insert_one(provenance)
 

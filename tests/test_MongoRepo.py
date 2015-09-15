@@ -59,3 +59,16 @@ class MongoRepoTests(unittest.TestCase):
         img.getSeriesId.return_value = None
         self.assertFalse(self.repo.knowsSeries(img))
 
+    def test_knowsSeries(self):
+        self.setupRepo()
+        img = Mock()
+        self.assertTrue(self.repo.knowsSeries(img))
+        self.db.provenance.find_one.return_value = None
+        self.assertFalse(self.repo.knowsSeries(img))
+
+    def test_Add(self):
+        self.setupRepo()
+        prov = Mock()
+        self.repo.add(prov)
+        self.db.provenance.insert_one.assert_called_with(prov)
+

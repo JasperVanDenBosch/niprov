@@ -41,3 +41,31 @@ class MongoRepository(object):
         """
         return self.knowsByPath(image.path)
 
+    def getSeries(self, image):
+        """Get the object that carries provenance for the series that the image 
+        passed is in. 
+
+        Args:
+            image (:class:`.DicomFile`): File that is part of a series.
+
+        Returns:
+            :class:`.DicomFile`: Image object that caries provenance for the series.
+        """
+        seriesId = image.getSeriesId()
+        record = self.db.provenance.find_one({'seriesuid':seriesId})
+        return self.factory.fromProvenance(record)
+
+    def knowsSeries(self, image):
+        """Whether this file is part of a series for which provenance 
+        is available.
+
+        Args:
+            image (:class:`.BaseFile`): File for which the series is sought.
+
+        Returns:
+            bool: True if provenance is available for this series.
+        """
+        seriesUid = image.getSeriesId()
+        if seriesUid is None:
+            return False
+

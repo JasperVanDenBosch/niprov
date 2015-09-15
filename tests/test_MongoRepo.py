@@ -43,3 +43,19 @@ class MongoRepoTests(unittest.TestCase):
             self.db.provenance.find_one())
         self.assertEqual(self.factory.fromProvenance(), out)
 
+    def test_getSeries(self):
+        self.setupRepo()
+        img = Mock()
+        out = self.repo.getSeries(img)
+        self.db.provenance.find_one.assert_called_with(
+            {'seriesuid':img.getSeriesId()})
+        self.factory.fromProvenance.assert_called_with(
+            self.db.provenance.find_one())
+        self.assertEqual(self.factory.fromProvenance(), out)
+
+    def test_knowsSeries_returns_False_if_no_series_id(self):
+        self.setupRepo()
+        img = Mock()
+        img.getSeriesId.return_value = None
+        self.assertFalse(self.repo.knowsSeries(img))
+

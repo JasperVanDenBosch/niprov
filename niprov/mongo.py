@@ -78,3 +78,40 @@ class MongoRepository(object):
         """
         self.db.provenance.insert_one(provenance)
 
+    def update(self, image):
+        """Save changed provenance for this file..
+
+        Args:
+            image (:class:`.BaseFile`): Image file that has changed.
+        """
+        self.db.provenance.update({'path':image.path}, image.provenance)
+
+    def all(self):
+        """Retrieve all known provenance from storage.
+
+        Returns:
+            list: List of provenance for known files.
+        """
+        return self.db.provenance.find()
+
+
+    def bySubject(self, subject):
+        """Get the provenance for all files of a given participant. 
+
+        Args:
+            subject (str): The name or other ID string.
+
+        Returns:
+            list: List of provenance for known files imaging this subject.
+        """
+        return self.db.provenance.find({'subject':subject})
+
+    def byApproval(self, approvalStatus):
+        return self.db.provenance.find({'approval':approvalStatus})
+
+    def updateApproval(self, fpath, approvalStatus):
+        self.db.provenance.update({'path':fpath}, 
+            {'$set': {'approval': approvalStatus}})
+
+
+

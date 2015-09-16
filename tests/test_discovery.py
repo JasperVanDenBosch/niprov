@@ -28,15 +28,15 @@ class DiscoveryTests(unittest.TestCase):
             ('root',[],['p/p2/f3.x'])] #(dirpath, dirnames, filenames)
         self.discover('root')
         self.filesys.walk.assert_called_with('root')
-        self.add.assert_any_call('root/p/f1.x', transient=False)
-        self.add.assert_any_call('root/p/f2.x', transient=False)
-        self.add.assert_any_call('root/p/p2/f3.x', transient=False)
+        self.add.assert_any_call('root/p/f1.x', transient=False, dependencies=self.dependencies)
+        self.add.assert_any_call('root/p/f2.x', transient=False, dependencies=self.dependencies)
+        self.add.assert_any_call('root/p/p2/f3.x', transient=False, dependencies=self.dependencies)
 
     def test_file_filters(self):
         self.setupFilter('valid.file')
         self.filesys.walk.return_value = [('root',[],['valid.file','other.file'])]
         self.discover('root')
-        self.add.assert_any_call('root/valid.file', transient=False)
+        self.add.assert_any_call('root/valid.file', transient=False, dependencies=self.dependencies)
         self.assertNotCalledWith(self.add, 'root/other.file')
 
     def test_Gives_listener_summary(self):

@@ -27,7 +27,8 @@ def discover(root, dependencies=Dependencies()):
             filepath = os.path.join(root, filename)
             if filefilter.include(filename):
                 stats['total'] = stats['total'] + 1
-                (p, status) = add(filepath, transient=False)
+                (p, status) = add(filepath, transient=False, 
+                    dependencies=dependencies)
                 stats[status] = stats[status] + 1
     listener.discoveryFinished(nnew=stats['new'], nadded=stats['series'], 
         nfailed=stats['failed'], ntotal=stats['total'])

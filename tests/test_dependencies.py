@@ -1,6 +1,6 @@
 import unittest
 import mock
-from mock import Mock
+from mock import Mock, patch
 
 
 class DependenciesTests(unittest.TestCase):
@@ -20,9 +20,11 @@ class DependenciesTests(unittest.TestCase):
         from niprov.jsonfile import JsonFile
         from niprov.mongo import MongoRepository
         dependencies = Dependencies()
-        self.assertIsInstance(dependencies.getRepository(), JsonFile)
-        dependencies.config.database_type = 'MongoDB'
-        self.assertIsInstance(dependencies.getRepository(), MongoRepository)
+        with patch('niprov.mongo.pymongo'):
+            dependencies.config.database_type = 'file'
+            self.assertIsInstance(dependencies.getRepository(), JsonFile)
+            dependencies.config.database_type = 'MongoDB'
+            self.assertIsInstance(dependencies.getRepository(), MongoRepository)
 
     def test_reconfigureOrGetConfiguration_with_None_doesnt_affect_config(self):
         from niprov.dependencies import Dependencies

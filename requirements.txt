@@ -3,3 +3,4 @@ coveralls
 sphinx
 sphinxcontrib-napoleon
 mako
+pymongo

@@ -21,6 +21,7 @@ class DependenciesTests(unittest.TestCase):
         from niprov.mongo import MongoRepository
         dependencies = Dependencies()
         with patch('niprov.mongo.pymongo'):
+            dependencies.config.database_type = 'file'
             self.assertIsInstance(dependencies.getRepository(), JsonFile)
             dependencies.config.database_type = 'MongoDB'
             self.assertIsInstance(dependencies.getRepository(), MongoRepository)

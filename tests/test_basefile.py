@@ -10,14 +10,18 @@ class BaseFileTests(unittest.TestCase):
         self.filesys = Mock()
         self.json = Mock()
         self.path = 'example.abc'
+        self.location = Mock()
+        self.location.toDictionary.return_value = {'path':self.path}
+        self.locationFactory = Mock()
+        self.locationFactory.fromString.return_value = self.location
         self.dependencies = Mock()
+        self.dependencies.getLocationFactory.return_value = self.locationFactory
         self.dependencies.getListener.return_value = self.log
         self.dependencies.getHasher.return_value = self.hasher
         self.dependencies.getFilesystem.return_value = self.filesys
         self.dependencies.getSerializer.return_value = self.json
         from niprov.basefile import BaseFile
         self.constructor = BaseFile
-        self.ckwargs = {}
         self.file = BaseFile(self.path, dependencies=self.dependencies)
 
     def test_Saves_file_path_along_with_provenance(self):
@@ -52,22 +56,30 @@ class BaseFileTests(unittest.TestCase):
 
     def test_Construct_with_provenance(self):
         prov = {'aprop':'aval'}
-        img = self.constructor(self.path, provenance=prov)
+        img = self.constructor(self.path, provenance=prov, dependencies=self.dependencies)
         self.assertEqual(prov, img.provenance)
 
     def test_Construct_with_provenance_adds_path_if_not_set(self):
         prov = {'aprop':'aval'}
-        img = self.constructor(self.path, provenance=prov)
+        img = self.constructor(self.path, provenance=prov, dependencies=self.dependencies)
         self.assertIn('path', img.provenance)
         self.assertEqual(self.path, img.provenance['path'])
 
     def test_Inspect_leaves_existing_fields_updates_others(self):
         prov = {'aprop':'aval','size':9876}
         img = self.constructor(self.path, provenance=prov, 
-            dependencies=self.dependencies, **self.ckwargs)
+            dependencies=self.dependencies)
         img.inspect()
         self.assertEqual(img.provenance['aprop'], 'aval')
         self.assertEqual(img.provenance['size'], self.filesys.getsize(self.path))
+
+    def test_Uses_location_objects_to_add_location_info_to_provenance(self):
+        self.location.toDictionary.return_value = {'newLocKey':'newLocValue',
+            'path':'newPathVal'}
+        img = self.constructor(self.path, dependencies=self.dependencies)
+        self.locationFactory.fromString.assert_called_with(self.path)
+        self.assertEqual('newLocValue', img.provenance['newLocKey'])
+        self.assertEqual('newPathVal', img.provenance['path'])
 
 
 #ATTACH

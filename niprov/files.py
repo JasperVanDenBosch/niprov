@@ -22,6 +22,7 @@ class FileFactory(object):
     def __init__(self, dependencies=Dependencies()):
         self.libs = dependencies.getLibraries()
         self.listener = dependencies.getListener()
+        self.dependencies = dependencies
     
     def locatedAt(self, path, provenance=None):
         """Return an object to represent the image file at the given path.
@@ -39,12 +40,15 @@ class FileFactory(object):
         """
         extension = os.path.splitext(path)[1].lower()
         if extension not in self.formats:
-            return BaseFile(path, provenance=provenance)
+            return BaseFile(path, provenance=provenance, 
+                dependencies=self.dependencies)
         elif not self.libs.hasDependency(self.formats[extension][0]):
             self.listener.missingDependencyForImage(
                 self.formats[extension][0], path)
-            return BaseFile(path)
-        return self.formats[extension][1](path, provenance=provenance)
+            return BaseFile(path, 
+                dependencies=self.dependencies)
+        return self.formats[extension][1](path, provenance=provenance, 
+                dependencies=self.dependencies)
 
     def fromProvenance(self, provenance):
         return self.locatedAt(provenance['path'], provenance)

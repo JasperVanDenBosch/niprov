@@ -8,7 +8,12 @@ class FileFactoryTests(unittest.TestCase):
         self.libs = Mock()
         self.libs.hasDependency.return_value = True
         self.log = Mock()
+        self.location = Mock()
+        self.location.toDictionary.return_value = {'path':''}
+        self.locationFactory = Mock()
+        self.locationFactory.fromString.return_value = self.location
         self.dependencies = Mock()
+        self.dependencies.getLocationFactory.return_value = self.locationFactory
         self.dependencies.getListener.return_value = self.log
         self.dependencies.getLibraries.return_value = self.libs
 
@@ -83,9 +88,11 @@ class FileFactoryTests(unittest.TestCase):
         inProvenance = {'path':'some.file','aproperty':'avalue'}
         inProvenanceDcm = {'path':'some.dcm','aproperty':'avalue'}
         fileCreated = factory.fromProvenance(inProvenance)
-        niprov.files.BaseFile.assert_called_with('some.file', provenance=inProvenance)
+        niprov.files.BaseFile.assert_called_with('some.file', 
+            provenance=inProvenance, dependencies=self.dependencies)
         fileCreated = factory.fromProvenance(inProvenanceDcm)
-        niprov.files.DicomFile.assert_called_with('some.dcm', provenance=inProvenanceDcm)
+        niprov.files.DicomFile.assert_called_with('some.dcm', 
+            provenance=inProvenanceDcm, dependencies=self.dependencies)
 
     def test_If_cnt_passed_uses_NeuroscanFile(self):
         from niprov.files import FileFactory

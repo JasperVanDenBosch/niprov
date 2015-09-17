@@ -2,6 +2,7 @@ import socket
 
 
 class Location(object):
+    """Represents the location of a file."""
 
     def __init__(self, locationString):
         if ':' in locationString:

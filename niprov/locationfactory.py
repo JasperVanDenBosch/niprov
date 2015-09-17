@@ -3,6 +3,7 @@ from niprov.location import Location
 
 
 class LocationFactory(object):
+    """Creates Location objects."""
 
     def __init__(self, dependencies=Dependencies()):
         self.dependencies = dependencies

@@ -48,6 +48,10 @@ class Dependencies(object):
         import niprov.commandline
         return niprov.commandline.Commandline(self.config)
 
+    def getLocationFactory(self):
+        import niprov.locationfactory
+        return niprov.locationfactory.LocationFactory(dependencies=self)
+
     def getNarrator(self):
         import niprov.narrator
         return niprov.narrator.Narrator()
@@ -63,6 +67,4 @@ class Dependencies(object):
     def getSerializer(self):
         import niprov.jsonserializing
         return niprov.jsonserializing.JsonSerializer()
-
-
 

@@ -16,6 +16,7 @@ class Location(object):
         d = {}
         d['path'] = self.path
         d['hostname'] = self.hostname
+        d['location'] = str(self)
         return d
 
     def __str__(self):

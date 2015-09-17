@@ -18,8 +18,8 @@ class LocationTests(DependencyInjectionTestBase):
     def test_Location_toDictionary(self):
         from niprov.location import Location
         loc = Location('HAL:/p/n1.f')
-        self.assertEqual({'path':'/p/n1.f','hostname':'HAL'}, 
-            loc.toDictionary())
+        expected = {'path':'/p/n1.f','hostname':'HAL','location':'HAL:/p/n1.f'}
+        self.assertEqual(expected, loc.toDictionary())
 
     def test_Location_by_default_fills_in_local_hostname(self):
         from niprov.location import Location

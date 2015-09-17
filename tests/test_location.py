@@ -17,7 +17,26 @@ class LocationTests(DependencyInjectionTestBase):
 
     def test_Location_toDictionary(self):
         from niprov.location import Location
-        loc = Location('/p/n1.f')
-        self.assertEqual({'path':'/p/n1.f'}, loc.toDictionary())
+        loc = Location('HAL:/p/n1.f')
+        self.assertEqual({'path':'/p/n1.f','hostname':'HAL'}, 
+            loc.toDictionary())
 
+    def test_Location_by_default_fills_in_local_hostname(self):
+        from niprov.location import Location
+        with patch('niprov.location.socket') as socket:
+            loc = Location('/p/n1.f')
+            self.assertEqual(socket.gethostname(), loc.hostname)
+
+    def test_Location_parses_locationString(self):
+        from niprov.location import Location
+        with patch('niprov.location.socket') as socket:
+            loc = Location('HAL:/p/n1.f')
+            self.assertEqual('HAL', loc.hostname)
+            self.assertEqual('/p/n1.f', loc.path)
+
+    def test_Location_stringifies_to_full_locationString(self):
+        from niprov.location import Location
+        with patch('niprov.location.socket') as socket:
+            loc = Location('HAL:/p/n1.f')
+            self.assertEqual('HAL:/p/n1.f', str(loc))
 

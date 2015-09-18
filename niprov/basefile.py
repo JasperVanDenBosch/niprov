@@ -9,12 +9,12 @@ class BaseFile(object):
         self.filesystem = dependencies.getFilesystem()
         self.hasher = dependencies.getHasher()
         self.serializer = dependencies.getSerializer()
-        location = dependencies.getLocationFactory().fromString(location)
+        self.location = dependencies.getLocationFactory().fromString(location)
         if provenance:
             self.provenance = provenance
         else:
             self.provenance = {}
-        self.provenance.update(location.toDictionary())
+        self.provenance.update(self.location.toDictionary())
         self.path = self.provenance['path']
 
     def inspect(self):

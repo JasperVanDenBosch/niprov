@@ -80,6 +80,7 @@ class BaseFileTests(unittest.TestCase):
         self.locationFactory.fromString.assert_called_with(self.path)
         self.assertEqual('newLocValue', img.provenance['newLocKey'])
         self.assertEqual('newPathVal', img.provenance['path'])
+        self.assertEqual(self.location, img.location)
 
 
 #ATTACH

@@ -137,26 +137,6 @@ class StorageTests(unittest.TestCase):
         with self.assertRaises(IndexError):
             repo.getSeries(img2)
 
-    def test_Update(self):
-        self.dependencies.getFileFactory.return_value = self.fileFactory
-        repo = self.makeRepo()
-        repo.datafile = self.templocation
-        provenance = self.sampleProvenanceRecord()
-        repo.add(provenance)
-        intermediate = copy.deepcopy(provenance)
-        intermediate['newfield'] = 'newval'
-        intermediate['subject'] = 'Jane Newman'
-        repo3 = self.makeRepo()
-        repo3.datafile = self.templocation
-        updatedImage = Mock()
-        updatedImage.path = intermediate['path']
-        updatedImage.provenance = intermediate
-        repo3.update(updatedImage)
-        repo4 = self.makeRepo()
-        repo4.datafile = self.templocation
-        out = repo4.byPath(provenance['path'])
-        self.fileFactory.fromProvenance.assert_called_with( intermediate)
-
     def test_ByPath_also_returns_series_if_filepath_among_it(self):
         self.dependencies.getFileFactory.return_value = self.fileFactory
         repo = self.makeRepo()

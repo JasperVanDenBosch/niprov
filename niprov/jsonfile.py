@@ -33,11 +33,10 @@ class JsonFile(object):
         """
         current = self.all()
         for r in range(len(current)):
-            if current[r]['path'] == image.path:
+            if current[r]['location'] == image.location.toString():
                 current[r] = image.provenance
         jsonstr = self.json.serializeList(current)
-        with open(self.datafile, 'w') as fp:
-            fp.write(jsonstr)
+        self.filesys.write(self.datafile, jsonstr)
 
     def all(self):
         """Retrieve all known provenance from storage.

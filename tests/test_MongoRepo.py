@@ -77,7 +77,7 @@ class MongoRepoTests(unittest.TestCase):
         img = Mock()
         self.repo.update(img)
         self.db.provenance.update.assert_called_with(
-            {'path':img.path}, img.provenance)
+            {'location':img.location.toString()}, img.provenance)
 
     def test_all(self):
         self.factory.fromProvenance.side_effect = lambda p: 'img_'+p

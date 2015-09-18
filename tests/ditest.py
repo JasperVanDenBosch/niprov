@@ -11,6 +11,7 @@ class DependencyInjectionTestBase(unittest.TestCase):
         self.json = Mock()
         self.repo = Mock()
         self.fileFactory = Mock()
+        self.serializer = Mock()
         self.location = Mock()
         self.locationFactory = Mock()
         self.locationFactory.fromString.return_value = self.location
@@ -22,6 +23,7 @@ class DependencyInjectionTestBase(unittest.TestCase):
         self.dependencies.getSerializer.return_value = self.json
         self.dependencies.getRepository.return_value = self.repo
         self.dependencies.getFileFactory.return_value = self.fileFactory
+        self.dependencies.getSerializer.return_value = self.serializer
 
 
 

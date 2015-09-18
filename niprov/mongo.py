@@ -84,7 +84,8 @@ class MongoRepository(object):
         Args:
             image (:class:`.BaseFile`): Image file that has changed.
         """
-        self.db.provenance.update({'path':image.path}, image.provenance)
+        self.db.provenance.update({'location':image.location.toString()}, 
+            image.provenance)
 
     def all(self):
         """Retrieve all known provenance from storage.

@@ -21,4 +21,7 @@ class Location(object):
         return d
 
     def __str__(self):
+        return self.toString()
+
+    def toString(self):
         return ':'.join([self.hostname, self.path])

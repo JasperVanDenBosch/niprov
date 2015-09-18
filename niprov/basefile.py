@@ -3,13 +3,13 @@ from niprov.dependencies import Dependencies
 
 class BaseFile(object):
 
-    def __init__(self, fpath, provenance=None, dependencies=Dependencies()):
+    def __init__(self, location, provenance=None, dependencies=Dependencies()):
         self.dependencies = dependencies
         self.listener = dependencies.getListener()
         self.filesystem = dependencies.getFilesystem()
         self.hasher = dependencies.getHasher()
         self.serializer = dependencies.getSerializer()
-        location = dependencies.getLocationFactory().fromString(fpath)
+        location = dependencies.getLocationFactory().fromString(location)
         if provenance:
             self.provenance = provenance
         else:

@@ -5,8 +5,8 @@ from niprov.libraries import Libraries
 
 class FifFile(BaseFile):
 
-    def __init__(self, fpath, **kwargs):
-        super(FifFile, self).__init__(fpath, **kwargs)
+    def __init__(self, location, **kwargs):
+        super(FifFile, self).__init__(location, **kwargs)
         self.libs = self.dependencies.getLibraries()
 
     def inspect(self):

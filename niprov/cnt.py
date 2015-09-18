@@ -10,8 +10,8 @@ class NeuroscanFile(BaseFile):
     _datatypes = {'char':1, 'uchar':1, 'long':4,'ulong':4,'short':2,'ushort':2,
         'float':4, 'double':8,'int':4}
 
-    def __init__(self, fpath, **kwargs):
-        super(NeuroscanFile, self).__init__(fpath, **kwargs)
+    def __init__(self, location, **kwargs):
+        super(NeuroscanFile, self).__init__(location, **kwargs)
 
     def inspect(self):
         provenance = super(NeuroscanFile, self).inspect()

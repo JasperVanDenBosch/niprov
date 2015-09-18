@@ -85,8 +85,8 @@ class FileFactoryTests(unittest.TestCase):
         niprov.files.DicomFile = Mock()
         niprov.files.FileFactory.formats['.dcm'] = ('dicom', niprov.files.DicomFile)
         factory = niprov.files.FileFactory(dependencies=self.dependencies)
-        inProvenance = {'path':'some.file','aproperty':'avalue'}
-        inProvenanceDcm = {'path':'some.dcm','aproperty':'avalue'}
+        inProvenance = {'location':'some.file','aproperty':'avalue'}
+        inProvenanceDcm = {'location':'some.dcm','aproperty':'avalue'}
         fileCreated = factory.fromProvenance(inProvenance)
         niprov.files.BaseFile.assert_called_with('some.file', 
             provenance=inProvenance, dependencies=self.dependencies)

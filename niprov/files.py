@@ -24,8 +24,8 @@ class FileFactory(object):
         self.listener = dependencies.getListener()
         self.dependencies = dependencies
     
-    def locatedAt(self, path, provenance=None):
-        """Return an object to represent the image file at the given path.
+    def locatedAt(self, location, provenance=None):
+        """Return an object to represent the image file at the given location.
 
         If no specific class is available to handle a file with the filename 
         provided, will default to a BaseFile. Similarly, if missing the 
@@ -33,25 +33,25 @@ class FileFactory(object):
         BaseFile.
 
         Args:
-            path: Path to the file to represent.
+            location: Path to the file to represent.
 
         Returns:
             :class:`.BaseFile`: An object that derives from BaseFile
         """
-        extension = os.path.splitext(path)[1].lower()
+        extension = os.path.splitext(location)[1].lower()
         if extension not in self.formats:
-            return BaseFile(path, provenance=provenance, 
+            return BaseFile(location, provenance=provenance, 
                 dependencies=self.dependencies)
         elif not self.libs.hasDependency(self.formats[extension][0]):
             self.listener.missingDependencyForImage(
-                self.formats[extension][0], path)
-            return BaseFile(path, 
+                self.formats[extension][0], location)
+            return BaseFile(location, 
                 dependencies=self.dependencies)
-        return self.formats[extension][1](path, provenance=provenance, 
+        return self.formats[extension][1](location, provenance=provenance, 
                 dependencies=self.dependencies)
 
     def fromProvenance(self, provenance):
-        return self.locatedAt(provenance['path'], provenance)
+        return self.locatedAt(provenance['location'], provenance)
 
 
 

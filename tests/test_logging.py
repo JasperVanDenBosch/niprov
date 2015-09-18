@@ -1,33 +1,26 @@
 import unittest
 from mock import Mock, sentinel
 from datetime import datetime as dt
+from tests.ditest import DependencyInjectionTestBase
 
 
-class loggingTests(unittest.TestCase):
+class LoggingTests(DependencyInjectionTestBase):
 
     def setUp(self):
-        self.repo = Mock()
+        super(LoggingTests, self).setUp()
         self.repo.knowsByPath.return_value = True
         self.opts = Mock()
         self.opts.dryrun = False
         img = Mock()
         img.provenance = {'acquired':dt.now(),'subject':'JD', 'protocol':'X'}
         self.repo.byPath.return_value = img
-        self.filesys = Mock()
-        self.listener = Mock()
-        self.factory = Mock()
         self.newimg = Mock()
         self.provenancesCreated = []
         def wrapProv(p):
             self.provenancesCreated.append(p)
             return self.newimg
-        self.factory.fromProvenance.side_effect = lambda p : wrapProv(p)
-        self.dependencies = Mock()
+        self.fileFactory.fromProvenance.side_effect = lambda p : wrapProv(p)
         self.dependencies.reconfigureOrGetConfiguration.return_value = self.opts
-        self.dependencies.getRepository.return_value = self.repo
-        self.dependencies.getFilesystem.return_value = self.filesys
-        self.dependencies.getListener.return_value = self.listener
-        self.dependencies.getFileFactory.return_value = self.factory
 
     def log(self, *args, **kwargs):
         from niprov.logging import log
@@ -85,16 +78,6 @@ class loggingTests(unittest.TestCase):
         self.log(new, trans, parents, transient=True)
         self.assertEqual(self.provenancesCreated[0]['transformation'], trans)
 
-    def test_Can_pass_multiple_new_files(self):
-        parents = ['/p/f1']
-        new = ['/p/f2','/p/f3']
-        trans = 'Something cool'
-        self.log(new, trans, parents)
-        self.assertEqual(self.provenancesCreated[0]['parents'], parents)
-        self.assertEqual(self.provenancesCreated[1]['parents'], parents)
-        self.assertEqual(self.provenancesCreated[0]['path'], new[0])
-        self.assertEqual(self.provenancesCreated[1]['path'], new[1])
-
     def test_Script_added_to_provenance(self):
         parents = ['/p/f1']
         new = '/p/f2'
@@ -111,13 +94,6 @@ class loggingTests(unittest.TestCase):
         self.log(new, trans, parents, provenance=p)
         self.assertEqual(self.provenancesCreated[0]['akey'], 'avalue')
 
-    def test_Notifies_listener_and_exits_if_parent_unknown(self):
-        self.repo.knowsByPath.return_value = False
-        parent = '/p/f1'
-        parents = [parent]
-        provenance = self.log('new', 'trans', parents)
-        self.listener.unknownFile.assert_called_with(parent)
-        assert not self.repo.add.called
 
     def test_Doesnt_complain_if_parent_is_missing_basic_fields(self):
         img = Mock()
@@ -156,6 +132,25 @@ class loggingTests(unittest.TestCase):
         provenance = self.log(['/p/f1'], 'bla', ['/p/f2'], transient=True)
         self.dependencies.reconfigureOrGetConfiguration.assert_called_with(
             self.opts)
+        assert not self.repo.add.called
+
+    def test_Can_pass_multiple_new_files(self): # LOCATION
+        parents = ['p1','p2']
+        new = ['/p/f2','/p/f3']
+        trans = 'Something cool'
+        self.locationFactory.completeString.side_effect = lambda p: 'l:'+p
+        self.log(new, trans, parents)
+        self.assertEqual(self.provenancesCreated[0]['parents'], ['l:p1','l:p2'])
+        self.assertEqual(self.provenancesCreated[1]['parents'], ['l:p1','l:p2'])
+        self.assertEqual(self.provenancesCreated[0]['location'], new[0])
+        self.assertEqual(self.provenancesCreated[1]['location'], new[1])
+
+    def test_Notifies_listener_and_exits_if_parent_unknown(self): # LOCATION
+        self.repo.knowsByPath.return_value = False
+        parent = '/p/f1'
+        parents = [parent]
+        provenance = self.log('new', 'trans', parents)
+        self.listener.unknownFile.assert_called_with(parent)
         assert not self.repo.add.called
         
 

@@ -40,3 +40,12 @@ class LocationTests(DependencyInjectionTestBase):
             loc = Location('HAL:/p/n1.f')
             self.assertEqual('HAL:/p/n1.f', str(loc))
 
+    def test_LocationFactory_completeString(self):
+        from niprov.locationfactory import LocationFactory
+        with patch('niprov.locationfactory.Location') as Location:
+            factory = LocationFactory()
+            factory.fromString = Mock()
+            outstr = factory.completeString('/j/k/l')
+            factory.fromString.assert_called_with('/j/k/l')
+            self.assertEqual(str(factory.fromString()), outstr)
+

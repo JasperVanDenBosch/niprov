@@ -10,3 +10,6 @@ class LocationFactory(object):
 
     def fromString(self, locationString):
         return Location(locationString)
+
+    def completeString(self, locationString):
+        return str(self.fromString(locationString))

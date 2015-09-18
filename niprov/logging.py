@@ -50,6 +50,7 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     factory = dependencies.getFileFactory()
     filesys = dependencies.getFilesystem()
     opts = dependencies.reconfigureOrGetConfiguration(opts)
+    location = dependencies.getLocationFactory()
 
     if isinstance(new, basestring):
         new = [new]
@@ -63,7 +64,7 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
 
     #gather provenance common to all new files
     commonProvenance = provenance
-    commonProvenance['parents'] = parents
+    commonProvenance['parents'] = [location.completeString(p) for p in parents]
     commonProvenance['transformation'] = transformation
     commonProvenance['script'] = script
     commonProvenance['transient'] = transient
@@ -84,7 +85,7 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     newImages = []
     for newfile in new:
         singleProvenance = copy.deepcopy(commonProvenance)
-        singleProvenance['path'] = newfile
+        singleProvenance['location'] = newfile
         img = factory.fromProvenance(singleProvenance)
         if not transient:
             if not filesys.fileExists(newfile):

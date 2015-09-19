@@ -17,9 +17,9 @@ class Context(object):
         """See :py:mod:`niprov.discovery`  """
         return niprov.discovery.discover(root, dependencies=self.deps)
 
-    def inspect(self, fpath):
+    def inspect(self, location):
         """See :py:mod:`niprov.inspection`  """
-        return niprov.inspection.inspect(fpath, dependencies=self.deps)
+        return niprov.inspection.inspect(location, dependencies=self.deps)
 
     def log(self, *args, **kwargs):
         """See :py:mod:`niprov.logging`  """

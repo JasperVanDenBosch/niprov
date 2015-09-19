@@ -31,6 +31,8 @@ Submodules
    niprov.jsonfile
    niprov.jsonserializing
    niprov.libraries
+   niprov.location
+   niprov.locationfactory
    niprov.logging
    niprov.mnefunsupport
    niprov.narrator

@@ -39,9 +39,11 @@ def selectApproved(files, dependencies=Dependencies()):
         files (list): List of paths of files to check for approval status.
     """
     repository = dependencies.getRepository() 
+    location = dependencies.getLocationFactory()
     selection = []
     for filepath in files:
-        img = repository.byPath(filepath)
+        locationString = location.completeString(filepath)
+        img = repository.byLocation(locationString)
         if 'approval' in img.provenance:
             if img.provenance['approval'] == 'granted':
                 selection.append(img.path)

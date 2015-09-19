@@ -9,6 +9,10 @@ Overview of provenance attributes collected:
 +=============================+=============+=============+=========+=======+=====+=====+
 | :ref:`field-path`           | yes         | yes         | yes     | yes   | yes | yes |
 +-----------------------------+-------------+-------------+---------+-------+-----+-----+
+| :ref:`field-hostname`       | yes         | yes         | yes     | yes   | yes | yes |
++-----------------------------+-------------+-------------+---------+-------+-----+-----+
+| :ref:`field-location`       | yes         | yes         | yes     | yes   | yes | yes |
++-----------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-size`           | yes         | yes         | yes     | yes   | yes | yes |
 +-----------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-hash`           | yes         | yes         | yes     | yes   | yes | yes |
@@ -53,6 +57,20 @@ path
 ----
 
 The last known path to the file.
+
+.. _field-hostname:
+
+hostname
+--------
+
+Hostname of the computer on which the file resides.
+
+.. _field-location:
+
+location
+--------
+
+A string that combines computer and filesystem path.
 
 .. _field-size:
 

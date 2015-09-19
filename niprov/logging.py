@@ -50,6 +50,7 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     factory = dependencies.getFileFactory()
     filesys = dependencies.getFilesystem()
     opts = dependencies.reconfigureOrGetConfiguration(opts)
+    location = dependencies.getLocationFactory()
 
     if isinstance(new, basestring):
         new = [new]
@@ -63,7 +64,7 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
 
     #gather provenance common to all new files
     commonProvenance = provenance
-    commonProvenance['parents'] = parents
+    commonProvenance['parents'] = [location.completeString(p) for p in parents]
     commonProvenance['transformation'] = transformation
     commonProvenance['script'] = script
     commonProvenance['transient'] = transient
@@ -71,8 +72,9 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
         commonProvenance['code'] = code
     if logtext:
         commonProvenance['logtext'] = logtext
-    if repository.knowsByPath(parents[0]):
-        parentProvenance = repository.byPath(parents[0]).provenance
+    if repository.knowsByLocation(commonProvenance['parents'][0]):
+        parentProvenance = repository.byLocation(
+            commonProvenance['parents'][0]).provenance
         for field in ['acquired','subject','protocol']:
             if field in parentProvenance:
                 commonProvenance[field] = parentProvenance[field]
@@ -84,14 +86,14 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     newImages = []
     for newfile in new:
         singleProvenance = copy.deepcopy(commonProvenance)
-        singleProvenance['path'] = newfile
+        singleProvenance['location'] = newfile
         img = factory.fromProvenance(singleProvenance)
         if not transient:
             if not filesys.fileExists(newfile):
                 raise IOError(errno.ENOENT, 'File not found', newfile)
             img.inspect()
         if not opts.dryrun:
-            repository.add(img.provenance)
+            repository.add(img)
         newImages.append(img)
 
     #only return one dict if only one new file was created

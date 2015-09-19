@@ -3,8 +3,8 @@
 from niprov.dependencies import Dependencies
 
 
-def inspect(fpath, dependencies=Dependencies()):
+def inspect(location, dependencies=Dependencies()):
     fileFactory = dependencies.getFileFactory()
-    return fileFactory.locatedAt(fpath).inspect()
+    return fileFactory.locatedAt(location).inspect()
 
 

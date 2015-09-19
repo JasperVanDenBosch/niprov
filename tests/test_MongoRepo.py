@@ -25,20 +25,20 @@ class MongoRepoTests(unittest.TestCase):
         pymongo.MongoClient.assert_called_with(self.config.database_url)
         self.assertEqual(pymongo.MongoClient().get_default_database(), repo.db)
 
-    def test_knowsByPath(self):
+    def test_knowsByLocation(self):
         self.setupRepo()
         p = '/p/f1'
         self.db.provenance.find_one.return_value = None
-        self.assertFalse(self.repo.knowsByPath(p))
-        self.db.provenance.find_one.assert_called_with({'path':p})
+        self.assertFalse(self.repo.knowsByLocation(p))
+        self.db.provenance.find_one.assert_called_with({'location':p})
         self.db.provenance.find_one.return_value = 1
-        self.assertTrue(self.repo.knowsByPath(p))
+        self.assertTrue(self.repo.knowsByLocation(p))
 
-    def test_byPath_returns_img_from_record_with_path(self):
+    def test_byLocation_returns_img_from_record_with_path(self):
         self.setupRepo()
         p = '/p/f1'
-        out = self.repo.byPath(p)
-        self.db.provenance.find_one.assert_called_with({'path':p})
+        out = self.repo.byLocation(p)
+        self.db.provenance.find_one.assert_called_with({'location':p})
         self.factory.fromProvenance.assert_called_with(
             self.db.provenance.find_one())
         self.assertEqual(self.factory.fromProvenance(), out)
@@ -68,16 +68,16 @@ class MongoRepoTests(unittest.TestCase):
 
     def test_Add(self):
         self.setupRepo()
-        prov = Mock()
-        self.repo.add(prov)
-        self.db.provenance.insert_one.assert_called_with(prov)
+        img = Mock()
+        self.repo.add(img)
+        self.db.provenance.insert_one.assert_called_with(img.provenance)
 
     def test_update(self):
         self.setupRepo()
         img = Mock()
         self.repo.update(img)
         self.db.provenance.update.assert_called_with(
-            {'path':img.path}, img.provenance)
+            {'location':img.location.toString()}, img.provenance)
 
     def test_all(self):
         self.factory.fromProvenance.side_effect = lambda p: 'img_'+p
@@ -118,5 +118,5 @@ class MongoRepoTests(unittest.TestCase):
         newStatus = 'oh-oh'
         self.repo.updateApproval(p, newStatus)
         self.db.provenance.update.assert_called_with(
-            {'path':p}, {'$set': {'approval': newStatus}})
+            {'location':p}, {'$set': {'approval': newStatus}})
 

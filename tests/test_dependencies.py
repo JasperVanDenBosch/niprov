@@ -68,3 +68,10 @@ class DependenciesTests(unittest.TestCase):
         dependencies = Dependencies()
         self.assertIsInstance(dependencies.getFileFactory(), FileFactory)
 
+    def test_provides_LocationFactory(self):
+        from niprov.dependencies import Dependencies
+        from niprov.locationfactory import LocationFactory
+        dependencies = Dependencies()
+        self.assertIsInstance(dependencies.getLocationFactory(), 
+            LocationFactory)
+

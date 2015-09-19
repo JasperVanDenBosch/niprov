@@ -3,19 +3,19 @@ from niprov.dependencies import Dependencies
 
 class BaseFile(object):
 
-    def __init__(self, fpath, provenance=None, dependencies=Dependencies()):
-        self.path = fpath
-        if provenance:
-            self.provenance = provenance
-            if 'path' not in provenance:
-                self.provenance['path'] = self.path
-        else:
-            self.provenance = {'path':self.path}
+    def __init__(self, location, provenance=None, dependencies=Dependencies()):
         self.dependencies = dependencies
         self.listener = dependencies.getListener()
         self.filesystem = dependencies.getFilesystem()
         self.hasher = dependencies.getHasher()
         self.serializer = dependencies.getSerializer()
+        self.location = dependencies.getLocationFactory().fromString(location)
+        if provenance:
+            self.provenance = provenance
+        else:
+            self.provenance = {}
+        self.provenance.update(self.location.toDictionary())
+        self.path = self.provenance['path']
 
     def inspect(self):
         self.provenance['size'] = self.filesystem.getsize(self.path)

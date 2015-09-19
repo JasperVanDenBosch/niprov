@@ -26,7 +26,3 @@ class DependencyInjectionTestBase(unittest.TestCase):
         self.dependencies.getSerializer.return_value = self.serializer
 
 
-
-
-        
-

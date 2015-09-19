@@ -54,7 +54,7 @@ def add(filepath, transient=False, dependencies=Dependencies()):
             listener.fileError(img.path)
             status = 'failed'
         else:
-            repository.add(img.provenance)
+            repository.add(img)
             listener.fileFound(img)
             status = 'new'
     return (img.provenance, status)

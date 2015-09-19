@@ -38,7 +38,9 @@ class StorageTests(unittest.TestCase):
         repo = self.makeRepo()
         repo.datafile = self.templocation
         provenance = self.sampleProvenanceRecord()
-        repo.add(provenance)
+        img = Mock()
+        img.provenance = provenance
+        repo.add(img)
         repo2 = self.makeRepo()
         repo2.datafile = self.templocation
         out = repo2.byPath(provenance['path'])
@@ -67,7 +69,9 @@ class StorageTests(unittest.TestCase):
         repo = self.makeRepo()
         repo.datafile = self.templocation
         provenance = self.sampleProvenanceRecord()
-        repo.add(provenance)
+        img = Mock()
+        img.provenance = provenance
+        repo.add(img)
         repo2 = self.makeRepo()
         repo2.datafile = self.templocation
         self.assertFalse(repo2.knowsByPath('nonexisting'))
@@ -78,7 +82,9 @@ class StorageTests(unittest.TestCase):
         repo = self.makeRepo()
         repo.datafile = self.templocation
         provenance = self.sampleProvenanceRecord()
-        repo.add(provenance)
+        img = Mock()
+        img.provenance = provenance
+        repo.add(img)
         repo2 = self.makeRepo()
         repo2.datafile = self.templocation
         known = Mock()
@@ -95,7 +101,9 @@ class StorageTests(unittest.TestCase):
         provenance = self.sampleProvenanceRecord()
         SUID = 'iamtheseries'
         provenance['seriesuid'] = SUID
-        repo.add(provenance)
+        img = Mock()
+        img.provenance = provenance
+        repo.add(img)
         repo2 = self.makeRepo()
         repo2.datafile = self.templocation
         knownSeries = Mock()
@@ -113,7 +121,9 @@ class StorageTests(unittest.TestCase):
         repo.datafile = self.templocation
         provenance = self.sampleProvenanceRecord()
         provenance['seriesuid'] = None
-        repo.add(provenance)
+        img = Mock()
+        img.provenance = provenance
+        repo.add(img)
         noneSeries = Mock()
         noneSeries.getSeriesId.return_value = None
         self.assertFalse(repo.knowsSeries(noneSeries))
@@ -125,8 +135,12 @@ class StorageTests(unittest.TestCase):
         prov1 = self.sampleProvenanceRecord()
         prov2 = self.sampleProvenanceRecord()
         prov2['seriesuid'] = 's8m3d0s2'
-        repo.add(prov1)
-        repo.add(prov2)
+        img01 = Mock()
+        img01.provenance = prov1
+        repo.add(img01)
+        img02 = Mock()
+        img02.provenance = prov2
+        repo.add(img02)
         img = Mock()
         img.getSeriesId.return_value = prov2['seriesuid']
         img2 = Mock()
@@ -143,7 +157,9 @@ class StorageTests(unittest.TestCase):
         repo.datafile = self.templocation
         provenance = self.sampleProvenanceRecord()
         provenance['filesInSeries'] = ['sfile1.f','sfile2.f']
-        repo.add(provenance)
+        img = Mock()
+        img.provenance = provenance
+        repo.add(img)
         repo2 = self.makeRepo()
         repo2.datafile = self.templocation
         out = repo2.byPath('sfile1.f')

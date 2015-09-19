@@ -68,9 +68,9 @@ class MongoRepoTests(unittest.TestCase):
 
     def test_Add(self):
         self.setupRepo()
-        prov = Mock()
-        self.repo.add(prov)
-        self.db.provenance.insert_one.assert_called_with(prov)
+        img = Mock()
+        self.repo.add(img)
+        self.db.provenance.insert_one.assert_called_with(img.provenance)
 
     def test_update(self):
         self.setupRepo()

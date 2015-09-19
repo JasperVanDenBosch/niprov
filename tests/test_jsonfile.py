@@ -23,3 +23,16 @@ class JsonFileTest(DependencyInjectionTestBase):
         self.filesys.write.assert_called_with(repo.datafile, 
             self.serializer.serializeList())
 
+    def test_Add(self):
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        repo.all = Mock()
+        repo.all.return_value = [{'location':'1','path':'a'}]
+        image = Mock()
+        image.provenance = {'foo':'bar'}
+        repo.add(image)
+        self.serializer.serializeList.assert_called_with(
+            [{'location':'1','path':'a'},{'foo':'bar'}])
+        self.filesys.write.assert_called_with(repo.datafile, 
+            self.serializer.serializeList())
+

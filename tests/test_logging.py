@@ -36,7 +36,7 @@ class LoggingTests(DependencyInjectionTestBase):
 
     def test_Stores_provenance(self):
         provenance = self.log('new', 'trans', 'old')
-        self.repo.add.assert_any_call(self.newimg.provenance)
+        self.repo.add.assert_any_call(self.newimg)
 
     def test_Copies_fields_from_known_parent(self):
         parent = '/p/f1'

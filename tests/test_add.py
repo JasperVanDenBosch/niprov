@@ -40,12 +40,6 @@ class addTests(unittest.TestCase):
         self.fileFactory.locatedAt.assert_called_with('/p/f1', 
             provenance={'transient':True})
 
-    def test_Stores_provenance(self):
-        from niprov.adding import add
-        new = '/p/f2'
-        (provenance, status) = self.add(new)
-        self.repo.add.assert_any_call(provenance)
-
     def test_Creates_ImageFile_object_with_factory(self):
         (provenance, status) = self.add('p/afile.f')
         self.fileFactory.locatedAt.assert_called_with('p/afile.f', 
@@ -59,7 +53,7 @@ class addTests(unittest.TestCase):
 
     def test_Hands_provenance_to_repository(self):
         (provenance, status) = self.add('p/afile.f')
-        self.repo.add.assert_any_call(self.img.provenance)
+        self.repo.add.assert_any_call(self.img)
 
     def test_If_discovers_file_that_is_known_ignore_it(self):
         self.repo.knows.return_value = True
@@ -82,7 +76,7 @@ class addTests(unittest.TestCase):
     def test_If_inspect_raises_exceptions_tells_listener_and_doesnt_save(self):
         self.img.inspect.side_effect = IOError
         (provenance, status) = self.add('p/afile.f')
-        self.assertNotCalledWith(self.repo.add, self.img.provenance)
+        self.assertNotCalledWith(self.repo.add, self.img)
         self.listener.fileError.assert_called_with(self.img.path)
         self.assertEqual(status, 'failed')
 

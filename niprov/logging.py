@@ -92,7 +92,7 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
                 raise IOError(errno.ENOENT, 'File not found', newfile)
             img.inspect()
         if not opts.dryrun:
-            repository.add(img.provenance)
+            repository.add(img)
         newImages.append(img)
 
     #only return one dict if only one new file was created

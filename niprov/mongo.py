@@ -70,13 +70,13 @@ class MongoRepository(object):
             return False
         return self.db.provenance.find_one({'seriesuid':seriesUid}) is not None
 
-    def add(self, provenance):
+    def add(self, image):
         """Add the provenance for one file to storage.
 
         Args:
-            record (dict): Provenance for one image file.
+            image (:class:`.BaseFile`): Image file to store.
         """
-        self.db.provenance.insert_one(provenance)
+        self.db.provenance.insert_one(image.provenance)
 
     def update(self, image):
         """Save changed provenance for this file..

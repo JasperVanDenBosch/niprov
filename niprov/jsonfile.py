@@ -13,17 +13,16 @@ class JsonFile(object):
         url = dependencies.getConfiguration().database_url
         self.datafile = os.path.expanduser(url)
 
-    def add(self, record):
+    def add(self, image):
         """Add the provenance for one file to storage.
 
         Args:
-            record (dict): Provenance for one image file.
+            image (:class:`.BaseFile`): Image file to store.
         """
         current = self.all()
-        current.append(record)
+        current.append(image.provenance)
         jsonstr = self.json.serializeList(current)
-        with open(self.datafile, 'w') as fp:
-            fp.write(jsonstr)
+        self.filesys.write(self.datafile, jsonstr)
 
     def update(self, image):
         """Save changed provenance for this file..

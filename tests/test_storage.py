@@ -43,7 +43,7 @@ class StorageTests(unittest.TestCase):
         repo.add(img)
         repo2 = self.makeRepo()
         repo2.datafile = self.templocation
-        out = repo2.byPath(provenance['path'])
+        out = repo2.byLocation(provenance['location'])
         self.fileFactory.fromProvenance.assert_called_with(provenance)
         self.assertEqual(out, self.fileFactory.fromProvenance())
 
@@ -56,15 +56,15 @@ class StorageTests(unittest.TestCase):
         out = repo.all()
         self.assertEqual(out, [])
 
-    def test_If_no_provenance_known_for_file_byPath_raises_IndexError(self):
+    def test_If_no_provenance_known_for_file_byLocation_raises_IndexError(self):
         self.dependencies.getSerializer.return_value = self.serializer
         self.serializer.deserializeList.return_value = []
         repo = self.makeRepo()
         repo.datafile = self.templocation
         with self.assertRaises(IndexError):
-            repo.byPath('nothere')
+            repo.byLocation('nothere')
 
-    def test_Can_add_file_and_ask_whether_its_known_byPath(self):
+    def test_Can_add_file_and_ask_whether_its_known_byLocation(self):
         self.dependencies.getFileFactory.return_value = self.fileFactory
         repo = self.makeRepo()
         repo.datafile = self.templocation
@@ -74,8 +74,8 @@ class StorageTests(unittest.TestCase):
         repo.add(img)
         repo2 = self.makeRepo()
         repo2.datafile = self.templocation
-        self.assertFalse(repo2.knowsByPath('nonexisting'))
-        self.assertTrue(repo2.knowsByPath(provenance['path']))
+        self.assertFalse(repo2.knowsByLocation('nonexisting'))
+        self.assertTrue(repo2.knowsByLocation(provenance['location']))
 
     def test_Can_add_file_and_ask_whether_its_known(self):
         self.dependencies.getFileFactory.return_value = self.fileFactory
@@ -88,7 +88,7 @@ class StorageTests(unittest.TestCase):
         repo2 = self.makeRepo()
         repo2.datafile = self.templocation
         known = Mock()
-        known.path = provenance['path']
+        known.path = provenance['location']
         unknown = Mock()
         unknown.path = 'maohafnv'
         self.assertFalse(repo2.knows(unknown))
@@ -151,7 +151,7 @@ class StorageTests(unittest.TestCase):
         with self.assertRaises(IndexError):
             repo.getSeries(img2)
 
-    def test_ByPath_also_returns_series_if_filepath_among_it(self):
+    def test_ByLocation_also_returns_series_if_filepath_among_it(self):
         self.dependencies.getFileFactory.return_value = self.fileFactory
         repo = self.makeRepo()
         repo.datafile = self.templocation
@@ -162,10 +162,10 @@ class StorageTests(unittest.TestCase):
         repo.add(img)
         repo2 = self.makeRepo()
         repo2.datafile = self.templocation
-        out = repo2.byPath('sfile1.f')
+        out = repo2.byLocation('sfile1.f')
         self.fileFactory.fromProvenance.assert_called_with(provenance)
         with self.assertRaises(IndexError):
-            repo2.byPath('sfile3.f')
+            repo2.byLocation('sfile3.f')
 
 #    def test_byApproval_calls_all_and_filters_based_on_approval(self):
 #        repo = self.makeRepo()
@@ -191,7 +191,7 @@ class StorageTests(unittest.TestCase):
 
     def sampleProvenanceRecord(self):
         record = {}
-        record['path'] = str(random.randint(1000,9999))
+        record['location'] = str(random.randint(1000,9999))
         record['subject'] = 'John Doeish'
         record['protocol'] = 'T1 SENSE'
         record['acquired'] = datetime(2014, 8, 5, 12, 19, 14)

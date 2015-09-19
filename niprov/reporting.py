@@ -25,13 +25,15 @@ def report(medium=None, form=None, forFile=None, forSubject=None,
     exportFactory = dependencies.getExportFactory()
     repository = dependencies.getRepository()
     listener = dependencies.getListener()
+    location = dependencies.getLocationFactory()
 
     exporter = exportFactory.createExporter(medium, form)
     if forFile:
-        if not repository.knowsByPath(forFile):
+        forFile = location.completeString(forFile)
+        if not repository.knowsByLocation(forFile):
             listener.unknownFile(forFile)
             return
-        provenance = repository.byPath(forFile)
+        provenance = repository.byLocation(forFile)
     elif forSubject:
         provenance = repository.bySubject(forSubject)
     else:

@@ -8,12 +8,12 @@ class LoggingTests(DependencyInjectionTestBase):
 
     def setUp(self):
         super(LoggingTests, self).setUp()
-        self.repo.knowsByPath.return_value = True
+        self.repo.knowsByLocation.return_value = True
         self.opts = Mock()
         self.opts.dryrun = False
         img = Mock()
         img.provenance = {'acquired':dt.now(),'subject':'JD', 'protocol':'X'}
-        self.repo.byPath.return_value = img
+        self.repo.byLocation.return_value = img
         self.newimg = Mock()
         self.provenancesCreated = []
         def wrapProv(p):
@@ -39,12 +39,13 @@ class LoggingTests(DependencyInjectionTestBase):
         self.repo.add.assert_any_call(self.newimg)
 
     def test_Copies_fields_from_known_parent(self):
+        self.locationFactory.completeString.side_effect = lambda p: p
         parent = '/p/f1'
         parents = [parent]
         parentProv = {'acquired':dt.now(),'subject':'JB','protocol':'T3'}
         parentImg = Mock()
         parentImg.provenance = parentProv
-        self.repo.byPath.side_effect = lambda x: {parent:parentImg}[x]
+        self.repo.byLocation.side_effect = lambda x: {parent:parentImg}[x]
         self.log('new', 'trans', parents)
         self.assertEqual(self.provenancesCreated[0]['acquired'], parentProv['acquired'])
         self.assertEqual(self.provenancesCreated[0]['subject'], parentProv['subject'])
@@ -98,7 +99,7 @@ class LoggingTests(DependencyInjectionTestBase):
     def test_Doesnt_complain_if_parent_is_missing_basic_fields(self):
         img = Mock()
         img.provenance = {'acquired':dt.now()} #missing subject
-        self.repo.byPath.return_value = img
+        self.repo.byLocation.return_value = img
         provenance = self.log('new', 'trans', ['/p/f1parent'])
         self.assertNotIn('subject', self.provenancesCreated[0])
 
@@ -134,7 +135,7 @@ class LoggingTests(DependencyInjectionTestBase):
             self.opts)
         assert not self.repo.add.called
 
-    def test_Can_pass_multiple_new_files(self): # LOCATION
+    def test_Can_pass_multiple_new_files(self):
         parents = ['p1','p2']
         new = ['/p/f2','/p/f3']
         trans = 'Something cool'
@@ -145,12 +146,20 @@ class LoggingTests(DependencyInjectionTestBase):
         self.assertEqual(self.provenancesCreated[0]['location'], new[0])
         self.assertEqual(self.provenancesCreated[1]['location'], new[1])
 
-    def test_Notifies_listener_and_exits_if_parent_unknown(self): # LOCATION
-        self.repo.knowsByPath.return_value = False
+    def test_Notifies_listener_and_exits_if_parent_unknown(self):
+        self.repo.knowsByLocation.return_value = False
         parent = '/p/f1'
         parents = [parent]
         provenance = self.log('new', 'trans', parents)
         self.listener.unknownFile.assert_called_with(parent)
         assert not self.repo.add.called
+
+    def test_Finds_parent_provenance_using_completedString(self):
+        self.locationFactory.completeString.side_effect = lambda p: 'l:'+p
+        parent = '/p/f1'
+        parents = [parent]
+        provenance = self.log('new', 'trans', parents)
+        self.repo.knowsByLocation.assert_called_with(self.provenancesCreated[0]['parents'][0])
+        self.repo.byLocation.assert_called_with(self.provenancesCreated[0]['parents'][0])
         
 

@@ -49,14 +49,14 @@ class JsonFile(object):
             return []
         return self.json.deserializeList(jsonstr)
 
-    def knowsByPath(self, path):
+    def knowsByLocation(self, locationString):
         """Whether the file at this path has provenance associated with it.
 
         Returns:
             bool: True if provenance is available for that path.
         """
         try:
-            self.byPath(path)
+            self.byLocation(locationString)
         except IndexError:
             return False
         return True
@@ -68,7 +68,7 @@ class JsonFile(object):
             bool: True if provenance is available for this image.
         """
         try:
-            self.byPath(image.path)
+            self.byLocation(image.path)
         except IndexError:
             return False
         return True
@@ -89,22 +89,22 @@ class JsonFile(object):
             return False
         return True
 
-    def byPath(self, path):
-        """Get the provenance for a file at the given path. 
+    def byLocation(self, locationString):
+        """Get the provenance for a file at the given location. 
 
         In the case of a dicom series, this returns the provenance for the 
         series.
 
         Args:
-            path (str): File system path to the image file.
+            locationString (str): Location of the image file.
 
         Returns:
             dict: Provenance for one image file.
         """
         for record in self.all():
-            if record['path'] == path:
+            if record['location'] == locationString:
                 return self.factory.fromProvenance(record)
-            elif 'filesInSeries' in record and path in record['filesInSeries']:
+            elif 'filesInSeries' in record and locationString in record['filesInSeries']:
                 return self.factory.fromProvenance(record)
         else:
             raise IndexError('No file with that path known.')
@@ -150,7 +150,7 @@ class JsonFile(object):
         return [self.factory.fromProvenance(r) for r in matches]
 
     def updateApproval(self, fpath, approvalStatus):
-        img = self.byPath(fpath)
+        img = self.byLocation(fpath)
         img.provenance['approval'] = approvalStatus
         self.update(img)
        

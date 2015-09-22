@@ -2,6 +2,7 @@
 # -*- coding: UTF-8 -*-
 import errno
 from niprov.dependencies import Dependencies
+from datetime import datetime
 
 
 def add(filepath, transient=False, provenance=None, 
@@ -43,6 +44,7 @@ def add(filepath, transient=False, provenance=None,
     if provenance is None:
         provenance = {}
     provenance['transient'] = transient
+    provenance['added'] = datetime.now()
 
     img = file.locatedAt(filepath, provenance=provenance)
     if opts.dryrun:
@@ -65,11 +67,11 @@ def add(filepath, transient=False, provenance=None,
             except:
                 listener.fileError(img.path)
                 status = 'failed'
-                return (img.provenance, status)
+                return (img, status)
         repository.add(img)
         listener.fileFound(img)
         status = 'new'
-    return (img.provenance, status)
+    return (img, status)
 
 
 

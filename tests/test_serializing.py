@@ -14,6 +14,7 @@ class SerializerTests(unittest.TestCase):
         record = {}
         record['acquired'] = datetime.now()
         record['created'] = datetime.now()
+        record['added'] = datetime.now()
         out = serializer.serialize(record)
         self.assertEqual(json.loads(out)['acquired'], 
             record['acquired'].isoformat())

@@ -1,6 +1,6 @@
 import unittest
 import mock
-from mock import Mock
+from mock import Mock, patch
 from tests.ditest import DependencyInjectionTestBase
 
 
@@ -12,7 +12,14 @@ class AddTests(DependencyInjectionTestBase):
         self.repo.knows.return_value = False
         self.repo.knowsSeries.return_value = False
         self.img = Mock()
-        self.fileFactory.locatedAt.return_value = self.img
+        self.lastProvenance = None
+        def locAt(loc, provenance):
+            self.lastProvenance = provenance
+            return self.img
+        self.fileFactory.locatedAt.side_effect = locAt
+        patcher = patch('niprov.adding.datetime')
+        self.datetime = patcher.start()
+        self.addCleanup(patcher.stop)
 
     def add(self, path, **kwargs):
         from niprov.adding import add
@@ -24,21 +31,17 @@ class AddTests(DependencyInjectionTestBase):
 
     def test_Returns_provenance_and_status(self):
         new = '/p/f2'
-        (provenance, status) = self.add(new)
-        self.assertEqual(provenance, self.img.provenance)
+        (image, status) = self.add(new)
+        self.assertEqual(image, self.img)
         self.assertEqual(status, 'new')
 
     def test_Sets_transient_flag_if_provided(self):
         (provenance, status) = self.add('/p/f1', transient=True)
-        self.fileFactory.locatedAt.assert_called_with('/p/f1', 
-            provenance={'transient':True})
+        self.assertEqual(self.lastProvenance['transient'],True)
 
     def test_Creates_ImageFile_object_with_factory(self):
-        (provenance, status) = self.add('p/afile.f')
-        self.fileFactory.locatedAt.assert_called_with('p/afile.f', 
-            provenance={'transient': False})
-        self.assertRaises(AssertionError,
-            self.fileFactory.locatedAt.assert_any_call,'root/other.file')
+        (image, status) = self.add('p/afile.f')
+        self.assertIs(self.img, image)
 
     def test_Calls_inspect(self):
         (provenance, status) = self.add('p/afile.f')
@@ -83,8 +86,7 @@ class AddTests(DependencyInjectionTestBase):
 
     def test_accepts_optional_provenance(self):
         (provenance, status) = self.add('p/afile.f', provenance={'fob':'bez'})
-        self.fileFactory.locatedAt.assert_called_with('p/afile.f', 
-            provenance={'fob':'bez','transient':False})
+        self.assertEqual(self.lastProvenance['fob'],'bez')
 
     def test_If_file_doesnt_exists_tells_listener_and_doesnt_save_prov(self):
         self.filesys.fileExists.return_value = False
@@ -97,5 +99,10 @@ class AddTests(DependencyInjectionTestBase):
     def test_Doesnt_inspect_transient_files(self):
         self.add('p/afile.f', transient=True)
         assert not self.img.inspect.called
+
+    def test_Adds_timestamp(self):
+        (provenance, status) = self.add('p/afile.f')
+        self.fileFactory.locatedAt.assert_called_with('p/afile.f', 
+            provenance={'transient':False,'added':self.datetime.now()})
 
 

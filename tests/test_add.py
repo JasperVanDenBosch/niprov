@@ -1,29 +1,22 @@
 import unittest
 import mock
 from mock import Mock
+from tests.ditest import DependencyInjectionTestBase
 
 
-class addTests(unittest.TestCase):
+class AddTests(DependencyInjectionTestBase):
 
     def setUp(self):
-        self.opts = Mock()
-        self.opts.dryrun = False
-        self.repo = Mock()
+        super(AddTests, self).setUp()
+        self.config.dryrun = False
         self.repo.knows.return_value = False
         self.repo.knowsSeries.return_value = False
         self.img = Mock()
-        self.fileFactory = Mock()
         self.fileFactory.locatedAt.return_value = self.img
-        self.listener = Mock()
-        self.dependencies = Mock()
-        self.dependencies.getRepository.return_value = self.repo
-        self.dependencies.getFileFactory.return_value = self.fileFactory
-        self.dependencies.getListener.return_value = self.listener
-        self.dependencies.getConfiguration.return_value = self.opts
 
-    def add(self, path, transient=False):
+    def add(self, path, **kwargs):
         from niprov.adding import add
-        return add(path, transient=transient, dependencies=self.dependencies)
+        return add(path, dependencies=self.dependencies, **kwargs)
 
     def assertNotCalledWith(self, m, *args, **kwargs):
         c = mock.call(*args, **kwargs)
@@ -81,14 +74,28 @@ class addTests(unittest.TestCase):
         self.assertEqual(status, 'failed')
 
     def test_If_dryrun_doesnt_talk_to_repo_and_status_is_test(self):
-        self.opts.dryrun = True
+        self.config.dryrun = True
         (provenance, status) = self.add('p/afile.f')
         assert not self.repo.add.called
         assert not self.repo.update.called
         assert not self.img.inspect.called
         self.assertEqual(status, 'dryrun')
 
+    def test_accepts_optional_provenance(self):
+        (provenance, status) = self.add('p/afile.f', provenance={'fob':'bez'})
+        self.fileFactory.locatedAt.assert_called_with('p/afile.f', 
+            provenance={'fob':'bez','transient':False})
 
+    def test_If_file_doesnt_exists_tells_listener_and_doesnt_save_prov(self):
+        self.filesys.fileExists.return_value = False
+        self.assertRaises(IOError, self.add, 'p/afile.f')
 
-        
+    def test_For_nonexisting_transient_file_behaves_normal(self):
+        self.filesys.fileExists.return_value = False
+        self.add('p/afile.f', transient=True)
+
+    def test_Doesnt_inspect_transient_files(self):
+        self.add('p/afile.f', transient=True)
+        assert not self.img.inspect.called
+
 

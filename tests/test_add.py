@@ -1,29 +1,29 @@
 import unittest
 import mock
-from mock import Mock
+from mock import Mock, patch
+from tests.ditest import DependencyInjectionTestBase
 
 
-class addTests(unittest.TestCase):
+class AddTests(DependencyInjectionTestBase):
 
     def setUp(self):
-        self.opts = Mock()
-        self.opts.dryrun = False
-        self.repo = Mock()
+        super(AddTests, self).setUp()
+        self.config.dryrun = False
         self.repo.knows.return_value = False
         self.repo.knowsSeries.return_value = False
         self.img = Mock()
-        self.fileFactory = Mock()
-        self.fileFactory.locatedAt.return_value = self.img
-        self.listener = Mock()
-        self.dependencies = Mock()
-        self.dependencies.getRepository.return_value = self.repo
-        self.dependencies.getFileFactory.return_value = self.fileFactory
-        self.dependencies.getListener.return_value = self.listener
-        self.dependencies.getConfiguration.return_value = self.opts
+        self.lastProvenance = None
+        def locAt(loc, provenance):
+            self.lastProvenance = provenance
+            return self.img
+        self.fileFactory.locatedAt.side_effect = locAt
+        patcher = patch('niprov.adding.datetime')
+        self.datetime = patcher.start()
+        self.addCleanup(patcher.stop)
 
-    def add(self, path, transient=False):
+    def add(self, path, **kwargs):
         from niprov.adding import add
-        return add(path, transient=transient, dependencies=self.dependencies)
+        return add(path, dependencies=self.dependencies, **kwargs)
 
     def assertNotCalledWith(self, m, *args, **kwargs):
         c = mock.call(*args, **kwargs)
@@ -31,21 +31,17 @@ class addTests(unittest.TestCase):
 
     def test_Returns_provenance_and_status(self):
         new = '/p/f2'
-        (provenance, status) = self.add(new)
-        self.assertEqual(provenance, self.img.provenance)
+        (image, status) = self.add(new)
+        self.assertEqual(image, self.img)
         self.assertEqual(status, 'new')
 
     def test_Sets_transient_flag_if_provided(self):
         (provenance, status) = self.add('/p/f1', transient=True)
-        self.fileFactory.locatedAt.assert_called_with('/p/f1', 
-            provenance={'transient':True})
+        self.assertEqual(self.lastProvenance['transient'],True)
 
     def test_Creates_ImageFile_object_with_factory(self):
-        (provenance, status) = self.add('p/afile.f')
-        self.fileFactory.locatedAt.assert_called_with('p/afile.f', 
-            provenance={'transient': False})
-        self.assertRaises(AssertionError,
-            self.fileFactory.locatedAt.assert_any_call,'root/other.file')
+        (image, status) = self.add('p/afile.f')
+        self.assertIs(self.img, image)
 
     def test_Calls_inspect(self):
         (provenance, status) = self.add('p/afile.f')
@@ -81,14 +77,32 @@ class addTests(unittest.TestCase):
         self.assertEqual(status, 'failed')
 
     def test_If_dryrun_doesnt_talk_to_repo_and_status_is_test(self):
-        self.opts.dryrun = True
+        self.config.dryrun = True
         (provenance, status) = self.add('p/afile.f')
         assert not self.repo.add.called
         assert not self.repo.update.called
         assert not self.img.inspect.called
         self.assertEqual(status, 'dryrun')
 
+    def test_accepts_optional_provenance(self):
+        (provenance, status) = self.add('p/afile.f', provenance={'fob':'bez'})
+        self.assertEqual(self.lastProvenance['fob'],'bez')
 
+    def test_If_file_doesnt_exists_tells_listener_and_doesnt_save_prov(self):
+        self.filesys.fileExists.return_value = False
+        self.assertRaises(IOError, self.add, 'p/afile.f')
 
-        
+    def test_For_nonexisting_transient_file_behaves_normal(self):
+        self.filesys.fileExists.return_value = False
+        self.add('p/afile.f', transient=True)
+
+    def test_Doesnt_inspect_transient_files(self):
+        self.add('p/afile.f', transient=True)
+        assert not self.img.inspect.called
+
+    def test_Adds_timestamp(self):
+        (provenance, status) = self.add('p/afile.f')
+        self.fileFactory.locatedAt.assert_called_with('p/afile.f', 
+            provenance={'transient':False,'added':self.datetime.now()})
+
 

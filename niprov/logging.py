@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 from niprov.dependencies import Dependencies
-from niprov.config import Configuration
-import errno
+from niprov.adding import add
 import copy
 
 
@@ -42,8 +41,8 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
         exist on the filesystem and is not marked as transient.
 
     Returns:
-        dict or list: New provenance, if multiple files were created, this is 
-            a list of dicts, otherwise, it is a single dict.
+        BaseFile: New provenance, if multiple files were created, this is 
+            a list of images, otherwise, it is a single object.
     """
     repository = dependencies.getRepository()
     listener = dependencies.getListener()
@@ -59,15 +58,11 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     if provenance is None:
         provenance = {}
 
-    if opts.dryrun:
-        transient = True
-
     #gather provenance common to all new files
     commonProvenance = provenance
     commonProvenance['parents'] = [location.completeString(p) for p in parents]
     commonProvenance['transformation'] = transformation
     commonProvenance['script'] = script
-    commonProvenance['transient'] = transient
     if code:
         commonProvenance['code'] = code
     if logtext:
@@ -86,19 +81,13 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     newImages = []
     for newfile in new:
         singleProvenance = copy.deepcopy(commonProvenance)
-        singleProvenance['location'] = newfile
-        img = factory.fromProvenance(singleProvenance)
-        if not transient:
-            if not filesys.fileExists(newfile):
-                raise IOError(errno.ENOENT, 'File not found', newfile)
-            img.inspect()
-        if not opts.dryrun:
-            repository.add(img)
-        newImages.append(img)
+        image = add(newfile, transient=transient, provenance=singleProvenance, 
+            dependencies=dependencies)
+        newImages.append(image)
 
-    #only return one dict if only one new file was created
+    #only return one image if only one file was created
     if len(new) == 1:
-        return img
+        return image
 
     return newImages
 

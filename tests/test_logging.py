@@ -1,5 +1,5 @@
 import unittest
-from mock import Mock, sentinel
+from mock import Mock, sentinel, patch
 from datetime import datetime as dt
 from tests.ditest import DependencyInjectionTestBase
 
@@ -16,11 +16,14 @@ class LoggingTests(DependencyInjectionTestBase):
         self.repo.byLocation.return_value = img
         self.newimg = Mock()
         self.provenancesCreated = []
-        def wrapProv(p):
-            self.provenancesCreated.append(p)
+        def wrapProv(location,transient,provenance,dependencies):
+            self.provenancesCreated.append(provenance)
             return self.newimg
-        self.fileFactory.fromProvenance.side_effect = lambda p : wrapProv(p)
         self.dependencies.reconfigureOrGetConfiguration.return_value = self.opts
+        patcher = patch('niprov.logging.add')
+        self.add = patcher.start()
+        self.add.side_effect = wrapProv
+        self.addCleanup(patcher.stop)
 
     def log(self, *args, **kwargs):
         from niprov.logging import log
@@ -33,10 +36,6 @@ class LoggingTests(DependencyInjectionTestBase):
         trans = 'Something cool'
         out = self.log(new, trans, parents)
         self.assertEqual(out, self.newimg)
-
-    def test_Stores_provenance(self):
-        provenance = self.log('new', 'trans', 'old')
-        self.repo.add.assert_any_call(self.newimg)
 
     def test_Copies_fields_from_known_parent(self):
         self.locationFactory.completeString.side_effect = lambda p: p
@@ -56,29 +55,6 @@ class LoggingTests(DependencyInjectionTestBase):
         self.assertEqual(self.provenancesCreated[0]['code'],'abc')
         self.assertEqual(self.provenancesCreated[0]['logtext'],'def')
 
-    def test_Accepts_temp_flag(self):
-        parents = ['/p/f1']
-        new = '/p/f2'
-        trans = 'Something cool'
-        self.log(new, trans, parents, transient=True)
-        self.assertEqual(self.provenancesCreated[0]['transient'], True)
-
-    def test_If_file_doesnt_exists_tells_listener_and_doesnt_save_prov(self):
-        self.filesys.fileExists.return_value = False
-        parents = ['/p/f1']
-        new = '/p/f2'
-        trans = 'Something cool'
-        self.assertRaises(IOError, self.log, new, trans, parents)
-        assert not self.repo.add.called
-
-    def test_For_nonexisting_transient_file_behaves_normal(self):
-        self.filesys.fileExists.return_value = False
-        parents = ['/p/f1']
-        new = '/p/f2'
-        trans = 'Something cool'
-        self.log(new, trans, parents, transient=True)
-        self.assertEqual(self.provenancesCreated[0]['transformation'], trans)
-
     def test_Script_added_to_provenance(self):
         parents = ['/p/f1']
         new = '/p/f2'
@@ -95,36 +71,12 @@ class LoggingTests(DependencyInjectionTestBase):
         self.log(new, trans, parents, provenance=p)
         self.assertEqual(self.provenancesCreated[0]['akey'], 'avalue')
 
-
     def test_Doesnt_complain_if_parent_is_missing_basic_fields(self):
         img = Mock()
         img.provenance = {'acquired':dt.now()} #missing subject
         self.repo.byLocation.return_value = img
         provenance = self.log('new', 'trans', ['/p/f1parent'])
         self.assertNotIn('subject', self.provenancesCreated[0])
-
-    def test_Inspects_nontransient_new_files(self):
-        parents = ['/p/f1']
-        new = ['/p/f2','/p/f3']
-        trans = 'Something cool'
-        provenance = self.log(new, trans, parents, transient=True)
-        assert not self.newimg.inspect.called
-        provenance = self.log(new, trans, parents)
-        self.newimg.inspect.assert_called_with()
-
-    def test_On_dryrun_all_new_files_are_transient(self):
-        parents = ['/p/f1']
-        new = ['/p/f2','/p/f3']
-        trans = 'Something cool'
-        self.opts.dryrun = True
-        provenance = self.log(new, trans, parents)
-        assert not self.newimg.inspect.called
-        self.assertEqual(self.provenancesCreated[0]['transient'], True)
-
-    def test_On_dryrun_provenance_not_saved_to_repo(self):
-        self.opts.dryrun = True
-        provenance = self.log('new', 'trans', 'old')
-        assert not self.repo.add.called
 
     def test_Calls_reconfigureOrGetConfiguration_on_dependencies(self):
         outOpts = Mock()
@@ -133,7 +85,6 @@ class LoggingTests(DependencyInjectionTestBase):
         provenance = self.log(['/p/f1'], 'bla', ['/p/f2'], transient=True)
         self.dependencies.reconfigureOrGetConfiguration.assert_called_with(
             self.opts)
-        assert not self.repo.add.called
 
     def test_Can_pass_multiple_new_files(self):
         parents = ['p1','p2']
@@ -143,8 +94,6 @@ class LoggingTests(DependencyInjectionTestBase):
         self.log(new, trans, parents)
         self.assertEqual(self.provenancesCreated[0]['parents'], ['l:p1','l:p2'])
         self.assertEqual(self.provenancesCreated[1]['parents'], ['l:p1','l:p2'])
-        self.assertEqual(self.provenancesCreated[0]['location'], new[0])
-        self.assertEqual(self.provenancesCreated[1]['location'], new[1])
 
     def test_Notifies_listener_and_exits_if_parent_unknown(self):
         self.repo.knowsByLocation.return_value = False
@@ -152,7 +101,7 @@ class LoggingTests(DependencyInjectionTestBase):
         parents = [parent]
         provenance = self.log('new', 'trans', parents)
         self.listener.unknownFile.assert_called_with(parent)
-        assert not self.repo.add.called
+        assert not self.add.called
 
     def test_Finds_parent_provenance_using_completedString(self):
         self.locationFactory.completeString.side_effect = lambda p: 'l:'+p

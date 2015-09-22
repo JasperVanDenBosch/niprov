@@ -13,6 +13,8 @@ Overview of provenance attributes collected:
 +-----------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-location`       | yes         | yes         | yes     | yes   | yes | yes |
 +-----------------------------+-------------+-------------+---------+-------+-----+-----+
+| :ref:`field-added`          | yes         | yes         | yes     | yes   | yes | yes |
++-----------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-size`           | yes         | yes         | yes     | yes   | yes | yes |
 +-----------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-hash`           | yes         | yes         | yes     | yes   | yes | yes |
@@ -71,6 +73,13 @@ location
 --------
 
 A string that combines computer and filesystem path.
+
+.. _field-added:
+
+added
+-----
+
+Date and time that the provenance for this file was registered.
 
 .. _field-size:
 

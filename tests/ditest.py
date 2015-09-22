@@ -5,6 +5,7 @@ from mock import Mock
 class DependencyInjectionTestBase(unittest.TestCase):
 
     def setUp(self):
+        self.config = Mock()
         self.listener = Mock()
         self.hasher = Mock()
         self.filesys = Mock()
@@ -16,6 +17,7 @@ class DependencyInjectionTestBase(unittest.TestCase):
         self.fileFactory = Mock()
         self.serializer = Mock()
         self.location = Mock()
+        self.clock = Mock()
         self.locationFactory = Mock()
         self.locationFactory.fromString.return_value = self.location
         self.dependencies = Mock()
@@ -28,5 +30,7 @@ class DependencyInjectionTestBase(unittest.TestCase):
         self.dependencies.getFileFactory.return_value = self.fileFactory
         self.dependencies.getSerializer.return_value = self.serializer
         self.dependencies.getExportFactory.return_value = self.exportFactory
+        self.dependencies.getConfiguration.return_value = self.config
+        self.dependencies.getClock.return_value = self.clock
 
 

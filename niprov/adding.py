@@ -1,9 +1,12 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+import errno
 from niprov.dependencies import Dependencies
+from datetime import datetime
 
 
-def add(filepath, transient=False, dependencies=Dependencies()):
+def add(filepath, transient=False, provenance=None, 
+    dependencies=Dependencies()):
     """
     Simply register the file.
 
@@ -20,6 +23,8 @@ def add(filepath, transient=False, dependencies=Dependencies()):
             is only temporary and future checks should not expect it to be 
             physically present. Defaults to False, assuming that the file 
             remains.
+        provenance (dict, optional): Add the key-value pairs in this dictionary 
+            to the provenance record for the new file.
 
     Returns:
         tuple: Tuple of new provenance and status. Status is a string with one 
@@ -34,8 +39,14 @@ def add(filepath, transient=False, dependencies=Dependencies()):
     file = dependencies.getFileFactory()
     repository = dependencies.getRepository()
     listener = dependencies.getListener()
+    filesys = dependencies.getFilesystem()
 
-    img = file.locatedAt(filepath, provenance={'transient':transient})
+    if provenance is None:
+        provenance = {}
+    provenance['transient'] = transient
+    provenance['added'] = datetime.now()
+
+    img = file.locatedAt(filepath, provenance=provenance)
     if opts.dryrun:
         status = 'dryrun'
     elif repository.knows(img):
@@ -48,16 +59,19 @@ def add(filepath, transient=False, dependencies=Dependencies()):
         listener.fileFoundInSeries(img, series)
         status = 'series'
     else:
-        try:
-            img.inspect()
-        except:
-            listener.fileError(img.path)
-            status = 'failed'
-        else:
-            repository.add(img)
-            listener.fileFound(img)
-            status = 'new'
-    return (img.provenance, status)
+        if not transient:
+            if not filesys.fileExists(filepath):
+                raise IOError(errno.ENOENT, 'File not found', filepath)
+            try:
+                img.inspect()
+            except:
+                listener.fileError(img.path)
+                status = 'failed'
+                return (img, status)
+        repository.add(img)
+        listener.fileFound(img)
+        status = 'new'
+    return (img, status)
 
 
 

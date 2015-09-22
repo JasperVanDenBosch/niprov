@@ -9,7 +9,7 @@ class JsonSerializer(object):
     """Helper to convert provenance data to and from json encoded strings.
     """
 
-    datetimeFields = ['acquired','created']
+    datetimeFields = ['acquired','created','added']
 
     def serialize(self, record):
         """

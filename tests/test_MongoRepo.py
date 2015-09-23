@@ -85,10 +85,9 @@ class MongoRepoTests(unittest.TestCase):
         self.setupRepo()
         out = self.repo.all()
         self.db.provenance.find.assert_called_with()
-        self.assertEqual(['p1', 'p2'], out)
-#        self.factory.fromProvenance.assert_any_call('p1')
-#        self.factory.fromProvenance.assert_any_call('p2')
-#        self.assertEqual(['img_p1', 'img_p2'], out)
+        self.factory.fromProvenance.assert_any_call('p1')
+        self.factory.fromProvenance.assert_any_call('p2')
+        self.assertEqual(['img_p1', 'img_p2'], out)
 
     def test_bySubject(self):
         self.factory.fromProvenance.side_effect = lambda p: 'img_'+p

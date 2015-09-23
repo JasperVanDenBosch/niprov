@@ -11,8 +11,8 @@ class JsonFileTest(DependencyInjectionTestBase):
     def test_Update(self):
         from niprov.jsonfile import JsonFile
         repo = JsonFile(self.dependencies)
-        repo.all = Mock()
-        repo.all.return_value = [{'location':'1','path':'a'},
+        repo._all = Mock()
+        repo._all.return_value = [{'location':'1','path':'a'},
             {'location':'2','path':'b'}]
         image = Mock()
         image.location.toString.return_value = '2'
@@ -26,8 +26,8 @@ class JsonFileTest(DependencyInjectionTestBase):
     def test_Add(self):
         from niprov.jsonfile import JsonFile
         repo = JsonFile(self.dependencies)
-        repo.all = Mock()
-        repo.all.return_value = [{'location':'1','path':'a'}]
+        repo._all = Mock()
+        repo._all.return_value = [{'location':'1','path':'a'}]
         image = Mock()
         image.provenance = {'foo':'bar'}
         repo.add(image)
@@ -47,8 +47,8 @@ class JsonFileTest(DependencyInjectionTestBase):
     def test_byLocation(self):
         from niprov.jsonfile import JsonFile
         repo = JsonFile(self.dependencies)
-        repo.all = Mock()
-        repo.all.return_value = [{'location':'1','path':'a'},
+        repo._all = Mock()
+        repo._all.return_value = [{'location':'1','path':'a'},
             {'location':'2','path':'b'}]
         out = repo.byLocation('1')
         self.fileFactory.fromProvenance.assert_called_with(
@@ -58,8 +58,8 @@ class JsonFileTest(DependencyInjectionTestBase):
     def test_byLocation_works_for_file_in_series(self):
         from niprov.jsonfile import JsonFile
         repo = JsonFile(self.dependencies)
-        repo.all = Mock()
-        repo.all.return_value = [{'location':'1','path':'a'},
+        repo._all = Mock()
+        repo._all.return_value = [{'location':'1','path':'a'},
             {'location':'3','filesInSeries':['boo','bah']}]
         out = repo.byLocation('boo')
         self.fileFactory.fromProvenance.assert_called_with(
@@ -83,8 +83,8 @@ class JsonFileTest(DependencyInjectionTestBase):
         self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['a']
         from niprov.jsonfile import JsonFile
         repo = JsonFile(self.dependencies)
-        repo.all = Mock()
-        repo.all.return_value = [{'subject':'john','a':'b'},
+        repo._all = Mock()
+        repo._all.return_value = [{'subject':'john','a':'b'},
             {'subject':'tim','a':'d'},{'subject':'john','a':'f'}]
         out = repo.bySubject('john')
         self.fileFactory.fromProvenance.assert_any_call({'subject':'john','a':'b'})
@@ -95,8 +95,8 @@ class JsonFileTest(DependencyInjectionTestBase):
         self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['a']
         from niprov.jsonfile import JsonFile
         repo = JsonFile(self.dependencies)
-        repo.all = Mock()
-        repo.all.return_value = [{'approval':'y','a':'b'},
+        repo._all = Mock()
+        repo._all.return_value = [{'approval':'y','a':'b'},
             {'approval':'x','a':'d'},{'approval':'x','a':'f'}]
         out = repo.byApproval('x')
         self.fileFactory.fromProvenance.assert_any_call({'approval':'x','a':'d'})

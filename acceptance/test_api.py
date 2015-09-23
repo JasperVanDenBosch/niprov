@@ -77,6 +77,12 @@ class ApiTests(unittest.TestCase):
         finally:
             self.clearDicomfiles()
 
+    def test_bySubject(self):
+        import niprov
+        niprov.discover('testdata')
+        niprov.report(medium='stdout',forSubject='05aug14test')
+        #niprov.report(medium='html',forSubject='05aug14test') # browser
+
     def createExtensionlessFiles(self):
         if not os.path.exists('dicomdir'):
             os.makedirs('dicomdir')

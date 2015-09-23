@@ -94,7 +94,8 @@ class MongoRepository(object):
         Returns:
             list: List of provenance for known files.
         """
-        return self.db.provenance.find()
+        records = self.db.provenance.find()
+        return [self.factory.fromProvenance(record) for record in records]
 
 
     def bySubject(self, subject):

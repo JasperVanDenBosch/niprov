@@ -9,7 +9,7 @@ class StandardOutputExporter(BaseExporter):
 
     _expectedFields = ['acquired','subject','protocol','dimensions','path']
 
-    def exportList(self, provenance):
+    def exportList(self, images):
         """Publish the provenance for several images on the commandline.
 
         Args:
@@ -17,8 +17,8 @@ class StandardOutputExporter(BaseExporter):
         """
         print('\n')
         print('{0:20} {1:12} {2:24} {3:20} {4:24}'.format(*self._expectedFields))
-        for record in provenance:
-            self.exportSummary(record)
+        for image in images:
+            self.exportSummary(image)
         print('\n')
 
     def exportSingle(self, img):
@@ -32,14 +32,14 @@ class StandardOutputExporter(BaseExporter):
             print('{0:24} {1}'.format(field+':', str(value)))
         print('\n')
 
-    def exportSummary(self, provenance):
+    def exportSummary(self, image):
         """Publish a summary of the provenance for one image as one line in 
         the terminal.
 
         Args:
             provenance (dict): Provenance for one image file
         """
-        provcopy = copy.deepcopy(provenance)
+        provcopy = copy.deepcopy(image.provenance)
         for field in self._expectedFields:
             if field not in provcopy:
                 provcopy[field] = None

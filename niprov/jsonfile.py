@@ -19,7 +19,7 @@ class JsonFile(object):
         Args:
             image (:class:`.BaseFile`): Image file to store.
         """
-        current = self.all()
+        current = self._all()
         current.append(image.provenance)
         jsonstr = self.json.serializeList(current)
         self.filesys.write(self.datafile, jsonstr)
@@ -30,7 +30,7 @@ class JsonFile(object):
         Args:
             image (:class:`.BaseFile`): Image file that has changed.
         """
-        current = self.all()
+        current = self._all()
         for r in range(len(current)):
             if current[r]['location'] == image.location.toString():
                 current[r] = image.provenance
@@ -43,6 +43,10 @@ class JsonFile(object):
         Returns:
             list: List of provenance for known files.
         """
+        records = self._all()
+        return [self.factory.fromProvenance(record) for record in records]
+
+    def _all(self):
         try:
             jsonstr = self.filesys.read(self.datafile)
         except IOError:
@@ -101,7 +105,7 @@ class JsonFile(object):
         Returns:
             dict: Provenance for one image file.
         """
-        for record in self.all():
+        for record in self._all():
             if record['location'] == locationString:
                 return self.factory.fromProvenance(record)
             elif 'filesInSeries' in record and locationString in record['filesInSeries']:
@@ -118,7 +122,7 @@ class JsonFile(object):
         Returns:
             list: List of provenance for known files imaging this subject.
         """
-        all = self.all()
+        all = self._all()
         records = [f for f in all if f['subject']==subject]
         return [self.factory.fromProvenance(record) for record in records]
 
@@ -135,14 +139,14 @@ class JsonFile(object):
         if image.getSeriesId() is None:
             raise IndexError('Image has no series id.')
         seriesId = image.getSeriesId()
-        for record in self.all():
+        for record in self._all():
             if 'seriesuid' in record and record['seriesuid'] == seriesId:
                 return self.factory.fromProvenance(record)
         else:
             raise IndexError('No provenance record for that series.')
 
     def byApproval(self, approvalStatus):
-        allRecords = self.all()
+        allRecords = self._all()
         matches = []
         for prov in allRecords:
             if 'approval' in prov:

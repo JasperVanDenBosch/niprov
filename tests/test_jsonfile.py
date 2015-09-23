@@ -79,6 +79,30 @@ class JsonFileTest(DependencyInjectionTestBase):
         repo.update.side_effect = assertion
         repo.updateApproval('/p/f1','excellent!')
 
+    def test_bySubject(self):
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['a']
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        repo.all = Mock()
+        repo.all.return_value = [{'subject':'john','a':'b'},
+            {'subject':'tim','a':'d'},{'subject':'john','a':'f'}]
+        out = repo.bySubject('john')
+        self.fileFactory.fromProvenance.assert_any_call({'subject':'john','a':'b'})
+        self.fileFactory.fromProvenance.assert_any_call({'subject':'john','a':'f'})
+        self.assertEqual(['img_b', 'img_f'], out)
+
+    def test_byApproval(self):
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['a']
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        repo.all = Mock()
+        repo.all.return_value = [{'approval':'y','a':'b'},
+            {'approval':'x','a':'d'},{'approval':'x','a':'f'}]
+        out = repo.byApproval('x')
+        self.fileFactory.fromProvenance.assert_any_call({'approval':'x','a':'d'})
+        self.fileFactory.fromProvenance.assert_any_call({'approval':'x','a':'f'})
+        self.assertEqual(['img_d', 'img_f'], out)
+
         
         
 

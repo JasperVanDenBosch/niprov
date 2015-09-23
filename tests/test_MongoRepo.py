@@ -97,10 +97,9 @@ class MongoRepoTests(unittest.TestCase):
         s = 'Brambo'
         out = self.repo.bySubject(s)
         self.db.provenance.find.assert_called_with({'subject':s})
-        self.assertEqual(['p1', 'p2'], out)
-#        self.factory.fromProvenance.assert_any_call('p1')
-#        self.factory.fromProvenance.assert_any_call('p2')
-#        self.assertEqual(['img_p1', 'img_p2'], out)
+        self.factory.fromProvenance.assert_any_call('p1')
+        self.factory.fromProvenance.assert_any_call('p2')
+        self.assertEqual(['img_p1', 'img_p2'], out)
 
     def test_byApproval(self):
         self.factory.fromProvenance.side_effect = lambda p: 'img_'+p
@@ -109,7 +108,9 @@ class MongoRepoTests(unittest.TestCase):
         a = 'AOk'
         out = self.repo.byApproval(a)
         self.db.provenance.find.assert_called_with({'approval':a})
-        self.assertEqual(['p1', 'p2'], out)
+        self.factory.fromProvenance.assert_any_call('p1')
+        self.factory.fromProvenance.assert_any_call('p2')
+        self.assertEqual(['img_p1', 'img_p2'], out)
 
     def test_updateApproval(self):
         self.setupRepo()

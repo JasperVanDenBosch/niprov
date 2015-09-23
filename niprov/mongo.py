@@ -106,10 +106,12 @@ class MongoRepository(object):
         Returns:
             list: List of provenance for known files imaging this subject.
         """
-        return self.db.provenance.find({'subject':subject})
+        records = self.db.provenance.find({'subject':subject})
+        return [self.factory.fromProvenance(record) for record in records]
 
     def byApproval(self, approvalStatus):
-        return self.db.provenance.find({'approval':approvalStatus})
+        records = self.db.provenance.find({'approval':approvalStatus})
+        return [self.factory.fromProvenance(record) for record in records]
 
     def updateApproval(self, locationString, approvalStatus):
         self.db.provenance.update({'location':locationString}, 

@@ -119,7 +119,8 @@ class JsonFile(object):
             list: List of provenance for known files imaging this subject.
         """
         all = self.all()
-        return [f for f in all if f['subject']==subject]
+        records = [f for f in all if f['subject']==subject]
+        return [self.factory.fromProvenance(record) for record in records]
 
     def getSeries(self, image):
         """Get the object that carries provenance for the series that the image 

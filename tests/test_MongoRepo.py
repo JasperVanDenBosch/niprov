@@ -120,3 +120,15 @@ class MongoRepoTests(unittest.TestCase):
         self.db.provenance.update.assert_called_with(
             {'location':p}, {'$set': {'approval': newStatus}})
 
+    def test_latest(self):
+        self.factory.fromProvenance.side_effect = lambda p: 'img_'+p
+        self.db.provenance.find.return_value.sort.return_value.limit.return_value = ['px','py']
+        self.setupRepo()
+        out = self.repo.latest()
+        self.db.provenance.find.assert_called_with()
+        self.db.provenance.find().sort.assert_called_with({'added':-1})
+        self.db.provenance.find().sort().limit.assert_called_with(20)
+        self.factory.fromProvenance.assert_any_call('px')
+        self.factory.fromProvenance.assert_any_call('py')
+        self.assertEqual(['img_px', 'img_py'], out)
+

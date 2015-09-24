@@ -1,4 +1,5 @@
 import os
+from operator import itemgetter
 from niprov.dependencies import Dependencies
 
 
@@ -158,5 +159,13 @@ class JsonFile(object):
         img = self.byLocation(fpath)
         img.provenance['approval'] = approvalStatus
         self.update(img)
+
+    def latest(self, n=20):
+        allRecords = self._all()
+        sortedRecords = sorted(allRecords, key=itemgetter('added'), reverse=True)
+        records = sortedRecords[:n]
+        return [self.factory.fromProvenance(record) for record in records]
+
+
        
 

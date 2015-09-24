@@ -1,5 +1,6 @@
 from mock import Mock
 from tests.ditest import DependencyInjectionTestBase
+import datetime
 
 
 class JsonFileTest(DependencyInjectionTestBase):
@@ -102,6 +103,24 @@ class JsonFileTest(DependencyInjectionTestBase):
         self.fileFactory.fromProvenance.assert_any_call({'approval':'x','a':'d'})
         self.fileFactory.fromProvenance.assert_any_call({'approval':'x','a':'f'})
         self.assertEqual(['img_d', 'img_f'], out)
+
+    def test_latest(self):
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+str(p['added'])
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        d1 = datetime.datetime(1982, 1, 5)
+        d2 = datetime.datetime(1982, 2, 5)
+        d3 = datetime.datetime(1982, 3, 5)
+        d4 = datetime.datetime(1982, 4, 5)
+        d5 = datetime.datetime(1982, 5, 5)
+        repo._all = Mock()
+        repo._all.return_value = [{'added':d, 'n':i+1} for i,d in enumerate([d1,d2,d3,d4,d5])]
+        out = repo.latest(3)
+        self.fileFactory.fromProvenance.assert_any_call({'added':d5, 'n':5})
+        self.fileFactory.fromProvenance.assert_any_call({'added':d4, 'n':4})
+        self.fileFactory.fromProvenance.assert_any_call({'added':d3, 'n':3})
+        self.assertEqual(['img_1982-05-05 00:00:00', 'img_1982-04-05 00:00:00',
+            'img_1982-03-05 00:00:00'], out)
 
         
         

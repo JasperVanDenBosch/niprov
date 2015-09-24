@@ -87,3 +87,13 @@ class Repository(object):
 
     def updateApproval(self, locationString, approvalStatus):
         """"""
+
+    def latest(self, n=20):
+        """Get the images that have been registered last. 
+
+        Args:
+            n (int): The number of files to retrieve. Defaults to 20.
+
+        Returns:
+            list: List of BaseFile objects.
+        """

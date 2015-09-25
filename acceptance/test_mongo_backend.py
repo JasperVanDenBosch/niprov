@@ -20,8 +20,8 @@ class MongoTests(unittest.TestCase):
 
     def test_Something(self):
         self.provenance.discover('testdata')
-        img = self.provenance.report(forFile='testdata/eeg/stub.cnt')
-        self.assertEqual(img.provenance['subject'], 'Jane Doe')
+        img = self.provenance.report(forFile='testdata/parrec/T1.PAR')
+        self.assertEqual(img.provenance['subject'], '05aug14test')
 
     def test_Stats(self):
         self.provenance.discover('testdata')

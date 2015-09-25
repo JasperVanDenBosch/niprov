@@ -166,6 +166,13 @@ class JsonFile(object):
         records = sortedRecords[:n]
         return [self.factory.fromProvenance(record) for record in records]
 
+    def statistics(self):
+        stats = {}
+        allRecords = self._all()
+        stats['count'] = len(allRecords)
+        stats['totalsize'] = sum([r['size'] for r in allRecords])
+        return stats
+
 
        
 

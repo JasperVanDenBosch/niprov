@@ -23,5 +23,10 @@ class MongoTests(unittest.TestCase):
         img = self.provenance.report(forFile='testdata/eeg/stub.cnt')
         self.assertEqual(img.provenance['subject'], 'Jane Doe')
 
+    def test_Stats(self):
+        self.provenance.discover('testdata')
+        repository = self.provenance.deps.getRepository()
+        print(repository.statistics())
+
 
 

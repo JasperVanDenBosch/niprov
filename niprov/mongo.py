@@ -122,5 +122,16 @@ class MongoRepository(object):
         records = self.db.provenance.find().sort({'added': -1}).limit(20)
         return [self.factory.fromProvenance(record) for record in records]
 
+    def statistics(self):
+        grps = self.db.provenance.aggregate(
+           [{'$group':
+                 {
+                   '_id': None,
+                   'totalsize': { '$sum': '$size' },
+                   'count': { '$sum': 1 }
+                 }
+            }])
+        return list(grps)[0]
+
 
 

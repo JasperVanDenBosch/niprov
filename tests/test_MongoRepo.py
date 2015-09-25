@@ -1,5 +1,5 @@
 import unittest
-from mock import Mock, patch
+from mock import Mock, patch, sentinel
 
 
 class MongoRepoTests(unittest.TestCase):
@@ -131,4 +131,19 @@ class MongoRepoTests(unittest.TestCase):
         self.factory.fromProvenance.assert_any_call('px')
         self.factory.fromProvenance.assert_any_call('py')
         self.assertEqual(['img_px', 'img_py'], out)
+
+    def test_statistics(self):
+        self.db.provenance.aggregate.return_value = [sentinel.stats,]
+        self.setupRepo()
+        out = self.repo.statistics()
+        self.db.provenance.aggregate.assert_called_with(
+           [{'$group':
+                 {
+                   '_id': None,
+                   'totalsize': { '$sum': '$size' },
+                   'count': { '$sum': 1 }
+                 }
+            }])
+        self.assertEqual(sentinel.stats, out)
+
 

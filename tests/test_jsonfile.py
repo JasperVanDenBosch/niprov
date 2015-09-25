@@ -1,6 +1,6 @@
 from mock import Mock
 from tests.ditest import DependencyInjectionTestBase
-import datetime
+import datetime, random
 
 
 class JsonFileTest(DependencyInjectionTestBase):
@@ -122,6 +122,18 @@ class JsonFileTest(DependencyInjectionTestBase):
         self.assertEqual(['img_1982-05-05 00:00:00', 'img_1982-04-05 00:00:00',
             'img_1982-03-05 00:00:00'], out)
 
-        
+    def test_stats(self):
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        repo._all = Mock()
+        records = [{},{},{},{},{},{},{},{},{},{},{}]
+        totalsize = 0
+        for r in records:
+            r['size'] = random.randint(1,1000)
+            totalsize += r['size']
+        repo._all.return_value = records
+        out = repo.statistics()
+        self.assertEqual(11, out['count'])
+        self.assertEqual(totalsize, out['totalsize'])
         
 

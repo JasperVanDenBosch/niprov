@@ -53,6 +53,13 @@ class HtmlTests(unittest.TestCase):
         self.externals.run.assert_any_call(['firefox',
             'provenance.html'])
 
+    def test_ExportStatistics_writes_output_of_renderer_to_file(self):
+        self.exporter.exportStatistics({})
+        self.filesys.open.assert_called_with('provenance.html','w')
+        self.templateLookup.get_template.assert_called_with('stats.mako')
+        self.filehandle.write.assert_called_with(self.template.render())
+
+
     def setupFilesys(self):
         filesys = Mock()
         filehandle = Mock()

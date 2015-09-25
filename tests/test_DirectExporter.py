@@ -11,6 +11,7 @@ class DirectExporterTests(TestCase):
         exporter = DirectExporter()
         self.assertEqual(sentinel.one, exporter.exportSingle(sentinel.one))
         self.assertEqual(sentinel.list, exporter.exportList(sentinel.list))
+        self.assertEqual(sentinel.dict, exporter.exportStatistics(sentinel.dict))
 
     def test_For_narrative_form_Returns_narrator_output(self):
         from niprov.directexporter import DirectExporter

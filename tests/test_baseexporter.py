@@ -27,5 +27,13 @@ class BaseExporterTests(unittest.TestCase):
         exp.exportNarrative.assert_called_with(sentinel.p1)
         self.assertEqual(out, exp.exportNarrative())
 
+    def test_If_called_with_dict_calls_exportStatistics(self):
+        from niprov.exporter import BaseExporter
+        exp = BaseExporter()
+        exp.exportStatistics = Mock()
+        out = exp.export({'a':'b'})
+        exp.exportStatistics.assert_called_with({'a':'b'})
+        self.assertEqual(out, exp.exportStatistics())
+
 
 

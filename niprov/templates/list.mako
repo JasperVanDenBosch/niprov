@@ -23,12 +23,12 @@ dd {padding: 10px;}
 </thead>
 <tbody>
 
-% for p in provenance:
+% for img in provenance:
    <tr>
-        <td>${p.get('acquired')}</td>
-        <td>${p.get('subject')}</td>
-        <td>${p.get('protocol')}</td>
-        <td>${p.get('path')}</td>
+        <td>${img.provenance.get('acquired')}</td>
+        <td>${img.provenance.get('subject')}</td>
+        <td>${img.provenance.get('protocol')}</td>
+        <td>${img.provenance.get('path')}</td>
     </tr>
 % endfor
 

@@ -1,5 +1,5 @@
 import unittest
-from mock import Mock, patch
+from mock import Mock, patch, sentinel
 
 
 class MongoRepoTests(unittest.TestCase):
@@ -85,10 +85,9 @@ class MongoRepoTests(unittest.TestCase):
         self.setupRepo()
         out = self.repo.all()
         self.db.provenance.find.assert_called_with()
-        self.assertEqual(['p1', 'p2'], out)
-#        self.factory.fromProvenance.assert_any_call('p1')
-#        self.factory.fromProvenance.assert_any_call('p2')
-#        self.assertEqual(['img_p1', 'img_p2'], out)
+        self.factory.fromProvenance.assert_any_call('p1')
+        self.factory.fromProvenance.assert_any_call('p2')
+        self.assertEqual(['img_p1', 'img_p2'], out)
 
     def test_bySubject(self):
         self.factory.fromProvenance.side_effect = lambda p: 'img_'+p
@@ -97,10 +96,9 @@ class MongoRepoTests(unittest.TestCase):
         s = 'Brambo'
         out = self.repo.bySubject(s)
         self.db.provenance.find.assert_called_with({'subject':s})
-        self.assertEqual(['p1', 'p2'], out)
-#        self.factory.fromProvenance.assert_any_call('p1')
-#        self.factory.fromProvenance.assert_any_call('p2')
-#        self.assertEqual(['img_p1', 'img_p2'], out)
+        self.factory.fromProvenance.assert_any_call('p1')
+        self.factory.fromProvenance.assert_any_call('p2')
+        self.assertEqual(['img_p1', 'img_p2'], out)
 
     def test_byApproval(self):
         self.factory.fromProvenance.side_effect = lambda p: 'img_'+p
@@ -109,7 +107,9 @@ class MongoRepoTests(unittest.TestCase):
         a = 'AOk'
         out = self.repo.byApproval(a)
         self.db.provenance.find.assert_called_with({'approval':a})
-        self.assertEqual(['p1', 'p2'], out)
+        self.factory.fromProvenance.assert_any_call('p1')
+        self.factory.fromProvenance.assert_any_call('p2')
+        self.assertEqual(['img_p1', 'img_p2'], out)
 
     def test_updateApproval(self):
         self.setupRepo()
@@ -119,4 +119,31 @@ class MongoRepoTests(unittest.TestCase):
         self.repo.updateApproval(p, newStatus)
         self.db.provenance.update.assert_called_with(
             {'location':p}, {'$set': {'approval': newStatus}})
+
+    def test_latest(self):
+        self.factory.fromProvenance.side_effect = lambda p: 'img_'+p
+        self.db.provenance.find.return_value.sort.return_value.limit.return_value = ['px','py']
+        self.setupRepo()
+        out = self.repo.latest()
+        self.db.provenance.find.assert_called_with()
+        self.db.provenance.find().sort.assert_called_with({'added':-1})
+        self.db.provenance.find().sort().limit.assert_called_with(20)
+        self.factory.fromProvenance.assert_any_call('px')
+        self.factory.fromProvenance.assert_any_call('py')
+        self.assertEqual(['img_px', 'img_py'], out)
+
+    def test_statistics(self):
+        self.db.provenance.aggregate.return_value = [sentinel.stats,]
+        self.setupRepo()
+        out = self.repo.statistics()
+        self.db.provenance.aggregate.assert_called_with(
+           [{'$group':
+                 {
+                   '_id': None,
+                   'totalsize': { '$sum': '$size' },
+                   'count': { '$sum': 1 }
+                 }
+            }])
+        self.assertEqual(sentinel.stats, out)
+
 

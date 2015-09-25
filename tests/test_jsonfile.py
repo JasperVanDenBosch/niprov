@@ -1,5 +1,6 @@
 from mock import Mock
 from tests.ditest import DependencyInjectionTestBase
+import datetime, random
 
 
 class JsonFileTest(DependencyInjectionTestBase):
@@ -11,8 +12,8 @@ class JsonFileTest(DependencyInjectionTestBase):
     def test_Update(self):
         from niprov.jsonfile import JsonFile
         repo = JsonFile(self.dependencies)
-        repo.all = Mock()
-        repo.all.return_value = [{'location':'1','path':'a'},
+        repo._all = Mock()
+        repo._all.return_value = [{'location':'1','path':'a'},
             {'location':'2','path':'b'}]
         image = Mock()
         image.location.toString.return_value = '2'
@@ -26,8 +27,8 @@ class JsonFileTest(DependencyInjectionTestBase):
     def test_Add(self):
         from niprov.jsonfile import JsonFile
         repo = JsonFile(self.dependencies)
-        repo.all = Mock()
-        repo.all.return_value = [{'location':'1','path':'a'}]
+        repo._all = Mock()
+        repo._all.return_value = [{'location':'1','path':'a'}]
         image = Mock()
         image.provenance = {'foo':'bar'}
         repo.add(image)
@@ -47,8 +48,8 @@ class JsonFileTest(DependencyInjectionTestBase):
     def test_byLocation(self):
         from niprov.jsonfile import JsonFile
         repo = JsonFile(self.dependencies)
-        repo.all = Mock()
-        repo.all.return_value = [{'location':'1','path':'a'},
+        repo._all = Mock()
+        repo._all.return_value = [{'location':'1','path':'a'},
             {'location':'2','path':'b'}]
         out = repo.byLocation('1')
         self.fileFactory.fromProvenance.assert_called_with(
@@ -58,8 +59,8 @@ class JsonFileTest(DependencyInjectionTestBase):
     def test_byLocation_works_for_file_in_series(self):
         from niprov.jsonfile import JsonFile
         repo = JsonFile(self.dependencies)
-        repo.all = Mock()
-        repo.all.return_value = [{'location':'1','path':'a'},
+        repo._all = Mock()
+        repo._all.return_value = [{'location':'1','path':'a'},
             {'location':'3','filesInSeries':['boo','bah']}]
         out = repo.byLocation('boo')
         self.fileFactory.fromProvenance.assert_called_with(
@@ -79,6 +80,60 @@ class JsonFileTest(DependencyInjectionTestBase):
         repo.update.side_effect = assertion
         repo.updateApproval('/p/f1','excellent!')
 
-        
+    def test_bySubject(self):
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['a']
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        repo._all = Mock()
+        repo._all.return_value = [{'subject':'john','a':'b'},
+            {'subject':'tim','a':'d'},{'subject':'john','a':'f'}]
+        out = repo.bySubject('john')
+        self.fileFactory.fromProvenance.assert_any_call({'subject':'john','a':'b'})
+        self.fileFactory.fromProvenance.assert_any_call({'subject':'john','a':'f'})
+        self.assertEqual(['img_b', 'img_f'], out)
+
+    def test_byApproval(self):
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['a']
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        repo._all = Mock()
+        repo._all.return_value = [{'approval':'y','a':'b'},
+            {'approval':'x','a':'d'},{'approval':'x','a':'f'}]
+        out = repo.byApproval('x')
+        self.fileFactory.fromProvenance.assert_any_call({'approval':'x','a':'d'})
+        self.fileFactory.fromProvenance.assert_any_call({'approval':'x','a':'f'})
+        self.assertEqual(['img_d', 'img_f'], out)
+
+    def test_latest(self):
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+str(p['added'])
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        d1 = datetime.datetime(1982, 1, 5)
+        d2 = datetime.datetime(1982, 2, 5)
+        d3 = datetime.datetime(1982, 3, 5)
+        d4 = datetime.datetime(1982, 4, 5)
+        d5 = datetime.datetime(1982, 5, 5)
+        repo._all = Mock()
+        repo._all.return_value = [{'added':d, 'n':i+1} for i,d in enumerate([d1,d2,d3,d4,d5])]
+        out = repo.latest(3)
+        self.fileFactory.fromProvenance.assert_any_call({'added':d5, 'n':5})
+        self.fileFactory.fromProvenance.assert_any_call({'added':d4, 'n':4})
+        self.fileFactory.fromProvenance.assert_any_call({'added':d3, 'n':3})
+        self.assertEqual(['img_1982-05-05 00:00:00', 'img_1982-04-05 00:00:00',
+            'img_1982-03-05 00:00:00'], out)
+
+    def test_stats(self):
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        repo._all = Mock()
+        records = [{},{},{},{},{},{},{},{},{},{},{}]
+        totalsize = 0
+        for r in records:
+            r['size'] = random.randint(1,1000)
+            totalsize += r['size']
+        repo._all.return_value = records
+        out = repo.statistics()
+        self.assertEqual(11, out['count'])
+        self.assertEqual(totalsize, out['totalsize'])
         
 

@@ -58,5 +58,10 @@ class ReportingTests(DependencyInjectionTestBase):
         self.report(forFile='xyz')
         self.listener.unknownFile.assert_called_with('xyz')
 
+    def test_Can_report_on_stats(self):
+        out = self.report(statistics=True)
+        self.exporter.export.assert_called_with(self.repo.statistics())
+        self.assertEqual(out, self.exporter.export())
+
 
 

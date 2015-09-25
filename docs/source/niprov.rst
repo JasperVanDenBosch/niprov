@@ -35,12 +35,14 @@ Submodules
    niprov.locationfactory
    niprov.logging
    niprov.mnefunsupport
+   niprov.mongo
    niprov.narrator
    niprov.nifti
    niprov.parrec
    niprov.recording
    niprov.renaming
    niprov.reporting
+   niprov.repository
    niprov.stdout
 
 

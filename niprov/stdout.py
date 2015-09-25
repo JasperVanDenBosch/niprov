@@ -56,3 +56,14 @@ class StandardOutputExporter(BaseExporter):
         print('\n')
         print(self.narrator.narrate(provenance))
         print('\n')
+
+    def exportStatistics(self, stats):
+        """Publish statistics for collected provenance in the terminal.
+
+        Args:
+            stats (dict): Dictionary with summary values.
+        """
+        print('\n')
+        print(' Number of files: {0}'.format(stats['count']))
+        print(' Total file size: {0}'.format(stats['totalsize']))
+        print('\n')

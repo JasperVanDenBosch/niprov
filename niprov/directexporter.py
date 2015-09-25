@@ -15,3 +15,6 @@ class DirectExporter(BaseExporter):
 
     def exportNarrative(self, provenance):
         return self.narrator.narrate(provenance)
+
+    def exportStatistics(self, stats):
+        return stats

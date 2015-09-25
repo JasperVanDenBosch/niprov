@@ -37,3 +37,15 @@ class HtmlExporter(BaseExporter):
             htmlfile.write(template.render(provenance=img.provenance))
         self.externals.run(['firefox', 'provenance.html'])
 
+    def exportStatistics(self, stats):
+        """Publish the statistics for collected provenance in an html file 
+        and display in Firefox.
+
+        Args:
+            stats (dict): Overall summary
+        """
+        template = self.templates.get_template('stats.mako')
+        with self.filesys.open('provenance.html','w') as htmlfile:
+            htmlfile.write(template.render(provenance=stats))
+        self.externals.run(['firefox', 'provenance.html'])
+

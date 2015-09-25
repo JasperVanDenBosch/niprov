@@ -20,6 +20,8 @@ class BaseExporter(object):
             return self.exportNarrative(provenance)
         elif isinstance(provenance, list):
             return self.exportList(provenance)
+        elif isinstance(provenance, dict):
+            return self.exportStatistics(provenance)
         else:
             return self.exportSingle(provenance)
 
@@ -31,3 +33,6 @@ class BaseExporter(object):
 
     def exportNarrative(self, provenance):
         raise NotImplementedError('exportNarrative')
+
+    def exportStatistics(self, provenance):
+        raise NotImplementedError('exportStatistics')

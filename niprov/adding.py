@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 import errno
-from niprov.dependencies import Dependencies
+import shortuuid
 from datetime import datetime
+from niprov.dependencies import Dependencies
 
 
 def add(filepath, transient=False, provenance=None, 
@@ -45,6 +46,7 @@ def add(filepath, transient=False, provenance=None,
         provenance = {}
     provenance['transient'] = transient
     provenance['added'] = datetime.now()
+    provenance['id'] = shortuuid.uuid()[:6]
 
     img = file.locatedAt(filepath, provenance=provenance)
     if opts.dryrun:

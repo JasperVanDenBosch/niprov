@@ -102,7 +102,12 @@ class AddTests(DependencyInjectionTestBase):
 
     def test_Adds_timestamp(self):
         (provenance, status) = self.add('p/afile.f')
-        self.fileFactory.locatedAt.assert_called_with('p/afile.f', 
-            provenance={'transient':False,'added':self.datetime.now()})
+        self.assertEqual(self.lastProvenance['added'],self.datetime.now())
+
+    def test_Adds_uid(self):
+        with patch('niprov.adding.shortuuid') as shortuuid:
+            shortuuid.uuid.return_value = 'abcdefghijklmn'
+            (provenance, status) = self.add('p/afile.f')
+            self.assertEqual(self.lastProvenance['id'],'abcdef')
 
 

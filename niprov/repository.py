@@ -97,3 +97,13 @@ class Repository(object):
         Returns:
             list: List of BaseFile objects.
         """
+
+    def byId(self, uid):
+        """Get the provenance for a file with the given id. 
+
+        Args:
+            uid (str): Unique id for the file.
+
+        Returns:
+            BaseFile: File with the given id.
+        """

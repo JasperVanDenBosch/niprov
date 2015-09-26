@@ -8,6 +8,7 @@ class ConfigurationTests(unittest.TestCase):
     def setUp(self):
         self.ospath = Mock()
         self.parser = Mock()
+        self.parser.get.side_effect = lambda s, k: 'nothing'
 
     def createConfiguration(self, configFilePath=None):
         from niprov.config import Configuration
@@ -46,4 +47,10 @@ class ConfigurationTests(unittest.TestCase):
         conf = self.createConfiguration()
         self.assertEqual(True, conf.verbose)
         self.assertEqual('mothership', conf.database_type)
+
+    def test_Can_deal_with_lists(self):
+        self.ospath.isfile.return_value = True
+        self.parser.get.side_effect = lambda s, k: 'a1,b2, c3,d4 ,'
+        conf = self.createConfiguration()
+        self.assertEqual(['a1','b2','c3','d4'], conf.discover_file_extensions)
 

@@ -28,6 +28,11 @@ class Configuration(object):
     verbose = False
     """bool: Output extra information."""
 
+    discover_file_extensions = ['.PAR','.dcm','.fif','.cnt']
+    """list: Discover uses this to determine which files to include. 
+    Not strictly extensions, can be any string that appears in the file name. 
+    Use comma's to separate items."""
+
     def __init__(self, configFilePath='~/niprov.cfg'):
         configFilePath = os.path.expanduser(configFilePath)
         if os.path.isfile(configFilePath):
@@ -43,4 +48,7 @@ class Configuration(object):
                     val = parser.get('main', key)
                 elif types[key] is bool:
                     val = parser.getboolean('main', key)
+                elif types[key] is list:
+                    items = parser.get('main', key).split(',')
+                    val = [i.strip() for i in items if i is not '']
                 setattr(self, key, val)

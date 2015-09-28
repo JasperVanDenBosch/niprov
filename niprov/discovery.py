@@ -10,7 +10,7 @@ def discover(root, dependencies=Dependencies()):
     Search a directory for image files, and add them to your provenance collection.
 
     Files are only included if they match the filters in the 
-    'discovery-filter.txt' file.
+    'discover_file_extensions' settings.
     Refer to niprov.add for details on what happens to individual files.
 
     Args:

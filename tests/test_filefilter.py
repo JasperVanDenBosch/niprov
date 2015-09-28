@@ -5,20 +5,14 @@ import os
 
 class FileFilterTests(unittest.TestCase):
 
-    def test_reads_extensions_from_default_file(self):
+    def test_reads_extensions_from_config(self):
         import niprov.filefilter
         dependencies = Mock()
-        filesys = Mock()
-        dependencies.getFilesystem.return_value = filesys
-        filesys.readlines.return_value = ['.abc','.def']
-        niprov.filefilter.pkg_resources = Mock()
+        dependencies.getConfiguration().discover_file_extensions = ['.yes',
+            '.ofc']
         filt = niprov.filefilter.FileFilter(dependencies=dependencies)
-        niprov.filefilter.pkg_resources.resource_filename.assert_called_with(
-            'niprov','discovery-filter.txt')
-        filesys.readlines.assert_called_with(
-            niprov.filefilter.pkg_resources.resource_filename())
-        self.assertTrue(filt.include('/p/sth.abc'))
-        self.assertTrue(filt.include('/p/sth.def'))
-        self.assertFalse(filt.include('/p/sth.xyz'))
+        self.assertTrue(filt.include('/p/sth.ofc'))
+        self.assertTrue(filt.include('/p/sth.yes'))
+        self.assertFalse(filt.include('/p/sth.nop'))
 
 

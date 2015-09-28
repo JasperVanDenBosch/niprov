@@ -173,6 +173,12 @@ class JsonFile(object):
         stats['totalsize'] = sum([r['size'] for r in allRecords])
         return stats
 
+    def byId(self, uid):
+        for record in self._all():
+            if record['id'] == uid:
+                return self.factory.fromProvenance(record)
+        else:
+            raise IndexError('No file with that path known.')
 
        
 

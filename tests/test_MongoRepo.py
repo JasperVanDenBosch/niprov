@@ -146,4 +146,13 @@ class MongoRepoTests(unittest.TestCase):
             }])
         self.assertEqual(sentinel.stats, out)
 
+    def test_byId(self):
+        self.setupRepo()
+        ID = 'abc123'
+        out = self.repo.byId(ID)
+        self.db.provenance.find_one.assert_called_with({'id':ID})
+        self.factory.fromProvenance.assert_called_with(
+            self.db.provenance.find_one())
+        self.assertEqual(self.factory.fromProvenance(), out)
+
 

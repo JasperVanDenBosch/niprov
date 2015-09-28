@@ -133,5 +133,9 @@ class MongoRepository(object):
             }])
         return list(grps)[0]
 
+    def byId(self, uid):
+        record = self.db.provenance.find_one({'id':uid})
+        return self.factory.fromProvenance(record)
+
 
 

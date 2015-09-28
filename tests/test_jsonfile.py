@@ -136,4 +136,13 @@ class JsonFileTest(DependencyInjectionTestBase):
         self.assertEqual(11, out['count'])
         self.assertEqual(totalsize, out['totalsize'])
         
-
+    def test_byId(self):
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        repo._all = Mock()
+        repo._all.return_value = [{'id':'1','path':'a'},
+            {'id':'2','path':'b'}]
+        out = repo.byId('2')
+        self.fileFactory.fromProvenance.assert_called_with(
+            {'id':'2','path':'b'})
+        self.assertEqual(self.fileFactory.fromProvenance(), out)

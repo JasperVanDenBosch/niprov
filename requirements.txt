@@ -5,3 +5,6 @@ sphinxcontrib-napoleon
 mako
 pymongo
 shortuuid
+pyramid
+pyramid_mako
+waitress

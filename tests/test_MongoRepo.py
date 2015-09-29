@@ -146,6 +146,12 @@ class MongoRepoTests(unittest.TestCase):
             }])
         self.assertEqual(sentinel.stats, out)
 
+    def test_statistics_if_no_records(self):
+        self.db.provenance.aggregate.return_value = []
+        self.setupRepo()
+        out = self.repo.statistics()
+        self.assertEqual({'count':0}, out)
+
     def test_byId(self):
         self.setupRepo()
         ID = 'abc123'

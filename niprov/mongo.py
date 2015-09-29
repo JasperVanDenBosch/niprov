@@ -131,6 +131,8 @@ class MongoRepository(object):
                    'count': { '$sum': 1 }
                  }
             }])
+        if len(list(grps)) == 0:
+            return {'count':0}
         return list(grps)[0]
 
     def byId(self, uid):

@@ -26,7 +26,7 @@ dd {padding: 10px;}
 
 % for img in images:
    <tr>
-        <td>${img.provenance.get('id')}</td>
+        <td><a href="${request.route_url('short',id=img.provenance.get('id'))}">${img.provenance.get('id')}</a></td>
         <td>${img.provenance.get('acquired')}</td>
         <td>${img.provenance.get('subject')}</td>
         <td>${img.provenance.get('protocol')}</td>

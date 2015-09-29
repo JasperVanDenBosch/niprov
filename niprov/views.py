@@ -9,3 +9,9 @@ def home(request):
 def latest(request):
     repository = request.dependencies.getRepository()
     return {'images':repository.latest()}
+
+@view_config(route_name='short', renderer='templates/single.mako')
+def short(request):
+    sid = request.matchdict['id']
+    repository = request.dependencies.getRepository()
+    return {'image':repository.byId(sid)}

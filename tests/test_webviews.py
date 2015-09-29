@@ -24,10 +24,24 @@ class ViewTests(DependencyInjectionTestBase):
         self.repo.byId.assert_called_with('1a2b3c')
         self.assertEqual(self.repo.byId(), out['image'])
 
+    def test_by_full_location(self):
+        import niprov.views
+        self.request.matchdict = {'host':'her','path':('a','b','c')}
+        out = niprov.views.location(self.request)
+        self.repo.byLocation.assert_called_with('her:/a/b/c')
+        self.assertEqual(self.repo.byLocation(), out['image'])
+
     def test_stats(self):
         import niprov.views
         out = niprov.views.stats(self.request)
         self.assertEqual(self.repo.statistics(), out['stats'])
+
+    def test_by_subject(self):
+        import niprov.views
+        self.request.matchdict = {'subject':'janedoe'}
+        out = niprov.views.subject(self.request)
+        self.repo.bySubject.assert_called_with('janedoe')
+        self.assertEqual(self.repo.bySubject(), out['images'])
 
 
 

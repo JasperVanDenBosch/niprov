@@ -28,9 +28,9 @@ dd {padding: 10px;}
    <tr>
         <td><a href="${request.route_url('short',id=img.provenance.get('id'))}">${img.provenance.get('id')}</a></td>
         <td>${img.provenance.get('acquired')}</td>
-        <td>${img.provenance.get('subject')}</td>
+        <td><a href="${request.route_url('subject',subject=img.provenance.get('subject'))}">${img.provenance.get('subject')}</a></td>
         <td>${img.provenance.get('protocol')}</td>
-        <td>${img.provenance.get('location')}</td>
+        <td><a href="${request.route_url('location',host=img.provenance.get('hostname'),path=img.provenance.get('path'))}">${img.provenance.get('location')}</a></td>
     </tr>
 % endfor
 

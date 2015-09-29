@@ -1,14 +1,5 @@
-<html>
-<head>
-<style>
-html {font-family:arial;}
-td {padding: 10px;}
-tr:hover {background-color:lavender;}
-dt {color: dark-grey; font-style: italic; background-color:lavender; padding: 10px;}
-dd {padding: 10px;}
-</style>
-<title>Provenance</title>
-</head>
+<%inherit file="master.mako"/>
+
 <h1>Statistics</h1>
 
 <dl>
@@ -16,5 +7,3 @@ dd {padding: 10px;}
     <dt>${k}</dt><dd>${v}</dd>
 % endfor
 </dl>
-
-</html>

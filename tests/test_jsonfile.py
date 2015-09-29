@@ -146,3 +146,12 @@ class JsonFileTest(DependencyInjectionTestBase):
         self.fileFactory.fromProvenance.assert_called_with(
             {'id':'2','path':'b'})
         self.assertEqual(self.fileFactory.fromProvenance(), out)
+
+    def test_bySubject_doesnt_balk_if_no_subject_field(self):
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        repo._all = Mock()
+        repo._all.return_value = [{'subject':'john','a':'b'},
+            {'a':'d'},{'subject':'john','a':'f'}]
+        out = repo.bySubject('john')
+

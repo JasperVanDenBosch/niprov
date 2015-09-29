@@ -8,11 +8,6 @@ class ExportFactoryTests(unittest.TestCase):
         from niprov.exporters import ExportFactory
         self.factory = ExportFactory(dependencies=self.dependencies)
 
-    def test_Html(self):
-        from niprov.html import HtmlExporter
-        exporter = self.factory.createExporter('html', None)
-        self.assertIsInstance(exporter, HtmlExporter)
-
     def test_Default(self):
         from niprov.directexporter import DirectExporter
         exporter = self.factory.createExporter(None, None)
@@ -26,8 +21,6 @@ class ExportFactoryTests(unittest.TestCase):
     def test_Form_supplied(self):
         exporter = self.factory.createExporter(None, 'narrative')
         self.assertEqual(exporter.form, 'narrative')
-        exporter = self.factory.createExporter('html', None)
-        self.assertEqual(exporter.form, None)
         exporter = self.factory.createExporter('stdout', 'narrative')
         self.assertEqual(exporter.form, 'narrative')
 

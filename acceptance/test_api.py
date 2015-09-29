@@ -81,7 +81,6 @@ class ApiTests(unittest.TestCase):
         import niprov
         niprov.discover('testdata')
         niprov.report(medium='stdout',forSubject='05aug14test')
-        #niprov.report(medium='html',forSubject='05aug14test') # browser
 
     def createExtensionlessFiles(self):
         if not os.path.exists('dicomdir'):

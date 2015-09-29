@@ -56,9 +56,6 @@ report.add_argument('--subject', default=None,
     help='Report on files for this subject.')
 report.add_argument('--statistics', action='store_const', const=True, default=False, 
     help='Summarize provenance collected.')
-report.add_argument('--html', dest='medium', action='store_const',
-    const='html', default=None,
-    help='Export provenance as html file(s).')
 report.add_argument('--stdout', dest='medium', action='store_const',
     const='stdout', default=None,
     help='Export provenance on the terminal. (default medium)')

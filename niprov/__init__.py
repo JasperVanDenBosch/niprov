@@ -9,3 +9,6 @@ from niprov.approval import (markForApproval, markedForApproval, approve,
     selectApproved)
 from niprov.context import Context
 from niprov.config import Configuration
+from niprov.webapp import serve
+
+

@@ -9,10 +9,10 @@ dd {padding: 10px;}
 </style>
 <title>Provenance</title>
 </head>
-<h1>Provenance</h1>
+<h1>Statistics</h1>
 
 <dl>
-% for k, v in provenance.items():
+% for k, v in stats.items():
     <dt>${k}</dt><dd>${v}</dd>
 % endfor
 </dl>

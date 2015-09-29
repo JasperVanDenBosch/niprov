@@ -131,9 +131,10 @@ class MongoRepository(object):
                    'count': { '$sum': 1 }
                  }
             }])
-        if len(list(grps)) == 0:
+        groups = list(grps)
+        if len(list(groups)) == 0:
             return {'count':0}
-        return list(grps)[0]
+        return list(groups)[0]
 
     def byId(self, uid):
         record = self.db.provenance.find_one({'id':uid})

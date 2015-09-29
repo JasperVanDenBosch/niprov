@@ -1,6 +1,6 @@
 import unittest
-import mock
-from mock import Mock, patch
+from mock import Mock, patch, call
+import os
 from tests.ditest import DependencyInjectionTestBase
 
 
@@ -15,6 +15,7 @@ class AddTests(DependencyInjectionTestBase):
         self.lastProvenance = None
         def locAt(loc, provenance):
             self.lastProvenance = provenance
+            self.lastPath = loc
             return self.img
         self.fileFactory.locatedAt.side_effect = locAt
         patcher = patch('niprov.adding.datetime')
@@ -26,7 +27,7 @@ class AddTests(DependencyInjectionTestBase):
         return add(path, dependencies=self.dependencies, **kwargs)
 
     def assertNotCalledWith(self, m, *args, **kwargs):
-        c = mock.call(*args, **kwargs)
+        c = call(*args, **kwargs)
         assert c not in m.call_args_list, "Unexpectedly found call: "+str(c)
 
     def test_Returns_provenance_and_status(self):
@@ -109,5 +110,10 @@ class AddTests(DependencyInjectionTestBase):
             shortuuid.uuid.return_value = 'abcdefghijklmn'
             (provenance, status) = self.add('p/afile.f')
             self.assertEqual(self.lastProvenance['id'],'abcdef')
+
+    def test_Makes_paths_absolute(self):
+        (provenance, status) = self.add('p/afile.f')
+        self.assertEqual(self.lastPath,
+            os.path.abspath('p/afile.f'))
 
 

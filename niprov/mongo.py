@@ -119,7 +119,7 @@ class MongoRepository(object):
             {'$set': {'approval': approvalStatus}})
 
     def latest(self):
-        records = self.db.provenance.find().sort({'added': -1}).limit(20)
+        records = self.db.provenance.find().sort('added', -1).limit(20)
         return [self.factory.fromProvenance(record) for record in records]
 
     def statistics(self):

@@ -126,7 +126,7 @@ class MongoRepoTests(unittest.TestCase):
         self.setupRepo()
         out = self.repo.latest()
         self.db.provenance.find.assert_called_with()
-        self.db.provenance.find().sort.assert_called_with({'added':-1})
+        self.db.provenance.find().sort.assert_called_with('added', -1)
         self.db.provenance.find().sort().limit.assert_called_with(20)
         self.factory.fromProvenance.assert_any_call('px')
         self.factory.fromProvenance.assert_any_call('py')

@@ -1,5 +1,7 @@
 <%inherit file="master.mako"/>
 
+<h1>${len(images)} files</h1>
+
 <table>
 <thead>
 <tr>

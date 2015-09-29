@@ -7,25 +7,11 @@
     <meta name="description" content="neuroimaging provenance">
     <meta name="author" content="Jasper J.F. van den Bosch">
     <link rel="shortcut icon" href="${request.static_url('niprov:static/pyramid-16x16.png')}">
-
+    <link rel="stylesheet" type="text/css" href="${request.static_url('niprov:static/master.css')}">
     <title>Provenance</title>
-
-    <style>
-    html {font-family:arial;}
-    td {padding: 10px;}
-    tr:hover {background-color:lavender;}
-    dt {color: dark-grey; font-style: italic; background-color:lavender; padding: 10px;}
-    dd {padding: 10px;}
-    </style>
-
-
-
   </head>
 
   <body>
-
-
-
         <p id="header">
             <a href="${request.route_url('home')}">home</a>
             <a href="${request.route_url('latest')}">latest</a>
@@ -33,10 +19,7 @@
             <a href="http://niprov.readthedocs.org/en/latest/">documentation</a>
         </p>
 
-
         ${self.body()}
-
-
 
   </body>
 </html>

@@ -1,0 +1,6 @@
+html {font-family:arial;}
+td {padding: 10px;}
+tr:hover {background-color:lavender;}
+dt {color: dark-grey; font-style: italic; background-color:lavender; padding: 10px;}
+dd {padding: 10px;}
+a.help {padding: 5px;}

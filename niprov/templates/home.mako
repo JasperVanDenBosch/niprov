@@ -35,7 +35,10 @@
             <div class="content">
               <h1><span class="font-semi-bold">Pyramid</span> <span class="smaller">Starter scaffold</span></h1>
               <p class="lead">Welcome to <span class="font-normal">${project}</span>, an&nbsp;application generated&nbsp;by<br>the <span class="font-normal">Pyramid Web Framework 1.5.7</span>. </p>
-                <p class="lead"><a href="${request.route_url('latest')}">latest provenance</a></p>
+                <p class="lead">
+                    <a href="${request.route_url('latest')}">latest provenance</a>
+                    <a href="${request.route_url('stats')}">statistics</a>
+                </p>
             </div>
           </div>
         </div>

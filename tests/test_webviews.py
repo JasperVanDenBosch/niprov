@@ -24,6 +24,11 @@ class ViewTests(DependencyInjectionTestBase):
         self.repo.byId.assert_called_with('1a2b3c')
         self.assertEqual(self.repo.byId(), out['image'])
 
+    def test_stats(self):
+        import niprov.views
+        out = niprov.views.stats(self.request)
+        self.assertEqual(self.repo.statistics(), out['stats'])
+
 
 
 

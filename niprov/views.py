@@ -15,3 +15,8 @@ def short(request):
     sid = request.matchdict['id']
     repository = request.dependencies.getRepository()
     return {'image':repository.byId(sid)}
+
+@view_config(route_name='stats', renderer='templates/stats.mako')
+def stats(request):
+    repository = request.dependencies.getRepository()
+    return {'stats':repository.statistics()}

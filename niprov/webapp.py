@@ -19,6 +19,7 @@ def main(global_config, **settings):
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_route('home', '/')
     config.add_route('latest', '/latest')
+    config.add_route('stats', '/stats')
     config.add_route('short', '/id/{id}')
     config.add_request_method(lambda r: Dependencies(), 
         'dependencies', reify=True)

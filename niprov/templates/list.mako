@@ -15,20 +15,22 @@ dd {padding: 10px;}
 <table>
 <thead>
 <tr>
+<th>Id</th>
 <th>Acquired</th>
 <th>Subject</th>
 <th>Protocol</th>
-<th>Path</th>
+<th>Location</th>
 </tr>
 </thead>
 <tbody>
 
-% for img in provenance:
+% for img in images:
    <tr>
+        <td>${img.provenance.get('id')}</td>
         <td>${img.provenance.get('acquired')}</td>
         <td>${img.provenance.get('subject')}</td>
         <td>${img.provenance.get('protocol')}</td>
-        <td>${img.provenance.get('path')}</td>
+        <td>${img.provenance.get('location')}</td>
     </tr>
 % endfor
 

@@ -7,7 +7,6 @@ reqs = [
 'mock',
 'coveralls',
 'sphinx',
-'sphinxcontrib-napoleon',
 'mako',
 'pymongo',
 'shortuuid',

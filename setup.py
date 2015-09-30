@@ -3,6 +3,19 @@
 from setuptools import setup, find_packages
 import os
 
+reqs = [
+'mock',
+'coveralls',
+'sphinx',
+'sphinxcontrib-napoleon',
+'mako',
+'pymongo',
+'shortuuid',
+'pyramid',
+'pyramid_mako',
+'waitress',
+]
+
 try:
    import pypandoc
    README = pypandoc.convert('README.md', 'rst')
@@ -25,7 +38,7 @@ setup(name='niprov',
             'License :: OSI Approved :: BSD License',
             'Intended Audience :: Science/Research',
             'Topic :: Scientific/Engineering'],
-      package_data={'niprov': ['discovery-filter.txt']},
+      install_requires=reqs,
       include_package_data=True,
       entry_points="""\
       [paste.app_factory]

@@ -5,14 +5,16 @@ import os, shutil
 class ContextApiTests(unittest.TestCase):
 
     def setUp(self):
-        self.dbpath = os.path.expanduser(os.path.join('~','provenance.json'))
+        self.dbpath = os.path.expanduser(os.path.join('~','provenance_test.json'))
         if os.path.exists(self.dbpath):
-            shutil.move(self.dbpath, self.dbpath.replace('.json','.backup.json'))
+            os.remove(self.dbpath)
         os.mkdir('temp')
+        from niprov import Context
+        self.provenance = Context()
+        self.provenance.config.database_type = 'file'
+        self.provenance.config.database_url = self.dbpath
 
     def tearDown(self):
-        if os.path.exists(self.dbpath):
-            shutil.move(self.dbpath, self.dbpath.replace('.json','.test.json'))
         shutil.rmtree('temp')
 
     def touch(self, path):
@@ -20,13 +22,13 @@ class ContextApiTests(unittest.TestCase):
             tempfile.write('0')
 
     def test_Log(self):
-        from niprov import Context
-        provenance = Context()
-        provenance.discover('testdata')
+        self.provenance.discover('testdata')
         newfile = 'temp/smoothed.test'
         self.touch(newfile)
-        provenance.log(newfile, 'test', 'testdata/eeg/stub.cnt')
-        img = provenance.report(forFile=newfile)
+        parent = os.path.abspath('testdata/eeg/stub.cnt')
+        self.provenance.log(newfile, 'test', parent)
+        testfpath = os.path.abspath(newfile)
+        img = self.provenance.report(forFile=testfpath)
         self.assertEqual(img.provenance['subject'], 'Jane Doe')
         self.assertEqual(img.provenance['size'], os.path.getsize(newfile))
 

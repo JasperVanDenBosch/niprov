@@ -18,9 +18,9 @@ class ApiTests(unittest.TestCase):
     def test_Discover(self):
         import niprov
         niprov.discover('testdata')
-        img = niprov.report(forFile='testdata/dicom/T1.dcm')
+        img = niprov.report(forFile=os.path.abspath('testdata/dicom/T1.dcm'))
         self.assertEqual(img.provenance['dimensions'], [80, 80, 10])
-        img = niprov.report(forFile='testdata/eeg/stub.cnt')
+        img = niprov.report(forFile=os.path.abspath('testdata/eeg/stub.cnt'))
         self.assertEqual(img.provenance['subject'], 'Jane Doe')
 
     def test_Export_terminal(self):
@@ -32,9 +32,9 @@ class ApiTests(unittest.TestCase):
     def test_Log(self):
         import niprov
         niprov.discover('testdata')
-        newfile = 'temp/smoothed.test'
+        newfile = os.path.abspath('temp/smoothed.test')
         self.touch(newfile)
-        niprov.log(newfile, 'test', 'testdata/eeg/stub.cnt')
+        niprov.log(newfile, 'test', os.path.abspath('testdata/eeg/stub.cnt'))
         img = niprov.report(forFile=newfile)
         self.assertEqual(img.provenance['subject'], 'Jane Doe')
         self.assertEqual(img.provenance['size'], os.path.getsize(newfile))
@@ -42,7 +42,8 @@ class ApiTests(unittest.TestCase):
     def test_Narrative_file(self):
         import niprov
         niprov.discover('testdata')
-        text = niprov.report(form='narrative', forFile='testdata/dicom/T1.dcm')
+        text = niprov.report(form='narrative', 
+            forFile=os.path.abspath('testdata/dicom/T1.dcm'))
         self.assertEqual(text, ("This is a T1 image. It was recorded August 5, " 
             "2014. The participant's name is 05aug14test. It is 158KB in size. "))
 

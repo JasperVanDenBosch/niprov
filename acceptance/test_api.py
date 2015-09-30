@@ -50,10 +50,10 @@ class ApiTests(unittest.TestCase):
     def test_Approval(self):
         import niprov
         niprov.discover('testdata')
-        niprov.markForApproval(['testdata/dicom/T1.dcm',
-                                'testdata/dicom/T2.dcm'])
+        niprov.markForApproval([os.path.abspath('testdata/dicom/T1.dcm'),
+                                os.path.abspath('testdata/dicom/T2.dcm')])
         imgs = niprov.markedForApproval()
-        niprov.approve('testdata/dicom/T1.dcm')
+        niprov.approve(os.path.abspath('testdata/dicom/T1.dcm'))
         imgs = niprov.markedForApproval()
 
 #    def test_Narrative_pipeline(self):

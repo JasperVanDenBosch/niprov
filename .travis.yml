@@ -1,6 +1,6 @@
 language: python
 install:
-  - "pip install -r requirements.txt"
+  - "pip install -q -e ."
   - "pip install -r optional.txt"
 script:
   - coverage run --source=niprov setup.py test

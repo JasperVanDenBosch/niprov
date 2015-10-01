@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+from niprov.exceptions import UnknownFileError
 
 
 class Commandline(object):
@@ -31,7 +32,7 @@ class Commandline(object):
         print(template.format(', '.join(new), transform, ', '.join(parents)))
 
     def unknownFile(self, fpath):
-        print('[provenance] Unknown file: '+fpath)
+        raise UnknownFileError('Unknown file: '+fpath)
 
     def knownFile(self, fpath):
         print('[provenance] File already known: '+fpath)

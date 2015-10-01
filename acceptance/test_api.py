@@ -27,7 +27,8 @@ class ApiTests(unittest.TestCase):
         import niprov
         niprov.discover('testdata')
         niprov.report(medium='stdout')
-        niprov.report(medium='stdout', forFile='testdata/dicom/T1.dcm')
+        niprov.report(medium='stdout', 
+            forFile=os.path.abspath('testdata/dicom/T1.dcm'))
 
     def test_Log(self):
         import niprov

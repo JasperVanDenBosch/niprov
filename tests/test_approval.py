@@ -50,6 +50,16 @@ class ApprovalTests(DependencyInjectionTestBase):
         self.locationFactory.completeString.assert_any_call('c1')
         self.assertEqual(selected, [a1.path, a2.path])
 
+    def test_markForApproval_reset_False_means_approved_files_not_marked(self):
+        import niprov
+        img = self.mockImg()
+        img.provenance['approval'] = 'granted'
+        self.repo.byLocation.return_value = img
+        niprov.markForApproval(['f2'], reset=False, dependencies=self.dependencies)
+        assert not self.repo.updateApproval.called, 'Should not mark approved file'
+        niprov.markForApproval(['f1'], reset=True, dependencies=self.dependencies)
+        self.repo.updateApproval.assert_any_call('f1','pending')
+
     def mockImg(self):
         img = Mock()
         img.provenance = {}

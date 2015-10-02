@@ -3,15 +3,21 @@
 from niprov.dependencies import Dependencies
 
 
-def markForApproval(files, dependencies=Dependencies()):
+def markForApproval(files, reset=False, dependencies=Dependencies()):
     """Mark a list of files for approval by a human.
 
     Args:
         files (list): List of paths of files tracked by niprov to mark for
             approval.
+        reset (bool): Also mark files that have already been approved. False 
+            by default.
     """
     repository = dependencies.getRepository()
     for filepath in files:
+        if not reset:
+            image = repository.byLocation(filepath)
+            if image.provenance.get('approval') == 'granted':
+                continue
         repository.updateApproval(filepath,'pending')
 
 def markedForApproval(dependencies=Dependencies()):
@@ -44,7 +50,6 @@ def selectApproved(files, dependencies=Dependencies()):
     for filepath in files:
         locationString = location.completeString(filepath)
         img = repository.byLocation(locationString)
-        if 'approval' in img.provenance:
-            if img.provenance['approval'] == 'granted':
-                selection.append(img.path)
+        if img.provenance.get('approval') == 'granted':
+            selection.append(img.path)
     return selection

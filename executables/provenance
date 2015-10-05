@@ -49,7 +49,7 @@ add.add_argument('--transient', action='store_const', const=True, default=False,
     help='Indicate that the file may not exist now or may be temporary.')
 
 report = subparsers.add_parser('report',
-    help='Provide provenance for known files.')
+    help='Provide provenance for known files. By default shows most recent files.')
 report.add_argument('--file', default=None,
     help='Report on the file at this location.')
 report.add_argument('--subject', default=None,

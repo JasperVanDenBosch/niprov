@@ -9,8 +9,8 @@ def report(medium=None, form=None, forFile=None, forSubject=None,
 
     To get provenance on one specific file, pass its path as the 'forFile' 
     argument. Alternatively, to get all files associated with a certain subject,
-    use the 'forSubject' argument. If none of these is used, provenance for all
-    files is reported.
+    use the 'forSubject' argument. If none of these is used, provenance for the 
+    most recently registered files is reported.
 
     Args:
         medium (str): The medium in which to publish the provenance. 
@@ -39,6 +39,6 @@ def report(medium=None, form=None, forFile=None, forSubject=None,
     elif forSubject:
         provenance = repository.bySubject(forSubject)
     else:
-        provenance = repository.all()
+        provenance = repository.latest()
     return exporter.export(provenance)
 

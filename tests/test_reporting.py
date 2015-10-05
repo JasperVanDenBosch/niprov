@@ -11,9 +11,9 @@ class ReportingTests(DependencyInjectionTestBase):
         import niprov
         return niprov.report(*args, dependencies=self.dependencies, **kwargs)
 
-    def test_Without_specifics_returns_all_files(self):
+    def test_Without_specifics_returns_latest_files(self):
         out = self.report()
-        self.exporter.export.assert_called_with(self.repo.all())
+        self.exporter.export.assert_called_with(self.repo.latest())
         self.assertEqual(out, self.exporter.export())
 
     def test_Can_report_on_one_file_specifically(self):
@@ -42,7 +42,7 @@ class ReportingTests(DependencyInjectionTestBase):
 
     def test_Passes_provenance_to_exporter(self):
         self.report()
-        self.exportFactory.createExporter().export.assert_any_call(self.repo.all())
+        self.exportFactory.createExporter().export.assert_any_call(self.repo.latest())
         self.report(forSubject='Jane')
         self.exportFactory.createExporter().export.assert_any_call(self.repo.bySubject())
 

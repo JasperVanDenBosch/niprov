@@ -126,7 +126,7 @@ class MongoRepoTests(unittest.TestCase):
         self.setupRepo()
         out = self.repo.latest()
         self.db.provenance.find.assert_called_with()
-        self.db.provenance.find().sort.assert_called_with({'added':-1})
+        self.db.provenance.find().sort.assert_called_with('added', -1)
         self.db.provenance.find().sort().limit.assert_called_with(20)
         self.factory.fromProvenance.assert_any_call('px')
         self.factory.fromProvenance.assert_any_call('py')
@@ -145,6 +145,12 @@ class MongoRepoTests(unittest.TestCase):
                  }
             }])
         self.assertEqual(sentinel.stats, out)
+
+    def test_statistics_if_no_records(self):
+        self.db.provenance.aggregate.return_value = []
+        self.setupRepo()
+        out = self.repo.statistics()
+        self.assertEqual({'count':0}, out)
 
     def test_byId(self):
         self.setupRepo()

@@ -119,7 +119,7 @@ class MongoRepository(object):
             {'$set': {'approval': approvalStatus}})
 
     def latest(self):
-        records = self.db.provenance.find().sort({'added': -1}).limit(20)
+        records = self.db.provenance.find().sort('added', -1).limit(20)
         return [self.factory.fromProvenance(record) for record in records]
 
     def statistics(self):
@@ -131,7 +131,10 @@ class MongoRepository(object):
                    'count': { '$sum': 1 }
                  }
             }])
-        return list(grps)[0]
+        groups = list(grps)
+        if len(list(groups)) == 0:
+            return {'count':0}
+        return list(groups)[0]
 
     def byId(self, uid):
         record = self.db.provenance.find_one({'id':uid})

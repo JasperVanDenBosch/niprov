@@ -16,7 +16,7 @@ def main(global_config, **settings):
 #    settings['mako.directories'] = os.path.join(here, 'templates')
     config = Configurator(settings=settings)
     config.include('pyramid_mako')
-    config.add_static_view('static', 'static', cache_max_age=3600)
+    config.add_static_view('static', 'static', cache_max_age=10)
     config.add_route('home', '/')
     config.add_route('latest', '/latest')
     config.add_route('stats', '/stats')

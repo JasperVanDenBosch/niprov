@@ -1,0 +1,11 @@
+html {font: 13px normal arial,sans-serif;}
+td {padding: 10px;}
+tr:hover {background-color:lavender;}
+th {color: DimGray;}
+dt {color: DimGray; font-style: italic; background-color:lavender; padding: 10px;}
+dd {padding: 10px;}
+a.help {padding: 5px;}
+h1 {font-style: normal; font-weight: normal; margin: 23px;}
+p#header>a {text-decoration: none; margin: 10px;}
+p#header>a:hover {text-decoration: underline;}
+p#intro {margin:40px;}

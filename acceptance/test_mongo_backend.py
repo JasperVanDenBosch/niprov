@@ -1,4 +1,4 @@
-import unittest
+import unittest, os
 from pymongo import MongoClient
 
 URL = 'mongodb://niprov-admin:{0}@ds041571.mongolab.com:41571/niprov'
@@ -20,7 +20,8 @@ class MongoTests(unittest.TestCase):
 
     def test_Something(self):
         self.provenance.discover('testdata')
-        img = self.provenance.report(forFile='testdata/parrec/T1.PAR')
+        testfpath = os.path.abspath('testdata/parrec/T1.PAR')
+        img = self.provenance.report(forFile=testfpath)
         self.assertEqual(img.provenance['subject'], '05aug14test')
 
     def test_Stats(self):

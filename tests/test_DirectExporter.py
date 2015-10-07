@@ -23,3 +23,13 @@ class DirectExporterTests(TestCase):
         narrator.narrate.assert_called_with(sentinel.one)
         self.assertEqual(out, narrator.narrate(sentinel.one))
 
+    def test_For_pipeline_form_Returns_pipeline_factory_output(self):
+        from niprov.directexporter import DirectExporter
+        pipelineFactory = Mock()
+        dependencies = Mock()
+        dependencies.getPipelineFactory.return_value = pipelineFactory
+        exporter = DirectExporter(form='pipeline', dependencies=dependencies)
+        out = exporter.exportPipeline(sentinel.one)
+        narrator.narrate.assert_called_with(sentinel.one)
+        self.assertEqual(out, narrator.narrate(sentinel.one))
+

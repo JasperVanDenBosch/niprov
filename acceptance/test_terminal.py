@@ -23,7 +23,7 @@ class TerminalApiTests(unittest.TestCase):
         self.stdout.close()
         shutil.rmtree('temp')
 
-    def test_Log(self):
+    def test_Report_pipeline(self):
         self.provenance.discover('testdata')
         raw = os.path.abspath('testdata/eeg/stub.cnt')
         self.provenance.log(absp('p1a.f'), 'test', raw, transient=True)

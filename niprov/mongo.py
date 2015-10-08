@@ -25,6 +25,10 @@ class MongoRepository(object):
         record = self.db.provenance.find_one({'location':locationString})
         return self.factory.fromProvenance(record)
 
+    def byLocations(self, listOfLocations):
+        records = self.db.provenance.find({'location':{'$in':listOfLocations}})
+        return [self.factory.fromProvenance(record) for record in records]
+
     def knowsByLocation(self, locationString):
         """Whether the file at this location has provenance associated with it.
 

@@ -62,6 +62,9 @@ report.add_argument('--stdout', dest='medium', action='store_const',
 report.add_argument('--narrative', dest='form', action='store_const',
     const='narrative', default=None,
     help='Provenance in story form instead of key-value pairs.')
+report.add_argument('--pipeline', dest='form', action='store_const',
+    const='pipeline', default=None,
+    help='Pretty-print pipeline for a file specified with --file.')
 
 version = subparsers.add_parser('version',
     help='Show niprov software version.')

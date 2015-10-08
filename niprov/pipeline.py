@@ -1,4 +1,6 @@
 
 
 class Pipeline(object):
-    pass
+
+    def __init__(self, locationTree, filesByLocation):
+        pass

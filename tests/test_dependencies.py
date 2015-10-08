@@ -75,3 +75,10 @@ class DependenciesTests(unittest.TestCase):
         self.assertIsInstance(dependencies.getLocationFactory(), 
             LocationFactory)
 
+    def test_provides_PipelineFactory(self):
+        from niprov.dependencies import Dependencies
+        from niprov.pipelinefactory import PipelineFactory
+        dependencies = Dependencies()
+        self.assertIsInstance(dependencies.getPipelineFactory(), 
+            PipelineFactory)
+

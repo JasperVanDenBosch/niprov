@@ -67,3 +67,18 @@ class StandardOutputExporter(BaseExporter):
         print(' Number of files: {0}'.format(stats['count']))
         print(' Total file size: {0}'.format(stats['totalsize']))
         print('\n')
+
+    def exportPipeline(self, pipeline):
+        """Pretty-print a pipeline to the terminal
+
+        Args:
+            pipeline (Pipeline): Pipeline object to publish.
+        """
+        tree = pipeline.asFilenameTree()
+        def prettyPrintTree(tree, s='', lvl=0):
+            for key, value in tree.items():
+                s += '{0}+---{1}\n'.format('|   '*lvl,key)
+                s = prettyPrintTree(value, s, lvl+1)
+            return s
+        print(prettyPrintTree(tree))
+

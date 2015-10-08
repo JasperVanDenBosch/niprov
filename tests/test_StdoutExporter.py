@@ -28,3 +28,20 @@ class StdoutExporterTests(TestCase):
             exporter.exportStatistics({'count':123,'totalsize':678})
             mprint.assert_any_call(' Number of files: 123')
             mprint.assert_any_call(' Total file size: 678')
+
+    def test_Pipeline(self):
+        from niprov.stdout import StandardOutputExporter
+        dependencies = Mock()
+        mprint = Mock()
+        pipeline = Mock()
+        tree = {'raw.f':{'1a.f':{'2.f':{}},'1b.f':{}}}
+        exp = ''
+        exp += '+---raw.f\n'
+        exp += '|   +---1a.f\n'
+        exp += '|   |   +---2.f\n'
+        exp += '|   +---1b.f\n'
+        pipeline.asFilenameTree.return_value = tree
+        with patch('__builtin__.print') as mprint:
+            exporter = StandardOutputExporter(dependencies=dependencies)
+            exporter.exportPipeline(pipeline)
+            mprint.assert_called_with(exp)

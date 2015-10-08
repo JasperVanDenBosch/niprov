@@ -32,9 +32,9 @@ class TerminalApiTests(unittest.TestCase):
         self.provenance.report(forFile=absp('p2.f'), form='pipeline')
         exp = ''
         exp += '+---stub.cnt\n'
-        exp += '|  +---p1a.f\n'
-        exp += '|  |   +---p2.f\n'
-        exp += '|  +---p1b.f\n'
+        exp += '|   +---p1a.f\n'
+        exp += '|   |   +---p2.f\n'
+        exp += '|   +---p1b.f\n'
         self.assertIn(exp, self.stdout.getvalue())
 
 

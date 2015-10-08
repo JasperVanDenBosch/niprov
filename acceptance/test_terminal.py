@@ -15,7 +15,7 @@ class TerminalApiTests(unittest.TestCase):
         self.provenance.config.database_type = 'file'
         self.provenance.config.database_url = self.dbpath
         self.provenance.config.verbose = False
-        self.oldstdout = sys.stdout 
+        self.oldstdout = sys.stdout
         sys.stdout = self.stdout = StringIO()
 
     def tearDown(self):
@@ -29,7 +29,7 @@ class TerminalApiTests(unittest.TestCase):
         self.provenance.log(absp('p1a.f'), 'test', raw, transient=True)
         self.provenance.log(absp('p1b.f'), 'test', raw, transient=True)
         self.provenance.log(absp('p2.f'), 'test', absp('p1a.f'), transient=True)
-        self.provenance.report(forFile=absp('p2.f'), form='pipeline')
+        self.provenance.report(forFile=absp('p2.f'), form='pipeline', medium='stdout')
         exp = ''
         exp += '+---stub.cnt\n'
         exp += '|   +---p1a.f\n'

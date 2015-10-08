@@ -33,7 +33,7 @@ class PipelineFactoryTests(DependencyInjectionTestBase):
 
     def fileWithLocation(self, loc):
         f = Mock()
-        f.location = loc
+        f.location.toString.return_value = loc
         f.provenance = {}
         return f
 

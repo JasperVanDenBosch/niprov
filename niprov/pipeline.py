@@ -3,8 +3,8 @@ import os
 
 class Pipeline(object):
 
-    def __init__(self, locationTree, filesByLocation):
-        self.locationTree = locationTree
+    def __init__(self, filesByLocation):
+        self.locationTree = None
 
     def asFilenameTree(self):
         def toFilenameTree(d):

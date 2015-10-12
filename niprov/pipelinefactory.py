@@ -9,13 +9,18 @@ class PipelineFactory(object):
 
     def forFile(self, image):
         filesByLocation = {image.location.toString():image}
-        locationTree = {}
-        if 'parents' in image.provenance:
-            parentLocations = image.provenance['parents']
-            for parentLocation in parentLocations:
-                locationTree[parentLocation] = {image.location.toString():{}}
-            parents = self.files.byLocations(parentLocations)
-            for parent in parents:
-                if not parent.location.toString() in filesByLocation:
-                    filesByLocation[parent.location.toString()] = parent
-        return Pipeline(locationTree, filesByLocation)
+
+        def lookupParentsRecursive(images):
+            parentLocations = set()
+            for image in images:
+                if 'parents' in image.provenance:
+                    parentLocations.update(image.provenance['parents'])
+            if len(parentLocations) > 0:
+                parents = self.files.byLocations(parentLocations)
+                for parent in parents:
+                    if not parent.location.toString() in filesByLocation:
+                        filesByLocation[parent.location.toString()] = parent
+                lookupParentsRecursive(parents)
+
+        lookupParentsRecursive([image])
+        return Pipeline(filesByLocation)

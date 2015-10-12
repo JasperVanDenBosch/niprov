@@ -12,7 +12,8 @@ class PipelineTests(DependencyInjectionTestBase):
         from niprov.pipeline import Pipeline
         inner = {'a:/p/c.f':{'b:/c/d/e.f':{}},'b:/c/d/d.f':{}}
         locTree = {'a:/p/a.f':inner,'a:/p/b.f':{}}
-        pipeline = Pipeline(locTree, {})
+        pipeline = Pipeline({})
+        pipeline.locationTree = locTree
         tree = pipeline.asFilenameTree()
         self.assertEqual({'a.f':{'c.f':{'e.f':{}},'d.f':{}},'b.f':{}}, tree)
 

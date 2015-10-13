@@ -186,5 +186,11 @@ class JsonFile(object):
         else:
             raise IndexError('No file with that path known.')
 
+    def byParents(self, listOfParentLocations):
+        all = self._all()
+        records = [f for f in all if set(listOfParentLocations).intersection(
+            f['parents'])]
+        return [self.factory.fromProvenance(record) for record in records]
+
        
 

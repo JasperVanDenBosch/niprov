@@ -34,7 +34,9 @@ class TerminalApiTests(unittest.TestCase):
         exp += '+---stub.cnt\n'
         exp += '|   +---p1a.f\n'
         exp += '|   |   +---p2.f\n'
-        exp += '|   +---p1b.f\n'
+        #exp += '|   +---p1b.f\n' # p1b is not related to p2f
+        import time
+        time.sleep(0.3)
         self.assertIn(exp, self.stdout.getvalue())
 
 

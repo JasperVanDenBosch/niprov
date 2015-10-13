@@ -17,7 +17,7 @@ class PipelineFactory(object):
                 parentLocations = set()
                 for image in images:
                     parentLocations.update(image.provenance.get('parents',[]))
-                relatives = self.files.byLocations(parentLocations)
+                relatives = self.files.byLocations(list(parentLocations))
             elif relationToLookFor is 'children':
                 thisGenerationLocations = [i.location.toString() for i in images]
                 relatives = self.files.byParents(thisGenerationLocations)

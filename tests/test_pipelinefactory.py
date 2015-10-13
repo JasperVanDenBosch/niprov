@@ -61,6 +61,21 @@ class PipelineFactoryTests(DependencyInjectionTestBase):
             self.assertEqual(1, self.repo.byLocations.call_count)
             self.assertEqual(3, self.repo.byParents.call_count)
 
+    def test_forFile_should_call_repo_with_list_not_set(self):
+        from niprov.pipelinefactory import PipelineFactory
+        p1a = self.fileWithLocation('p1a')
+        p1b = self.fileWithLocation('p1b')
+        t = self.fileWithLocation('t')
+        t.provenance['parents'] = ['p1a','p1b']
+        repodict = {'t':t,'p1a':p1a, 'p1b':p1b}
+        self.repo.byLocations.side_effect = lambda ls: [repodict[l] for l in ls]
+        self.repo.byParents.side_effect = lambda ls: []
+        factory = PipelineFactory(dependencies=self.dependencies)
+        with patch('niprov.pipelinefactory.Pipeline') as PipelineCtr:
+            pipeline = factory.forFile(t)
+            self.repo.byLocations.assert_called_with([])
+            self.repo.byLocations.assert_any_call(['p1a','p1b'])
+
     def fileWithLocation(self, loc):
         f = Mock()
         f.location.toString.return_value = loc

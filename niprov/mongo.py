@@ -144,5 +144,10 @@ class MongoRepository(object):
         record = self.db.provenance.find_one({'id':uid})
         return self.factory.fromProvenance(record)
 
+    def byParents(self, listOfParentLocations):
+        records = self.db.provenance.find({'parents':{
+            '$in':listOfParentLocations}})
+        return [self.factory.fromProvenance(record) for record in records]
+
 
 

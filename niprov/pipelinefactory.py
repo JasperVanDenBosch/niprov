@@ -8,19 +8,24 @@ class PipelineFactory(object):
         self.files = dependencies.getRepository()
 
     def forFile(self, image):
+        """Create a Pipeline object based on known files 'parents' field.
+        """
         filesByLocation = {image.location.toString():image}
 
-        def lookupParentsRecursive(images):
-            parentLocations = set()
-            for image in images:
-                if 'parents' in image.provenance:
-                    parentLocations.update(image.provenance['parents'])
-            if len(parentLocations) > 0:
-                parents = self.files.byLocations(parentLocations)
-                for parent in parents:
-                    if not parent.location.toString() in filesByLocation:
-                        filesByLocation[parent.location.toString()] = parent
-                lookupParentsRecursive(parents)
+        def lookupRelativesRecursive(images, relationToLookFor):
+            if relationToLookFor is 'parents':
+                parentLocations = set()
+                for image in images:
+                    parentLocations.update(image.provenance.get('parents',[]))
+                relatives = self.files.byLocations(parentLocations)
+            elif relationToLookFor is 'children':
+                thisGenerationLocations = [i.location.toString() for i in images]
+                relatives = self.files.byParents(thisGenerationLocations)
+            for relative in relatives:
+                filesByLocation[relative.location.toString()] = relative
+            if relatives:
+                lookupRelativesRecursive(relatives, relationToLookFor)
 
-        lookupParentsRecursive([image])
+        lookupRelativesRecursive([image], 'parents')
+        lookupRelativesRecursive([image], 'children')
         return Pipeline(filesByLocation)

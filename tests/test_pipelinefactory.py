@@ -34,7 +34,7 @@ class PipelineFactoryTests(DependencyInjectionTestBase):
         factory = PipelineFactory(dependencies=self.dependencies)
         with patch('niprov.pipelinefactory.Pipeline') as PipelineCtr:
             pipeline = factory.forFile(t)
-            PipelineCtr.assert_called_with(repodict)
+            PipelineCtr.assert_called_with(repodict.values())
             self.assertEqual(3, self.repo.byLocations.call_count)
             self.assertEqual(1, self.repo.byParents.call_count)
 
@@ -57,7 +57,7 @@ class PipelineFactoryTests(DependencyInjectionTestBase):
         factory = PipelineFactory(dependencies=self.dependencies)
         with patch('niprov.pipelinefactory.Pipeline') as PipelineCtr:
             pipeline = factory.forFile(t)
-            PipelineCtr.assert_called_with(repodict)
+            PipelineCtr.assert_called_with(repodict.values())
             self.assertEqual(1, self.repo.byLocations.call_count)
             self.assertEqual(3, self.repo.byParents.call_count)
 

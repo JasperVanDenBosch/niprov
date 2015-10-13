@@ -28,4 +28,4 @@ class PipelineFactory(object):
 
         lookupRelativesRecursive([image], 'parents')
         lookupRelativesRecursive([image], 'children')
-        return Pipeline(filesByLocation)
+        return Pipeline(filesByLocation.values())

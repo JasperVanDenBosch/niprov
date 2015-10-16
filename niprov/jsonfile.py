@@ -114,6 +114,11 @@ class JsonFile(object):
         else:
             raise IndexError('No file with that path known.')
 
+    def byLocations(self, listOfLocations):
+        all = self._all()
+        records = [f for f in all if f['location'] in listOfLocations]
+        return [self.factory.fromProvenance(record) for record in records]
+
     def bySubject(self, subject):
         """Get the provenance for all files of a given participant. 
 
@@ -180,6 +185,12 @@ class JsonFile(object):
                 return self.factory.fromProvenance(record)
         else:
             raise IndexError('No file with that path known.')
+
+    def byParents(self, listOfParentLocations):
+        all = self._all()
+        records = [f for f in all if set(listOfParentLocations).intersection(
+            f['parents'])]
+        return [self.factory.fromProvenance(record) for record in records]
 
        
 

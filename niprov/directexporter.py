@@ -18,3 +18,6 @@ class DirectExporter(BaseExporter):
 
     def exportStatistics(self, stats):
         return stats
+
+    def exportPipeline(self, pipeline):
+        return pipeline

@@ -68,3 +68,7 @@ class Dependencies(object):
         import niprov.jsonserializing
         return niprov.jsonserializing.JsonSerializer()
 
+    def getPipelineFactory(self):
+        import niprov.pipelinefactory
+        return niprov.pipelinefactory.PipelineFactory(dependencies=self)
+

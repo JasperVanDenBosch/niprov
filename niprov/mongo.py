@@ -25,6 +25,10 @@ class MongoRepository(object):
         record = self.db.provenance.find_one({'location':locationString})
         return self.factory.fromProvenance(record)
 
+    def byLocations(self, listOfLocations):
+        records = self.db.provenance.find({'location':{'$in':listOfLocations}})
+        return [self.factory.fromProvenance(record) for record in records]
+
     def knowsByLocation(self, locationString):
         """Whether the file at this location has provenance associated with it.
 
@@ -139,6 +143,11 @@ class MongoRepository(object):
     def byId(self, uid):
         record = self.db.provenance.find_one({'id':uid})
         return self.factory.fromProvenance(record)
+
+    def byParents(self, listOfParentLocations):
+        records = self.db.provenance.find({'parents':{
+            '$in':listOfParentLocations}})
+        return [self.factory.fromProvenance(record) for record in records]
 
 
 

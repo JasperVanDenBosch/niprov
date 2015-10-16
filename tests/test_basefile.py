@@ -82,6 +82,16 @@ class BaseFileTests(unittest.TestCase):
         self.assertEqual('newPathVal', img.provenance['path'])
         self.assertEqual(self.location, img.location)
 
+    def test_parents_property(self):
+        prov = {'aprop':'aval','size':9876}
+        img = self.constructor(self.path, provenance=prov, 
+            dependencies=self.dependencies)
+        self.assertEqual(img.parents, [])
+        prov = {'aprop':'aval','parents':['foo','bar']}
+        img2 = self.constructor(self.path, provenance=prov, 
+            dependencies=self.dependencies)
+        self.assertEqual(img2.parents, ['foo','bar'])
+
 
 #ATTACH
 # check if we have provenance to attach

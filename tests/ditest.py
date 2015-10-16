@@ -6,6 +6,7 @@ class DependencyInjectionTestBase(unittest.TestCase):
 
     def setUp(self):
         self.config = Mock()
+        self.pipelineFactory = Mock()
         self.listener = Mock()
         self.hasher = Mock()
         self.filesys = Mock()
@@ -32,5 +33,6 @@ class DependencyInjectionTestBase(unittest.TestCase):
         self.dependencies.getExportFactory.return_value = self.exportFactory
         self.dependencies.getConfiguration.return_value = self.config
         self.dependencies.getClock.return_value = self.clock
+        self.dependencies.getPipelineFactory.return_value = self.pipelineFactory
 
 

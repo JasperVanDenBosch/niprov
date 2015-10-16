@@ -107,3 +107,16 @@ class Repository(object):
         Returns:
             BaseFile: File with the given id.
         """
+
+    def byLocations(self, listOfLocations):
+        """Get any files that match one of these locations 
+
+        In the case of a dicom series, this returns the provenance for the 
+        series.
+
+        Args:
+            listOfLocations (list): List of image locations.
+
+        Returns:
+            list: List with BaseFile objects
+        """

@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from unittest import TestCase
 from mock import Mock, sentinel
+from tests.ditest import DependencyInjectionTestBase
 
 
-class DirectExporterTests(TestCase):
+class DirectExporterTests(DependencyInjectionTestBase):
 
     def test_Returns_input(self):
         from niprov.directexporter import DirectExporter
@@ -22,4 +22,11 @@ class DirectExporterTests(TestCase):
         out = exporter.exportNarrative(sentinel.one)
         narrator.narrate.assert_called_with(sentinel.one)
         self.assertEqual(out, narrator.narrate(sentinel.one))
+
+    def test_For_pipeline_form_Returns_pipeline_factory_output(self):
+        from niprov.directexporter import DirectExporter
+        exporter = DirectExporter(form='pipeline', 
+            dependencies=self.dependencies)
+        out = exporter.exportPipeline(sentinel.pipeline)
+        self.assertEqual(sentinel.pipeline, out)
 

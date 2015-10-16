@@ -36,3 +36,7 @@ class BaseFile(object):
 
     def getSeriesId(self):
         pass
+
+    @property
+    def parents(self):
+        return self.provenance.get('parents', [])

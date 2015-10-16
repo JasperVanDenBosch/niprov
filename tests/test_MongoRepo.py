@@ -161,4 +161,24 @@ class MongoRepoTests(unittest.TestCase):
             self.db.provenance.find_one())
         self.assertEqual(self.factory.fromProvenance(), out)
 
+    def test_byLocations(self):
+        self.factory.fromProvenance.side_effect = lambda p: 'img_'+p
+        self.db.provenance.find.return_value = ['p1', 'p2']
+        self.setupRepo()
+        out = self.repo.byLocations(['l1','l2'])
+        self.db.provenance.find.assert_called_with({'location':{'$in':['l1','l2']}})
+        self.factory.fromProvenance.assert_any_call('p1')
+        self.factory.fromProvenance.assert_any_call('p2')
+        self.assertEqual(['img_p1', 'img_p2'], out)
+
+    def test_byParents(self):
+        self.factory.fromProvenance.side_effect = lambda p: 'img_'+p
+        self.db.provenance.find.return_value = ['p1', 'p2']
+        self.setupRepo()
+        out = self.repo.byParents(['x1','x2'])
+        self.db.provenance.find.assert_called_with({'parents':{'$in':['x1','x2']}})
+        self.factory.fromProvenance.assert_any_call('p1')
+        self.factory.fromProvenance.assert_any_call('p2')
+        self.assertEqual(['img_p1', 'img_p2'], out)
+
 

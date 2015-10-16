@@ -155,3 +155,31 @@ class JsonFileTest(DependencyInjectionTestBase):
             {'a':'d'},{'subject':'john','a':'f'}]
         out = repo.bySubject('john')
 
+    def test_byLocations(self):
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['a']
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        repo._all = Mock()
+        repo._all.return_value = [{'location':'j','a':'b'},
+            {'location':'l','a':'d'},{'location':'f','a':'f'}]
+        out = repo.byLocations(['j','f','k'])
+        self.fileFactory.fromProvenance.assert_any_call({'location':'j','a':'b'})
+        self.fileFactory.fromProvenance.assert_any_call({'location':'f','a':'f'})
+        self.assertEqual(['img_b', 'img_f'], out)
+
+    def test_byParents(self):
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['l']
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        repo._all = Mock()
+        repo._all.return_value = [
+            {'parents':[],'l':'a'},
+            {'parents':['x','a'],'l':'b'},
+            {'parents':['b'],'l':'b'},
+            {'parents':['c','y'],'l':'d'},
+            {'parents':['d'],'l':'e'},]
+        out = repo.byParents(['x','y'])
+        self.fileFactory.fromProvenance.assert_any_call({'parents':['x','a'],'l':'b'})
+        self.fileFactory.fromProvenance.assert_any_call({'parents':['c','y'],'l':'d'})
+        self.assertEqual(['img_b', 'img_d'], out)
+

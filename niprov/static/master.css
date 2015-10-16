@@ -5,6 +5,7 @@ th {color: DimGray;}
 dt {color: DimGray; font-style: italic; background-color:lavender; padding: 10px;}
 dd {padding: 10px;}
 a.help {padding: 5px;}
+a img.linkicon {display: inline; margin-left: 3px; width: 15px;}
 h1 {font-style: normal; font-weight: normal; margin: 23px;}
 p#header>a {text-decoration: none; margin: 10px;}
 p#header>a:hover {text-decoration: underline;}

@@ -6,4 +6,8 @@ svg text {
     font-family: sans-serif;
     fill: black;
 }
+svg line {
+    stroke: black;
+    stroke-width: 5px;
+}
 

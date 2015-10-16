@@ -17,6 +17,17 @@ var groups = svg.selectAll('g')
     .append('g');
 
 groups
+    .append('line')
+    .attr('x1', svgWidth/2)
+    .attr('y1', function(d, i) {
+        return i*70;
+    })
+    .attr('x2', svgWidth/2)
+    .attr('y2', function(d, i) {
+        return 20+i*70;
+    })
+
+groups
     .append('rect')
     .attr('x', svgWidth/2)
     .attr('y', function(d, i) {

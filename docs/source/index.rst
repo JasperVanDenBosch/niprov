@@ -47,8 +47,7 @@ You can do the same in python code:
 
 Read on to see other features and options.
 
-Get in touch if you have questions or suggestions, by submitting an *issue* on http://github.com/ilogue/niprov or  via email to jasperb@uw.edu.
-
+Get in touch if you have questions or suggestions, by submitting an *issue* on http://github.com/ilogue/niprov or  via email to jasperb@uw.edu, or  at  `tweet to @niprovenance <https://twitter.com/niprovenance>`_
 
 
 Contents:

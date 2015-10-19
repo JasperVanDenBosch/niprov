@@ -8,7 +8,7 @@ provenance for neuroimaging data
 [![Coverage](https://img.shields.io/coveralls/ilogue/niprov.svg)](https://coveralls.io/r/ilogue/niprov)
 [![DOI](https://zenodo.org/badge/7344/ilogue/niprov.svg)](http://dx.doi.org/10.5281/zenodo.13683)
 
-See the [full online documentation](http://niprov.readthedocs.org/) (or [pdf](https://media.readthedocs.org/pdf/niprov/latest/niprov.pdf)) and [PyPi package](https://pypi.python.org/pypi/niprov).
+See the [full online documentation](http://niprov.readthedocs.org/) (or [pdf](https://media.readthedocs.org/pdf/niprov/latest/niprov.pdf)) and [PyPi package](https://pypi.python.org/pypi/niprov) and follow [niprov on twitter](https://twitter.com/niprovenance)!
 
 To inspect image files, install `nibabel`,`mne` and/or `pydicom`.
 

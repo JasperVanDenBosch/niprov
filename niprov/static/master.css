@@ -1,4 +1,5 @@
 html {font: 13px normal arial,sans-serif;}
+img#logo {width:50px;}
 td {padding: 10px;}
 tr:hover {background-color:lavender;}
 th {color: DimGray;}

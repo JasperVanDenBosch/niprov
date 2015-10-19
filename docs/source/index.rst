@@ -3,8 +3,13 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+
 niprov
 ======
+
+.. image:: ../../niprov/static/niprov.svg
+   :width: 50 px
+   :align: center
 
 Ever encountered a file of which you weren't sure what analysis steps it had 
 gone through? Ever wanted to know what types of data you have available for a 

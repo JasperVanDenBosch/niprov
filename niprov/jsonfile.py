@@ -142,9 +142,10 @@ class JsonFile(object):
         if image.getSeriesId() is None:
             raise IndexError('Image has no series id.')
         seriesId = image.getSeriesId()
-        for record in self._all():
-            if 'seriesuid' in record and record['seriesuid'] == seriesId:
-                return self.factory.fromProvenance(record)
+        for image in self.all():
+            if 'seriesuid' in image.provenance and (
+                image.provenance['seriesuid'] == seriesId):
+                return image
         else:
             raise IndexError('No provenance record for that series.')
 

@@ -18,6 +18,7 @@ Submodules
    niprov.dependencies
    niprov.directexporter
    niprov.discovery
+   niprov.exceptions
    niprov.exporter
    niprov.exporters
    niprov.externals
@@ -39,11 +40,15 @@ Submodules
    niprov.narrator
    niprov.nifti
    niprov.parrec
+   niprov.pipeline
+   niprov.pipelinefactory
    niprov.recording
    niprov.renaming
    niprov.reporting
    niprov.repository
    niprov.stdout
+   niprov.views
+   niprov.webapp
 
 
 

@@ -6,6 +6,9 @@ provenance.html
 # Gedit autosave files
 *~
 
+# Node.js 
+node_modules/
+
 sandbox/
 
 # Byte-compiled / optimized / DLL files

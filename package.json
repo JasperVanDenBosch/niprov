@@ -1,0 +1,25 @@
+{
+  "name": "niprov",
+  "version": "0.2.0",
+  "description": "niprov ====== provenance for neuroimaging data",
+  "main": "grunt.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ilogue/niprov.git"
+  },
+  "author": "Jasper J.F. van den Bosch",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/ilogue/niprov/issues"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5"
+  }
+}

@@ -84,6 +84,8 @@ class JsonSerializer(object):
             kwargs = record['kwargs']
             flatRecord['kwargs'] = {k: self._strcust(kwargs[k]) 
                 for k in kwargs.keys()}
+        if '_id' in record:
+            del flatRecord['_id']
         return flatRecord
 
     def _inflate(self, flatRecord):

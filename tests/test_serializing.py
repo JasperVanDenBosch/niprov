@@ -82,4 +82,13 @@ class SerializerTests(DependencyInjectionTestBase):
         self.assertEqual(json.loads(out)[0]['created'], 
             record['created'].isoformat())
 
+    def test_swallows_object_ids(self):
+        from bson.objectid import ObjectId
+        from niprov.jsonserializing import JsonSerializer  
+        serializer = JsonSerializer(self.dependencies)
+        record = {}
+        record['_id'] = ObjectId('564168f2fb481f480891263c')
+        out = serializer.serializeList([self.imageWithProvenance(record)])
+        self.assertNotIn('_id', json.loads(out)[0])
+
 

@@ -1,3 +1,17 @@
+
+// function definitions
+var filesToHierarchy = function(files) {
+    var root = {};
+    var rootfiles = files.filter(function(f){ return !('parents' in f) })
+    if(rootfiles.length > 0) {
+        root.children = rootfiles
+    }
+    return root
+};
+var translate = function(x, y) {
+    return 'translate(' + x + ',' + y + ')'
+}
+
 //Width and height
 var svgWidth = 500;
 var svgHeight = 500;
@@ -9,57 +23,41 @@ var files = [{"added": "2015-10-20T20:50:33.996245", "script": null, "acquired":
 var svg = d3.select('body')
             .append('svg')
             .attr('width', svgWidth)
-            .attr('height', svgHeight);
+            .attr('height', svgHeight)
+                .append('g')
+                .attr('transform',translate(50,50));
 
 var tree = d3.layout.tree()
-    .size([svgHeight, svgWidth]);
+    .size([svgHeight-100, svgWidth-100]);
 
-//var root = filesToHierarchy()
+var root = filesToHierarchy(files)
+var nodes = tree.nodes(root)
+var links = tree.links(nodes)
 
-//var nodes = tree.nodes(root)
-
-//var links = tree.links(nodes)
-
-var nodeGroups = svg.selectAll('g')
-    .data(files)
+var nodeGroup = svg.selectAll('g.node')
+    .data(nodes)
     .enter()
-    .append('g');
+    .append('g')
+        .attr('class','node')
+        .attr('transform', function(d) {return translate(d.x, d.y)});
 
-nodeGroups
+nodeGroup
     .append('rect')
-    .attr('x', svgWidth/2)
-    .attr('y', function(d, i) {
-        return 20+i*70;
-    })
     .attr('width', 100)
-    .attr('height', 50)
+    .attr('height', 30);
 
-nodeGroups
+nodeGroup
     .append('text')
     .text( function(d) { 
         return d.id;
-    })
-    .attr('x', svgWidth/2)
-    .attr('y', function(d, i) {
-        return 30+i*70;
     });
 
-//svg.selectAll("path")
-//    .data(links)
-//    .enter()
-//    .append("path")
-//    .attr("d", d3.svg.diagonal());
+svg.selectAll("path.link")
+    .data(links)
+    .enter()
+    .append('path')
+        .attr('class','link')
+        .attr('d', d3.svg.diagonal());
 
-var filesToHierarchy = function(files) {
-    var root = {};
-    var rootfiles = files.filter(function(f){ return !('parents' in f) })
-    if(rootfiles.length > 0) {
-        root.children = rootfiles
-    }
-    return root
-};
 
-var translate = function(x, y) {
-    return 'translate(' + x + ',' + y + ')'
-}
 

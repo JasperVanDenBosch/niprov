@@ -13,4 +13,8 @@ QUnit.test( "filesToHierarchy root has raw files as children ", function( assert
     assert.deepEqual( root, {'children':[{'n':'a'},{'n':'c'}]} );
 });
 
+QUnit.test( "Translate function returns translate string", function( assert ) {
+    assert.equal( translate(12,34), 'translate(12,34)' );
+});
+
 

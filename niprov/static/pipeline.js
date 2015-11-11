@@ -59,3 +59,7 @@ var filesToHierarchy = function(files) {
     return root
 };
 
+var translate = function(x, y) {
+    return 'translate(' + x + ',' + y + ')'
+}
+

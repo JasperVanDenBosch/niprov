@@ -11,23 +11,21 @@ var svg = d3.select('body')
             .attr('width', svgWidth)
             .attr('height', svgHeight);
 
-var groups = svg.selectAll('g')
+var tree = d3.layout.tree()
+    .size([svgHeight, svgWidth]);
+
+//var root = filesToHierarchy()
+
+//var nodes = tree.nodes(root)
+
+//var links = tree.links(nodes)
+
+var nodeGroups = svg.selectAll('g')
     .data(files)
     .enter()
     .append('g');
 
-groups
-    .append('line')
-    .attr('x1', svgWidth/2)
-    .attr('y1', function(d, i) {
-        return i*70;
-    })
-    .attr('x2', svgWidth/2)
-    .attr('y2', function(d, i) {
-        return 20+i*70;
-    })
-
-groups
+nodeGroups
     .append('rect')
     .attr('x', svgWidth/2)
     .attr('y', function(d, i) {
@@ -36,7 +34,7 @@ groups
     .attr('width', 100)
     .attr('height', 50)
 
-groups
+nodeGroups
     .append('text')
     .text( function(d) { 
         return d.id;
@@ -46,7 +44,18 @@ groups
         return 30+i*70;
     });
 
-var filesToGenerations = function(f) {
-    return [];
+//svg.selectAll("path")
+//    .data(links)
+//    .enter()
+//    .append("path")
+//    .attr("d", d3.svg.diagonal());
+
+var filesToHierarchy = function(files) {
+    var root = {};
+    var rootfiles = files.filter(function(f){ return !('parents' in f) })
+    if(rootfiles.length > 0) {
+        root.children = rootfiles
+    }
+    return root
 };
 

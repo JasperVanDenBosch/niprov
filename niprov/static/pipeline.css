@@ -1,6 +1,8 @@
-svg rect { 
-    fill: red;
-    opacity: 0.5;
+svg circle { 
+    stroke: black;
+    stroke-width: 1px;
+    fill: grey;
+    opacity: 0.8;
 }
 svg text {
     font-family: sans-serif;
@@ -12,6 +14,9 @@ svg line {
 }
 svg path {
     stroke: blue;
-    stroke-width: 5px;
-    fill: blue;
+    fill: none;
+}
+
+div.tooltip {
+    position: absolute;
 }

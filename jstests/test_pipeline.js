@@ -3,7 +3,7 @@ var files = [{"added": "2015-10-20T20:50:33.996245", "script": null, "acquired":
 
 QUnit.test( "filesToHierarchy returns object ", function( assert ) {
     var root = filesToHierarchy([]);
-    assert.deepEqual( root, {} );
+    assert.deepEqual( root, {path:'root'} );
 });
 
 QUnit.test( "filesToHierarchy root has raw files as children ", function( assert ) {
@@ -29,5 +29,13 @@ QUnit.test( "filesToHierarchy recursively finds children ", function( assert ) {
 QUnit.test( "Translate function returns translate string", function( assert ) {
     assert.equal( translate(12,34), 'translate(12,34)' );
 });
+
+QUnit.test( "Shortname makes filename readable", function( assert ) {
+    var shortpath = '/home/johndoe/sometextfile.txt'
+    assert.equal( shortname(shortpath), 'sometextfile.txt' );
+    var longpath = '/p/one_two_12_three_four_34_five_six_56_seven_eight_78.ext'
+    assert.equal( shortname(longpath), 'one_two...ght_78.ext' );
+});
+
 
 

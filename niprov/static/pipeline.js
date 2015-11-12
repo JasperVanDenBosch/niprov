@@ -1,7 +1,7 @@
 
 // function definitions
 var filesToHierarchy = function(files) {
-    var root = {};
+    var root = {path: 'root'};
     var rootfiles = files.filter(function(f){ return !('parents' in f) })
     rootfiles.forEach(function findChildrenRecursively (file, i, arr) {
         var hasParent = function(file, parentname) {
@@ -19,6 +19,13 @@ var filesToHierarchy = function(files) {
         root.children = rootfiles;
     };
     return root
+};
+var shortname = function(path) {
+    var fname = path.split(/[\\/]/).pop();
+    if (fname.length > 20) {
+        return fname.substring(0,7)+'...'+fname.substring(fname.length-10);
+    };
+    return fname
 };
 var translate = function(x, y) {
     return 'translate(' + x + ',' + y + ')'
@@ -61,7 +68,7 @@ nodeGroup
 nodeGroup
     .append('text')
     .text( function(d) { 
-        return d.id;
+        return shortname(d.path);
     });
 
 svg.selectAll("path.link")

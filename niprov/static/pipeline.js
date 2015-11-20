@@ -81,18 +81,18 @@ nodeGroup
                 .translate(+this.getAttribute("cx"),
                          +this.getAttribute("cy"));
         tooltipDiv
-            .text('Hallo!')
             .style("opacity", "1")
             .style("left", 
                    (window.pageXOffset + matrix.e) + "px")
             .style("top",
-                   (window.pageYOffset + matrix.f + 30) + "px")
-//            .insert('dl').selectAll()
-//                .append('dt').text('key')
-//                .append('dd').text('my value')
+                   (window.pageYOffset + matrix.f + 30) + "px");
+        var deflist = tooltipDiv.insert('dl');
+        deflist.insert('dt').text('key');
+        deflist.insert('dd').text('my value');
         
     })
     .on("mouseout", function () {
+        tooltipDiv.selectAll('dl').remove()
         return tooltipDiv.style("opacity", "0");
     });
 

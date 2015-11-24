@@ -34,6 +34,7 @@ var translate = function(x, y) {
 //Width and height
 var svgWidth = 500;
 var svgHeight = 500;
+var tooltipfields = ["id", "added", "hostname", "path", "size"]
 
 //Data
 var files = [{"added": "2015-10-20T20:50:33.996245", "script": null, "acquired": "2015-03-09T13:07:03.000000", "hostname": "gram", "transformation": "trans1", "transient": true, "parents": ["gram:/home/jasper/Projects/niprov/testdata/eeg/stub.cnt"], "location": "gram:/p/child1.txt", "path": "/p/child1.txt", "id": "Vspqnf", "subject": "Jane Doe"}, {"added": "2015-10-20T20:49:03.777477", "hash": "f9ccd1b4312d9ebd3daf727054815276", "dimensions": [32, 2080], "created": "2015-03-09T20:19:19.367602", "acquired": "2015-03-09T13:07:03.000000", "hostname": "gram", "transient": false, "location": "gram:/home/jasper/Projects/niprov/testdata/eeg/stub.cnt", "path": "/home/jasper/Projects/niprov/testdata/eeg/stub.cnt", "size": 492581, "id": "VR55dC", "subject": "Jane Doe"}, {"added": "2015-10-20T20:51:00.178131", "script": null, "acquired": "2015-03-09T13:07:03.000000", "hostname": "gram", "transformation": "trans2", "transient": true, "parents": ["gram:/p/child1.txt"], "location": "gram:/p/b/child2.txt", "path": "/p/b/child2.txt", "id": "toGp6R", "subject": "Jane Doe"}, {"added": "2015-10-20T20:52:00.178131", "script": null, "acquired": "2015-03-09T13:07:03.000000", "hostname": "gram", "transformation": "trans2", "transient": true, "parents": ["gram:/p/child1.txt"], "location": "gram:/p/b/child3.txt", "path": "/p/b/child3.txt", "id": "J7yUxi", "subject": "Jane Doe"}];
@@ -75,7 +76,7 @@ nodeGroup
         return shortname(d.path);
     })
     .attr('transform',translate(10,5))
-    .on("mouseover", function () {
+    .on("mouseover", function (d) {
         
         var matrix = this.getScreenCTM()
                 .translate(+this.getAttribute("cx"),
@@ -87,8 +88,14 @@ nodeGroup
             .style("top",
                    (window.pageYOffset + matrix.f + 30) + "px");
         var deflist = tooltipDiv.insert('dl');
-        deflist.insert('dt').text('key');
-        deflist.insert('dd').text('my value');
+        for (i = 0; i < tooltipfields.length; ++i) {
+            var field = tooltipfields[i]
+            if (field in d) {
+                deflist.insert('dt').text(field);
+                deflist.insert('dd').text(d[field]);
+            }
+        }
+
         
     })
     .on("mouseout", function () {

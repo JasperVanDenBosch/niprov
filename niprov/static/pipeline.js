@@ -1,23 +1,36 @@
-
 // function definitions
 var filesToHierarchy = function(files) {
     var root = {path: 'root'};
     var rootfiles = files.filter(function(f){ return !('parents' in f) })
-    rootfiles.forEach(function findChildrenRecursively (file, i, arr) {
-        var hasParent = function(file, parentname) {
-            if ('parents' in file) {
-                return file.parents.indexOf(parentname) > -1
-            }
-            else {return false;}
-        };
-        var children = files.filter(function(o){ 
-            return hasParent(o, file.location) });
-        children.forEach(findChildrenRecursively)
-        file.children = children
-    });
+    var hasAsParent = function(file, parent) {
+        if ('parents' in file) {
+            return file.parents.indexOf(parent.location) > -1
+        }
+        else {return false;}
+    };
+    var allParentsInPreviousGenerations = function(file, prevGenFiles) {
+        //check each parent in prevGenFiles
+    }
     if(rootfiles.length > 0) {
         root.children = rootfiles;
     };
+    var prevGenFiles = [];
+    (function findChildrenOfGeneration (parents, prevGenFiles) {
+        prevGenFiles += parents
+        parents.forEach(function (parent, p, parents) {
+            parent.children = [];
+            files.forEach(function (file) {
+                if hasAsParent(file, parent) &&
+                    allParentsInPreviousGenerations(file, prevGenFiles)
+                {
+                    //file.inmediateParent = parent;
+                    children.append(file);
+                    parent.children.append(child);
+                }
+            });
+        });
+        findChildrenOfGeneration(children, prevGenFiles);
+    }(rootfiles, prevGenFiles));
     return root
 };
 var shortname = function(path) {

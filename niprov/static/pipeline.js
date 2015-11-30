@@ -101,6 +101,7 @@ window.onload = function() {
 var svgWidth = 500;
 var svgHeight = 500;
 var tooltipfields = ["id", "added", "hostname", "path", "size"]
+var fieldTypes = {"added":'datetime', "size":'filesize'}
 
 // Creat toolip container
 var tooltipDiv = d3.select('body')
@@ -156,9 +157,13 @@ nodeGroup
             var field = tooltipfields[i]
             if (field in d) {
                 deflist.insert('dt').text(field);
-                deflist.insert('dd').text(d[field]);
+                dd = deflist.insert('dd').text(d[field]);
+                if (field in fieldTypes) {
+                    dd.classed(fieldTypes[field], true);
+                }
             }
         }
+        makeFieldsHumanReadable();
     })
     .on("mouseout", function () {
         tooltipDiv.selectAll('dl').remove()

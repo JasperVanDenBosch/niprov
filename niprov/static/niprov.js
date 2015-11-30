@@ -9,17 +9,21 @@ function formatBytes(bytes,decimals) {
    return (bytes / Math.pow(k, i)).toPrecision(dm) + ' ' + sizes[i];
 }
 
-//this could be a general function for filesize, datetime, etc
-$('.filesize').each(function() {
-    //should add class that notes that this element has been converted .addClass()
-    $( this ).text(function (i, txt) {
-        return formatBytes(parseInt(txt),2);
+function makeFieldsHumanReadable() {
+    //this could be a general function for filesize, datetime, etc
+    $('.filesize').each(function() {
+        //should add class that notes that this element has been converted .addClass()
+        $( this ).text(function (i, txt) {
+            return formatBytes(parseInt(txt),2);
+        });
     });
-});
-$('.datetime').each(function() {
-    //should add class that notes that this element has been converted .addClass()
-    $( this ).text(function (i, txt) {
-        return moment(txt).format('MMMM Do YYYY, h:mm a');
+    $('.datetime').each(function() {
+        //should add class that notes that this element has been converted .addClass()
+        $( this ).text(function (i, txt) {
+            return moment(txt).format('MMMM Do YYYY, h:mm a');
+        });
     });
-});
+}
+
+makeFieldsHumanReadable();
 

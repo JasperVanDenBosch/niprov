@@ -16,6 +16,20 @@ var allParentsInPreviousGenerations = function(file, prevGenFiles) {
     return true;
 }
 
+var findExistingParent = function(child, potentialParents) {
+    for (var i = 0; i < potentialParents.length; i++) {
+        potentialParent = potentialParents[i]
+        if ('children' in potentialParent) {
+            for (var j = 0; j < potentialParent.children.length; j++) {
+                if (potentialParent.children[j] === child) {
+                    return potentialParent;
+                }
+            }
+        }
+    }
+    return null;
+}
+
 var findChildrenOfGeneration = function findChildrenOfGeneration (parents, prevGenFiles) {
     prevGenFiles += parents
     var generation = []
@@ -23,8 +37,10 @@ var findChildrenOfGeneration = function findChildrenOfGeneration (parents, prevG
         parent.children = [];
         files.forEach(function (file) {
             if ( hasAsParent(file, parent) ) {
-                generation.push(file);
-                parent.children.push(file);
+                if (!findExistingParent(file, files)) {
+                    generation.push(file);
+                    parent.children.push(file);
+                }
             }
         });
     });

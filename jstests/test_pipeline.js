@@ -25,7 +25,18 @@ QUnit.test( "filesToHierarchy recursively finds children ", function( assert ) {
     assert.equal( root.children[0].children[0].children[0].location, 'd' );
     assert.equal( root.children[0].children[0].children[1].location, 'e' );
 });
-
+QUnit.test( "filesToHierarchy only adds child to one parent ", function( assert ) {
+    files = [{'location':'a'},{'location':'b'},
+            {'location':'c','parents':['a','b']}]
+    var root = filesToHierarchy(files);
+    // a has child c
+    assert.equal( root.children[0].children[0].location, 'c' ); 
+    if ( root.children[1].hasOwnProperty('children') ) {
+        //b does not have child c
+        assert.equal( root.children[1].children.length, 0, 
+            "second parent B should not have any children" ); 
+    }
+});
 QUnit.test( "Translate function returns translate string", function( assert ) {
     assert.equal( translate(12,34), 'translate(12,34)' );
 });

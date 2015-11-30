@@ -4,6 +4,7 @@ import os
 class Pipeline(object):
 
     def __init__(self, files):
+        self.files = files
         self.roots = set([f for f in files if f.parents == []])
         def locationBranchRecurse(image):
             branch = {}

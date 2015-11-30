@@ -27,7 +27,8 @@ class NiftiTests(BaseFileTests):
     def test_Attach_method(self):
         self.file.provenance = {'foo':'bar'}
         self.file.attach()
+        self.json.serialize.assert_called_with(self.file)
         self.hdr.extensions.append.assert_called_with(('extension','comment', 
-            self.json.serialize(self.file.provenance)))
+            self.json.serialize()))
         self.img.to_filename.assert_called_with(self.file.path)
 

@@ -28,7 +28,7 @@ class FifFile(BaseFile):
         json-encoded string to the 'description' header field.
         """
         info = self.libs.mne.io.read_info(self.path)
-        provstr = self.serializer.serialize(self.provenance)
+        provstr = self.serializer.serialize(self)
         info['description'] = info['description']+' NIPROV:'+provstr
         self.libs.mne.io.write_info(self.path, info)
 

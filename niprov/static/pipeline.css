@@ -22,7 +22,11 @@ div.tooltip {
     background-color: #F0F0F0;
     border-width: 1px;
     border-style: solid;
-    border-color: grey;
+    border-color: LightGray;
     font-size: 10px;
     padding: 0.6em;
+    opacity: 0;
 }
+
+div.tooltip dl {margin: 0px;}
+div.tooltip dt {color: DimGray;}

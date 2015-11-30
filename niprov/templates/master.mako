@@ -9,7 +9,9 @@
     <link rel="shortcut icon" href="${request.static_url('niprov:static/pyramid-16x16.png')}">
     <link rel="stylesheet" type="text/css" href="${request.static_url('niprov:static/master.css')}">
     <link rel="stylesheet" type="text/css" href="${request.static_url('niprov:static/pipeline.css')}">
-    <script type="text/javascript" src="${request.static_url('niprov:static/d3.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('niprov:static/d3.min.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('niprov:static/jquery-2.1.4.min.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('niprov:static/moment.min.js')}"></script>
     <title>Provenance</title>
   </head>
 

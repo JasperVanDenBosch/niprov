@@ -7,11 +7,21 @@
 
 <dl class="details">
 % for k, v in image.provenance.items():
+<%
+    if k in ['added', 'acquired', 'created']:
+        fieldtype = 'datetime'
+    elif k in ['size']:
+        fieldtype = 'filesize'
+    else:
+        fieldtype = 'general'
+%>
     <dt>${k}<a class="help" href="http://niprov.readthedocs.org/en/latest/provenance-fields.html#${k.lower()}">?</a>
-        </dt><dd>${v}</dd>
+        </dt><dd class="${fieldtype}">${v}</dd>
 % endfor
 % if 'filesInSeries' in image.provenance:
     <dt>number of files</dt><dd>${len(image.provenance['filesInSeries'])}</dd>
 % endif
 </dl>
+
+<script type="text/javascript" src="${request.static_url('niprov:static/niprov.js')}"></script>
 

@@ -7,9 +7,12 @@ var hasAsParent = function(file, parent) {
     else {return false;}
 }
 
-var allParentsInPreviousGenerations = function(file, prevGenFiles) {
+var allParentsIn = function(file, fileHaystack) {
+    locationHaystack = fileHaystack.map(function (file) { 
+        return file.location; 
+    });
     for (var i = 0; i < file.parents.length; i++) {
-        if (prevGenFiles.indexOf(file.parents[i]) === -1) {
+        if (locationHaystack.indexOf(file.parents[i]) === -1) {
             return false;
         }
     }
@@ -31,19 +34,20 @@ var findExistingParent = function(child, potentialParents) {
 }
 
 var findChildrenOfGeneration = function findChildrenOfGeneration (parents, prevGenFiles) {
-    prevGenFiles += parents
+    prevGenFiles = prevGenFiles.concat(parents)
     var generation = []
-    parents.forEach(function (parent, p, parents) {
-        parent.children = [];
-        files.forEach(function (file) {
-            if ( hasAsParent(file, parent) ) {
-                if (!findExistingParent(file, files)) {
-                    generation.push(file);
-                    parent.children.push(file);
+    for (var p = 0; p < parents.length; p++) {
+        parents[p].children = [];
+        for (var f = 0; f < files.length; f++) {
+            if ( hasAsParent(files[f], parents[p]) && 
+                    allParentsIn(files[f], prevGenFiles)) {
+                if (!findExistingParent(files[f], files)) {
+                    generation.push(files[f]);
+                    parents[p].children.push(files[f]);
                 }
             }
-        });
-    });
+        }
+    }
     if (generation.length > 0) {
         findChildrenOfGeneration(generation, prevGenFiles);
     }

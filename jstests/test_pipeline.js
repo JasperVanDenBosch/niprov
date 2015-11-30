@@ -3,7 +3,7 @@ var files = [{"added": "2015-10-20T20:50:33.996245", "script": null, "acquired":
 
 QUnit.test( "filesToHierarchy returns object ", function( assert ) {
     var root = filesToHierarchy([]);
-    assert.deepEqual( root, {path:'root'} );
+    assert.deepEqual( root, {path:'root',children:[]} );
 });
 
 QUnit.test( "filesToHierarchy root has raw files as children ", function( assert ) {

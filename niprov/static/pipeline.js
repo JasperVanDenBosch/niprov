@@ -50,12 +50,8 @@ var findChildrenOfGeneration = function findChildrenOfGeneration (parents, prevG
 }
 
 var filesToHierarchy = function(files) {
-    var root = {path: 'root'};
-    var rootfiles = files.filter(function(f){ return !('parents' in f) })
-
-    if(rootfiles.length > 0) {
-        root.children = rootfiles;
-    };
+    var rootfiles = files.filter(function(f){ return !('parents' in f) });
+    var root = {path: 'root', children: rootfiles};
     var prevGenFiles = [];
     findChildrenOfGeneration(rootfiles, prevGenFiles);
     return root

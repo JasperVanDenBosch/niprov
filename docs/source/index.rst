@@ -3,8 +3,13 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+
 niprov
 ======
+
+.. image:: ../../niprov/static/niprov.svg
+   :width: 50 px
+   :align: center
 
 Ever encountered a file of which you weren't sure what analysis steps it had 
 gone through? Ever wanted to know what types of data you have available for a 
@@ -42,8 +47,7 @@ You can do the same in python code:
 
 Read on to see other features and options.
 
-Get in touch if you have questions or suggestions, by submitting an *issue* on http://github.com/ilogue/niprov or  via email to jasperb@uw.edu.
-
+Get in touch if you have questions or suggestions, by submitting an *issue* on http://github.com/ilogue/niprov or  via email to jasperb@uw.edu, or  at  `tweet to @niprovenance <https://twitter.com/niprovenance>`_
 
 
 Contents:

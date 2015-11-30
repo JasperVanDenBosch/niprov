@@ -53,6 +53,28 @@ var findChildrenOfGeneration = function findChildrenOfGeneration (parents, prevG
     }
 }
 
+var fileByLocation = function(location, files) {
+    for (var f = 0; f < files.length; f++) {
+        if (files[f].location === location) {
+            return files[f];
+        }
+    }
+}
+
+var addExtraParentLinks = function(links, files) {
+    for (var f = 0; f < files.length; f++) {
+        existingParent = findExistingParent(files[f], files)
+        if ('parents' in files[f]) {
+            for (var p = 0; p < files[f].parents.length; p++) {
+                parent = fileByLocation(files[f].parents[p], files)
+                if (parent != existingParent) {
+                    links.push({source: parent, target:files[f]});
+                }
+            }
+        }
+    }
+}
+    
 var filesToHierarchy = function(files) {
     var rootfiles = files.filter(function(f){ return !('parents' in f) });
     var root = {path: 'root', children: rootfiles};
@@ -99,6 +121,7 @@ var tree = d3.layout.tree()
 var root = filesToHierarchy(files)
 var nodes = tree.nodes(root)
 var links = tree.links(nodes)
+addExtraParentLinks(links, files)
 
 var nodeGroup = svg.selectAll('g.node')
     .data(nodes)
@@ -136,8 +159,6 @@ nodeGroup
                 deflist.insert('dd').text(d[field]);
             }
         }
-
-        
     })
     .on("mouseout", function () {
         tooltipDiv.selectAll('dl').remove()
@@ -150,10 +171,4 @@ svg.selectAll("path.link")
     .append('path')
         .attr('class','link')
         .attr('d', d3.svg.diagonal());
-
 }
-
-
-
-
-

@@ -59,6 +59,24 @@ QUnit.test( "filesToHierarchy does only inserts child into previous generation p
     assert.equal( root.children[0].children.length, 1, 
             "A should only have B as child." );
 });
+QUnit.skip( "addExtraParentLinks adds extra links", function( assert ) {
+    var c = {location:'c', parents:['a','b'], children:[]};
+    var b = {location:'b', parents:['a'], children:[c]};
+    var a = {location:'a', parents:[], children:[b]};
+    files = [a,b,c];
+    var links = [];
+    addExtraParentLinks(links, files);
+    console.log( QUnit.dump.parse( links ) );
+    console.log( QUnit.dump.parse( [{source: a, target:c}] ) );
+    assert.equal( links, [{source: a, target:c}] );
+});
+QUnit.test( "addExtraParentLinks doesnt complain if file has no parents property", function( assert ) {
+    var a = {location:'a'};
+    files = [a];
+    var links = [];
+    addExtraParentLinks(links, files);
+    assert.expect(0)
+});
 
 
 

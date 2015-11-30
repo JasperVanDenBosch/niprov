@@ -1,8 +1,15 @@
-language: python
+language: 
+  - python
+before_install:
+  - npm install -g grunt-cli
 install:
   - "pip install -e ."
   - "pip install -r optional.txt"
+  - npm install
 script:
   - coverage run --source=niprov setup.py test
   - python setup.py test --test-suite acceptance
-after_success:  coveralls
+  - grunt test --verbose --force
+after_success:
+  - coveralls
+

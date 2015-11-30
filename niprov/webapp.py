@@ -22,6 +22,7 @@ def main(global_config, **settings):
     config.add_route('stats', '/stats')
     config.add_route('subject', '/subject/{subject}')
     config.add_route('short', '/id/{id}')
+    config.add_route('pipeline', '/id/{id}/pipeline')
     config.add_route('location', '/location/{host}*path')
     config.add_request_method(lambda r: Dependencies(), 
         'dependencies', reify=True)

@@ -4,7 +4,7 @@ import os
 
 @view_config(route_name='home', renderer='templates/home.mako')
 def home(request):
-    return {'project': 'niprov'}
+    return {}
 
 @view_config(route_name='latest', renderer='templates/list.mako')
 def latest(request):
@@ -34,4 +34,11 @@ def location(request):
 def stats(request):
     repository = request.dependencies.getRepository()
     return {'stats':repository.statistics()}
+
+@view_config(route_name='pipeline', renderer='templates/pipeline.mako')
+def pipeline(request):
+    sid = request.matchdict['id']
+    files = request.dependencies.getRepository()
+    pipeline = request.dependencies.getPipelineFactory()
+    return {'pipeline':pipeline.forFile(files.byId(sid))}
 

@@ -11,6 +11,9 @@ class JsonSerializer(object):
 
     datetimeFields = ['acquired','created','added']
 
+    def __init__(self, dependencies):
+        self.file = dependencies.getFileFactory()
+
     def serialize(self, record):
         """
         Convert one provenance item from its native python dict type to
@@ -22,7 +25,7 @@ class JsonSerializer(object):
         Returns:
             str: Json version of the provenance.
         """
-        return json.dumps(self._deflate(record))
+        return json.dumps(self._deflate(record.provenance))
 
     def deserialize(self, jsonRecord):
         """
@@ -36,7 +39,8 @@ class JsonSerializer(object):
         Returns:
             dict: Python dictionary of the provenance.
         """
-        return self._inflate(json.loads(jsonRecord))
+        provenance = self._inflate(json.loads(jsonRecord))
+        return self.file.fromProvenance(provenance)
 
     def serializeList(self, listOfRecords):
         """
@@ -49,7 +53,7 @@ class JsonSerializer(object):
         Returns:
             str: Json version of the provenance items.
         """
-        flatRecords = [self._deflate(r) for r in listOfRecords]
+        flatRecords = [self._deflate(r.provenance) for r in listOfRecords]
         return json.dumps(flatRecords)
 
     def deserializeList(self, jsonListOfRecords):
@@ -65,7 +69,8 @@ class JsonSerializer(object):
             list: Python list of dictionaries of the provenance.
         """
         flatRecords = json.loads(jsonListOfRecords)
-        return [self._inflate(r) for r in flatRecords]
+        provenanceList = [self._inflate(r) for r in flatRecords]
+        return [self.file.fromProvenance(p) for p in provenanceList]
 
     def _deflate(self, record):
         isoformat = "%Y-%m-%dT%H:%M:%S.%f"
@@ -79,6 +84,8 @@ class JsonSerializer(object):
             kwargs = record['kwargs']
             flatRecord['kwargs'] = {k: self._strcust(kwargs[k]) 
                 for k in kwargs.keys()}
+        if '_id' in record:
+            del flatRecord['_id']
         return flatRecord
 
     def _inflate(self, flatRecord):

@@ -15,7 +15,7 @@ class NiftiFile(BaseFile):
         json-encoded extension to the nifti header.
         """
         img = self.libs.nibabel.load(self.path)
-        provstr = self.serializer.serialize(self.provenance)
+        provstr = self.serializer.serialize(self)
         ext = self.libs.nibabel.nifti1.Nifti1Extension('comment', provstr)
         hdr = img.get_header()
         hdr.extensions.append(ext)

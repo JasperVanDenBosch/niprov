@@ -31,7 +31,7 @@ class FifTests(BaseFileTests):
         self.file.attach()
         self.assertIn('existing bla bla ', #original string+added space 
             self.img.info['description'])
-        self.assertIn('NIPROV:'+str(self.file.provenance), 
+        self.assertIn('NIPROV:'+str(self.file), 
             self.img.info['description'])
         self.libs.mne.io.write_info.assert_called_with(self.file.path, 
             self.img.info)

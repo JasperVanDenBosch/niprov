@@ -43,6 +43,14 @@ class ViewTests(DependencyInjectionTestBase):
         self.repo.bySubject.assert_called_with('janedoe')
         self.assertEqual(self.repo.bySubject(), out['images'])
 
+    def test_pipeline_by_id(self):
+        import niprov.views
+        self.request.matchdict = {'id':'1a2b3c'}
+        out = niprov.views.pipeline(self.request)
+        self.repo.byId.assert_called_with('1a2b3c')
+        self.pipelineFactory.forFile.assert_called_with(self.repo.byId())
+        self.assertEqual(self.pipelineFactory.forFile(), out['pipeline'])
+
 
 
 

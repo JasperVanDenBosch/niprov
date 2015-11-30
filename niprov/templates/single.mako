@@ -2,6 +2,9 @@
 <%! import os %>
 <h1>${os.path.basename(image.provenance['path'])}</h1>
 
+<a href="${request.route_url('pipeline',id=image.provenance.get('id'))}">view pipeline
+    <img class="linkicon" src="${request.static_url('niprov:static/pipeline-link.svg')}" alt="pipeline"/></a>
+
 <dl>
 % for k, v in image.provenance.items():
     <dt>${k}<a class="help" href="http://niprov.readthedocs.org/en/latest/provenance-fields.html#${k.lower()}">?</a>

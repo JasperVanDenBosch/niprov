@@ -8,6 +8,8 @@
     <meta name="author" content="Jasper J.F. van den Bosch">
     <link rel="shortcut icon" href="${request.static_url('niprov:static/pyramid-16x16.png')}">
     <link rel="stylesheet" type="text/css" href="${request.static_url('niprov:static/master.css')}">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('niprov:static/pipeline.css')}">
+    <script type="text/javascript" src="${request.static_url('niprov:static/d3.js')}"></script>
     <title>Provenance</title>
   </head>
 

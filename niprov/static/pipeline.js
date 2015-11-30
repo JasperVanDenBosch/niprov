@@ -1,48 +1,63 @@
 // function definitions
+
+var hasAsParent = function(file, parent) {
+    if ('parents' in file) {
+        return file.parents.indexOf(parent.location) > -1
+    }
+    else {return false;}
+}
+
+var allParentsInPreviousGenerations = function(file, prevGenFiles) {
+    for (var i = 0; i < file.parents.length; i++) {
+        if (prevGenFiles.indexOf(file.parents[i]) === -1) {
+            return false;
+        }
+    }
+    return true;
+}
+
+var findChildrenOfGeneration = function findChildrenOfGeneration (parents, prevGenFiles) {
+    prevGenFiles += parents
+    var generation = []
+    parents.forEach(function (parent, p, parents) {
+        parent.children = [];
+        files.forEach(function (file) {
+            if ( hasAsParent(file, parent) ) {
+                generation.push(file);
+                parent.children.push(file);
+            }
+        });
+    });
+    if (generation.length > 0) {
+        findChildrenOfGeneration(generation, prevGenFiles);
+    }
+}
+
 var filesToHierarchy = function(files) {
     var root = {path: 'root'};
     var rootfiles = files.filter(function(f){ return !('parents' in f) })
-    var hasAsParent = function(file, parent) {
-        if ('parents' in file) {
-            return file.parents.indexOf(parent.location) > -1
-        }
-        else {return false;}
-    };
-    var allParentsInPreviousGenerations = function(file, prevGenFiles) {
-        //check each parent in prevGenFiles
-    }
+
     if(rootfiles.length > 0) {
         root.children = rootfiles;
     };
     var prevGenFiles = [];
-    (function findChildrenOfGeneration (parents, prevGenFiles) {
-        prevGenFiles += parents
-        parents.forEach(function (parent, p, parents) {
-            parent.children = [];
-            files.forEach(function (file) {
-                if hasAsParent(file, parent) &&
-                    allParentsInPreviousGenerations(file, prevGenFiles)
-                {
-                    //file.inmediateParent = parent;
-                    children.append(file);
-                    parent.children.append(child);
-                }
-            });
-        });
-        findChildrenOfGeneration(children, prevGenFiles);
-    }(rootfiles, prevGenFiles));
+    findChildrenOfGeneration(rootfiles, prevGenFiles);
     return root
-};
+}
+
 var shortname = function(path) {
     var fname = path.split(/[\\/]/).pop();
     if (fname.length > 20) {
         return fname.substring(0,7)+'...'+fname.substring(fname.length-10);
     };
     return fname
-};
+}
+
 var translate = function(x, y) {
     return 'translate(' + x + ',' + y + ')'
-};
+}
+
+window.onload = function() {
 
 //Width and height
 var svgWidth = 500;
@@ -119,6 +134,8 @@ svg.selectAll("path.link")
     .append('path')
         .attr('class','link')
         .attr('d', d3.svg.diagonal());
+
+}
 
 
 

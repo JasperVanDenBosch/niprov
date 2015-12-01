@@ -66,7 +66,14 @@ var svgcrowbar = function() {
       filename = window.document.title.replace(/[^a-z0-9]/gi, '-').toLowerCase();
     }
 
-    var url = window.URL.createObjectURL(new Blob(source.source, { "type" : "text\/xml" }));
+    var url = ''
+    try {
+        var blob = new Blob(source.source, { "type" : "text\/xml" });
+        var url = window.URL.createObjectURL(blob);
+    }
+    catch(err) {
+        return;
+    }
 
     var a = $('.download')
     a.attr("href", url);

@@ -50,6 +50,7 @@ class ViewTests(DependencyInjectionTestBase):
         self.repo.byId.assert_called_with('1a2b3c')
         self.pipelineFactory.forFile.assert_called_with(self.repo.byId())
         self.assertEqual(self.pipelineFactory.forFile(), out['pipeline'])
+        self.assertEqual(out['sid'], '1a2b3c')
 
 
 

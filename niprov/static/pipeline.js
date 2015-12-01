@@ -176,4 +176,7 @@ svg.selectAll("path.link")
     .append('path')
         .attr('class','link')
         .attr('d', d3.svg.diagonal());
+
+svgcrowbar();
+
 }

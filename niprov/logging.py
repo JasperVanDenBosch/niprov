@@ -59,6 +59,19 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
         provenance = {}
 
     #gather provenance common to all new files
+    inheritableFields = [
+    'acquired',
+    'subject',
+    'protocol',
+    'technique',
+    'repetition-time',
+    'epi-factor',
+    'magnetization-transfer-contrast',
+    'diffusion',
+    'echo-time',
+    'flip-angle',
+    'inversion-time',
+    ]
     commonProvenance = provenance
     commonProvenance['parents'] = [location.completeString(p) for p in parents]
     commonProvenance['transformation'] = transformation
@@ -70,7 +83,7 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     if repository.knowsByLocation(commonProvenance['parents'][0]):
         parentProvenance = repository.byLocation(
             commonProvenance['parents'][0]).provenance
-        for field in ['acquired','subject','protocol']:
+        for field in inheritableFields:
             if field in parentProvenance:
                 commonProvenance[field] = parentProvenance[field]
     else:

@@ -40,5 +40,5 @@ def pipeline(request):
     sid = request.matchdict['id']
     files = request.dependencies.getRepository()
     pipeline = request.dependencies.getPipelineFactory()
-    return {'pipeline':pipeline.forFile(files.byId(sid))}
+    return {'pipeline':pipeline.forFile(files.byId(sid)), 'sid':sid}
 

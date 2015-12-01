@@ -69,7 +69,6 @@ var svgcrowbar = function() {
     var url = window.URL.createObjectURL(new Blob(source.source, { "type" : "text\/xml" }));
 
     var a = $('.download')
-    a.attr("download", filename + ".svg");
     a.attr("href", url);
 
   }

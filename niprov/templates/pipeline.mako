@@ -2,7 +2,7 @@
 
 <h1>pipeline</h1>
 
-<a class="download">download pipeline image</a>
+<a class="download" download="provenance_pipeline_${sid}.svg">download pipeline image</a>
 
 <script>var files = ${request.dependencies.getSerializer().serializeList(pipeline.files) | n};</script>
 <script type="text/javascript" src="${request.static_url('niprov:static/niprov.js')}"></script>

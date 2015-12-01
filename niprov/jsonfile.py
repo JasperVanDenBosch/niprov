@@ -172,7 +172,8 @@ class JsonFile(object):
         stats = {}
         images = self.all()
         stats['count'] = len(images)
-        stats['totalsize'] = sum([img.provenance['size'] for img in images])
+        sizes = [img.provenance['size'] for img in images if 'size' in img.provenance]
+        stats['totalsize'] = sum(sizes)
         return stats
 
     def byId(self, uid):

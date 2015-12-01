@@ -132,6 +132,21 @@ class JsonFileTest(DependencyInjectionTestBase):
         out = repo.statistics()
         self.assertEqual(11, out['count'])
         self.assertEqual(totalsize, out['totalsize'])
+
+    def test_stats_transient_file(self):
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        repo.all = Mock()
+        records = [{},{},{},{},{},{},{},{},{},{},{}]
+        totalsize = 0
+        for r in records:
+            r['size'] = random.randint(1,1000)
+            totalsize += r['size']
+        totalsize -= records[3]['size']
+        del records[3]['size']
+        repo.all.return_value = [self.imageWithProvenance(r) for r in records]
+        out = repo.statistics()
+        self.assertEqual(totalsize, out['totalsize'])
         
     def test_byId(self):
         from niprov.jsonfile import JsonFile

@@ -28,5 +28,7 @@ div.tooltip {
     opacity: 0;
 }
 
+svg {display:block;}
+
 div.tooltip dl {margin: 0px;}
 div.tooltip dt {color: DimGray;}

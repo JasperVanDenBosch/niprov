@@ -12,7 +12,17 @@ class LoggingTests(DependencyInjectionTestBase):
         self.opts = Mock()
         self.opts.dryrun = False
         img = Mock()
-        img.provenance = {'acquired':dt.now(),'subject':'JD', 'protocol':'X'}
+        img.provenance = {'acquired':dt.now(),
+            'subject':'JD', 
+            'protocol':'X',
+            'technique':'abc',
+            'repetition-time':1.0,
+            'epi-factor':1.0,
+            'magnetization-transfer-contrast':True,
+            'diffusion':True,
+            'echo-time':123,
+            'flip-angle':892,
+            'inversion-time':123}
         self.repo.byLocation.return_value = img
         self.newimg = Mock()
         self.provenancesCreated = []
@@ -41,7 +51,17 @@ class LoggingTests(DependencyInjectionTestBase):
         self.locationFactory.completeString.side_effect = lambda p: p
         parent = '/p/f1'
         parents = [parent]
-        parentProv = {'acquired':dt.now(),'subject':'JB','protocol':'T3'}
+        parentProv = {'acquired':dt.now(),
+            'subject':'JD', 
+            'protocol':'X',
+            'technique':'abc',
+            'repetition-time':1.0,
+            'epi-factor':1.0,
+            'magnetization-transfer-contrast':True,
+            'diffusion':True,
+            'echo-time':123,
+            'flip-angle':892,
+            'inversion-time':123}
         parentImg = Mock()
         parentImg.provenance = parentProv
         self.repo.byLocation.side_effect = lambda x: {parent:parentImg}[x]
@@ -49,6 +69,15 @@ class LoggingTests(DependencyInjectionTestBase):
         self.assertEqual(self.provenancesCreated[0]['acquired'], parentProv['acquired'])
         self.assertEqual(self.provenancesCreated[0]['subject'], parentProv['subject'])
         self.assertEqual(self.provenancesCreated[0]['protocol'], parentProv['protocol'])
+        self.assertEqual(self.provenancesCreated[0]['technique'], parentProv['technique'])
+        self.assertEqual(self.provenancesCreated[0]['repetition-time'], parentProv['repetition-time'])
+        self.assertEqual(self.provenancesCreated[0]['epi-factor'], parentProv['epi-factor'])
+        self.assertEqual(self.provenancesCreated[0]['magnetization-transfer-contrast'], 
+            parentProv['magnetization-transfer-contrast'])
+        self.assertEqual(self.provenancesCreated[0]['diffusion'], parentProv['diffusion'])
+        self.assertEqual(self.provenancesCreated[0]['echo-time'], parentProv['echo-time'])
+        self.assertEqual(self.provenancesCreated[0]['flip-angle'], parentProv['flip-angle'])
+        self.assertEqual(self.provenancesCreated[0]['inversion-time'], parentProv['inversion-time'])
 
     def test_Adds_code_or_logtext(self):
         self.log('new', 'trans', 'old', code='abc', logtext='def')

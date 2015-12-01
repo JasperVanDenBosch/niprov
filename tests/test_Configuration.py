@@ -27,7 +27,7 @@ class ConfigurationTests(unittest.TestCase):
     def test_If_no_config_file_uses_defaults(self):
         self.ospath.isfile.return_value = False
         conf = self.createConfiguration()
-        self.assertEqual(False, conf.verbose)
+        self.assertEqual('warning', conf.verbosity)
         self.assertEqual(False, conf.dryrun)
 
     def test_If_config_file_reads_it(self):
@@ -45,7 +45,7 @@ class ConfigurationTests(unittest.TestCase):
         self.parser.getboolean.side_effect = lambda s, k: True
         self.parser.get.side_effect = lambda s, k: 'mothership'
         conf = self.createConfiguration()
-        self.assertEqual(True, conf.verbose)
+        self.assertEqual(True, conf.dryrun)
         self.assertEqual('mothership', conf.database_type)
 
     def test_Can_deal_with_lists(self):

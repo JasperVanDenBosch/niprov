@@ -1,59 +1,79 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+from __future__ import print_function
 from niprov.exceptions import UnknownFileError
+from niprov.dependencies import Dependencies
 
 
 class Commandline(object):
 
-    def __init__(self, settings=None):
-        self.settings = settings
+    vlevels = ['debug','info','warning','error']
+
+    def __init__(self, dependencies=Dependencies()):
+        self.config = dependencies.config
+        self.verbosity = dependencies.config.verbosity
+        assert self.verbosity in self.vlevels, "Unknown verbosity value"
 
     def fileFound(self, image):
-        template = '[provenance] {0}'
-        print(template.format(image.path))
+        self.log('info', 'New file: {0}'.format(image.path))
 
     def fileFoundInSeries(self, img, series):
-        template = '[provenance] Adding {0} file to series: {1}'
+        template = 'Adding {0} file to series: {1}'
         nfiles = len(series.provenance['filesInSeries'])
-        print(template.format(ordinal(nfiles), series.getSeriesId()))
+        self.log('info', template.format(ordinal(nfiles), series.getSeriesId()))
 
     def missingDependencyForImage(self, lib, fpath):
-        template = '[provenance] Missing python package "{0}" to read file: {1}'        
-        print(template.format(lib, fpath))
+        template = 'Missing python package "{0}" to read file: {1}'        
+        self.log('warning', template.format(lib, fpath))
 
     def fileError(self, fpath):
         import traceback
         traceback.print_exc()
-        print('[provenance] Error inspecting file: {0}'.format(fpath))
+        self.log('warning', 'Error inspecting file: {0}'.format(fpath))
 
     def interpretedRecording(self, new, transform, parents):
         template = ('[provenance] Recorded the command [{1}] to create [{0}] '+
             'based on [{2}]')
-        print(template.format(', '.join(new), transform, ', '.join(parents)))
+        self.log('info', template.format(', '.join(new), transform, 
+            ', '.join(parents)))
 
     def unknownFile(self, fpath):
-        raise UnknownFileError('Unknown file: '+fpath)
+        if self.config.dryrun:
+            level = 'info'
+        else:
+            level = 'error'
+        self.log(level, 'Unknown file: '+fpath, UnknownFileError)
 
     def knownFile(self, fpath):
-        print('[provenance] File already known: '+fpath)
+        self.log('info', 'File already known: '+fpath)
 
     def renamedDicom(self, fpath):
-        print('[provenance] Renamed dicom file: '+fpath)
+        self.log('info', 'Renamed dicom file: '+fpath)
 
     def discoveryFinished(self, nnew, nadded, nfailed, ntotal):
-        print('[provenance] Discovered {0} new, added {1} to series, failed to read {2}, '
+        self.log('info', 'Discovered {0} new, added {1} to series, failed to read {2}, '
            'processed {3} total files.'.format(nnew, nadded, nfailed, ntotal))
 
     def mnefunEventReceived(self, operationName):
-        print('[provenance] Mnefun operation: '+operationName)
+        self.log('info', 'Mnefun operation: '+operationName)
 
     def receivedBashCommand(self, command):
-        print('[provenance] Recording command: \n'+(' '.join(command)))
+        self.log('info', 'Recording command: \n'+(' '.join(command)))
 
     def filesMarkedForApproval(self, images):
-        print('[provenance] Files marked for approval:')
-        for img in images:
-            print(img.path)
+        paths = '\n'.join([img.path for img in images])
+        self.log('info', 'Files marked for approval: \n{0}'.format(paths))
+
+    def log(self, level, message, exceptionClass=None):
+        if self.vlevels.index(level) >= self.vlevels.index(self.verbosity):
+            if level == 'error':
+                if exceptionClass is None:
+                    raise NiprovError(message)
+                else:
+                    raise exceptionClass(message)
+            else:
+                print('[provenance:{0}] {1}'.format(level, message))
+        
 
 SUFFIXES = {1: 'st', 2: 'nd', 3: 'rd'}
 def ordinal(num):

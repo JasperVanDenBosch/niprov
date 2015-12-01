@@ -11,9 +11,9 @@ class DependenciesTests(unittest.TestCase):
     def test_Changing_setting_directly_affects_component_setting(self):
         from niprov.dependencies import Dependencies
         dependencies = Dependencies()
-        self.assertFalse(dependencies.getListener().settings.verbose)
-        dependencies.config.verbose = True
-        self.assertTrue(dependencies.getListener().settings.verbose)
+        self.assertEqual(dependencies.getListener().verbosity, 'warning')
+        dependencies.config.verbosity = 'info'
+        self.assertEqual(dependencies.getListener().verbosity, 'info')
 
     def test_Changing_storage_setting_changes_repository_provided(self):
         from niprov.dependencies import Dependencies
@@ -29,9 +29,9 @@ class DependenciesTests(unittest.TestCase):
     def test_reconfigureOrGetConfiguration_with_None_doesnt_affect_config(self):
         from niprov.dependencies import Dependencies
         dependencies = Dependencies()
-        self.assertFalse(dependencies.getListener().settings.verbose)
+        self.assertEqual(dependencies.getListener().verbosity, 'warning')
         dependencies.reconfigureOrGetConfiguration(None)
-        self.assertFalse(dependencies.getListener().settings.verbose)
+        self.assertEqual(dependencies.getListener().verbosity, 'warning')
 
     def test_reconfigureOrGetConfiguration_with_None_returns_config(self):
         from niprov.dependencies import Dependencies
@@ -50,11 +50,11 @@ class DependenciesTests(unittest.TestCase):
     def test_reconfigureOrGetConfiguration_creates_new_dependencies(self):
         from niprov.dependencies import Dependencies, Configuration
         dependencies = Dependencies()
-        self.assertFalse(dependencies.getListener().settings.verbose)
+        self.assertEqual(dependencies.getListener().verbosity, 'warning')
         newSettings = Configuration()
-        newSettings.verbose = True
+        newSettings.verbosity = 'info'
         dependencies.reconfigureOrGetConfiguration(newSettings)
-        self.assertTrue(dependencies.getListener().settings.verbose)
+        self.assertEqual(dependencies.getListener().verbosity, 'info')
 
     def test_GetConfiguration_returns_config(self):
         from niprov.dependencies import Dependencies

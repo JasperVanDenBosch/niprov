@@ -10,6 +10,7 @@ class Commandline(object):
     vlevels = ['debug','info','warning','error']
 
     def __init__(self, dependencies=Dependencies()):
+        self.config = dependencies.config
         self.verbosity = dependencies.config.verbosity
         assert self.verbosity in self.vlevels, "Unknown verbosity value"
 
@@ -37,7 +38,11 @@ class Commandline(object):
             ', '.join(parents)))
 
     def unknownFile(self, fpath):
-        raise UnknownFileError('Unknown file: '+fpath)
+        if self.config.dryrun:
+            level = 'info'
+        else:
+            level = 'error'
+        self.log(level, 'Unknown file: '+fpath, UnknownFileError)
 
     def knownFile(self, fpath):
         self.log('info', 'File already known: '+fpath)
@@ -59,9 +64,15 @@ class Commandline(object):
         paths = '\n'.join([img.path for img in images])
         self.log('info', 'Files marked for approval: \n{0}'.format(paths))
 
-    def log(self, level, message):
+    def log(self, level, message, exceptionClass=None):
         if self.vlevels.index(level) >= self.vlevels.index(self.verbosity):
-            print('[provenance:{0}] {1}'.format(level, message))
+            if level == 'error':
+                if exceptionClass is None:
+                    raise NiprovError(message)
+                else:
+                    raise exceptionClass(message)
+            else:
+                print('[provenance:{0}] {1}'.format(level, message))
         
 
 SUFFIXES = {1: 'st', 2: 'nd', 3: 'rd'}

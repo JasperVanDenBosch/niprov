@@ -46,7 +46,7 @@ class Dependencies(object):
 
     def getListener(self):
         import niprov.commandline
-        return niprov.commandline.Commandline(self.config)
+        return niprov.commandline.Commandline(dependencies=self)
 
     def getLocationFactory(self):
         import niprov.locationfactory

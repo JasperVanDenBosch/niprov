@@ -25,8 +25,10 @@ class Configuration(object):
     """bool: Do not execute commands or make lasting changes to the 
     provenance database."""
 
-    verbose = False
-    """bool: Output extra information."""
+    verbosity = 'warning'
+    """string: Level of information to report. One of 'debug','info','warning',
+    'error'. Any level includes higher levels, i.e. 'info' will log messages of 
+    that are deemed 'info', 'warning' or 'error'. """
 
     discover_file_extensions = ['.PAR','.dcm','.fif','.cnt']
     """list: Discover uses this to determine which files to include. 

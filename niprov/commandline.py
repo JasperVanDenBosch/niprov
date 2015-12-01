@@ -1,12 +1,17 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+from __future__ import print_function
 from niprov.exceptions import UnknownFileError
+from niprov.dependencies import Dependencies
 
 
 class Commandline(object):
 
-    def __init__(self, settings=None):
-        self.settings = settings
+    vlevels = ['debug','info','warning','error']
+
+    def __init__(self, dependencies=Dependencies()):
+        self.verbosity = dependencies.config.verbosity
+        assert self.verbosity in self.vlevels, "Unknown verbosity value"
 
     def fileFound(self, image):
         template = '[provenance] {0}'
@@ -54,6 +59,12 @@ class Commandline(object):
         print('[provenance] Files marked for approval:')
         for img in images:
             print(img.path)
+
+    def log(self, level, message):
+        if self.vlevels.index(level) >= self.vlevels.index(self.verbosity):
+            print('[provenance:{0}] {1}'.format(level, message))
+        
+        
 
 SUFFIXES = {1: 'st', 2: 'nd', 3: 'rd'}
 def ordinal(num):

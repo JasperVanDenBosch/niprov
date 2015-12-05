@@ -7,7 +7,7 @@ provenance for neuroimaging data
 [![Docs](https://readthedocs.org/projects/niprov/badge/?version=latest)](http://niprov.readthedocs.org/)
 [![Coverage](https://img.shields.io/coveralls/ilogue/niprov.svg)](https://coveralls.io/r/ilogue/niprov)
 [![DOI](https://zenodo.org/badge/7344/ilogue/niprov.svg)](http://dx.doi.org/10.5281/zenodo.13683)
-[![Twitter](https://img.shields.io/twitter/follow/shields_io.svg?style=social)](https://twitter.com/niprovenance)
+[![Twitter](https://img.shields.io/twitter/follow/niprovenance.svg?style=social)](https://twitter.com/niprovenance)
 
 
 See the [full online documentation](http://niprov.readthedocs.org/) (or [pdf](https://media.readthedocs.org/pdf/niprov/latest/niprov.pdf)) and [PyPi package](https://pypi.python.org/pypi/niprov) and follow [niprov on twitter](https://twitter.com/niprovenance)!

@@ -85,6 +85,14 @@ approve.add_argument('filepath',
 serve = subparsers.add_parser('serve',
     help='Start a webserver that allows browsing through provenance.')
 
+export = subparsers.add_parser('export',
+    help='Backup provenance metadata to a file.')
+
+importp = subparsers.add_parser('import',
+    help='Load backup data from a file.')
+importp.add_argument('file',
+    help='Path to json file with provenance backup.')
+
 args = parser.parse_args()
 if args.command == 'discover':
     niprov.discover(args.root)
@@ -112,3 +120,7 @@ elif args.command == 'approve':
     niprov.approve(args.filepath)
 elif args.command == 'serve':
     niprov.serve()
+elif args.command == 'export':
+    niprov.export()
+elif args.command == 'import':
+    niprov.importp(args.file)

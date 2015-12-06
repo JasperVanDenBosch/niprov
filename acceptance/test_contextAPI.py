@@ -42,7 +42,7 @@ class ContextApiTests(unittest.TestCase):
         with self.assertRaises(UnknownFileError):
             self.provenance.report(forFile=discoveredFile)
         self.provenance.importp('provenance.json')
-        #self.assertIsNotNone(self.provenance.report(forFile=discoveredFile))
+        self.assertIsNotNone(self.provenance.report(forFile=discoveredFile))
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,5 +1,6 @@
 from mock import Mock, patch, sentinel
 from tests.ditest import DependencyInjectionTestBase
+from datetime import datetime
 
 
 class ExportingTest(DependencyInjectionTestBase):
@@ -14,8 +15,6 @@ class ExportingTest(DependencyInjectionTestBase):
         niprov.exporting.JsonFile = self.patchJsonFileConstructor()
         niprov.exporting.export(dependencies=self.dependencies)
         assert self.JsonFileCtr.called, "Did not create a JsonFile repo."
-        urlUsed = self.tempRepo.dependencies.getConfiguration().database_url
-        self.assertEqual(urlUsed, 'provenance.json')
         self.tempRepo.add.assert_any_call(sentinel.p1)
         self.tempRepo.add.assert_any_call(sentinel.p2)
 
@@ -29,6 +28,19 @@ class ExportingTest(DependencyInjectionTestBase):
         self.assertEqual(urlUsed, 'target_file')
         self.repo.add.assert_any_call(sentinel.p1)
         self.repo.add.assert_any_call(sentinel.p2)
+
+    def test_export_is_creative_in_picking_a_filename_and_returns_it(self):
+        import niprov.exporting 
+        self.repo.all.return_value = []
+        niprov.exporting.JsonFile = self.patchJsonFileConstructor()
+        out = niprov.exporting.export(dependencies=self.dependencies)
+        assert self.JsonFileCtr.called, "Did not create a JsonFile repo."
+        urlUsed = self.tempRepo.dependencies.getConfiguration().database_url
+        self.assertEqual(urlUsed, out)
+        self.assertIn('export', out)
+        datestr = (str(datetime.now())
+            .replace(' ','_').replace(':','-').split('.')[0])
+        self.assertIn(datestr, out)
 
     def patchJsonFileConstructor(self):
         self.JsonFileCtr = Mock()

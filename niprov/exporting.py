@@ -1,5 +1,6 @@
 from niprov.dependencies import Dependencies
 from niprov.jsonfile import JsonFile
+from datetime import datetime as dt
 
 
 def export(dependencies=Dependencies()):
@@ -7,13 +8,16 @@ def export(dependencies=Dependencies()):
 
     This can serve as a backup, migration tool, or for exchange.
     """
+    nowstr = str(dt.now()).replace(' ','_').replace(':','-').split('.')[0]
+    filepath = 'provenance_export_{0}.json'.format(nowstr)
     repository = dependencies.getRepository()
     exportDeps = Dependencies()
-    exportDeps.getConfiguration().database_url = 'provenance.json'
+    exportDeps.getConfiguration().database_url = filepath
     exportRepo = JsonFile(exportDeps)
     allFiles = repository.all()
     for pfile in allFiles:
         exportRepo.add(pfile)
+    return filepath
 
 
 def importp(filepath, dependencies=Dependencies()):

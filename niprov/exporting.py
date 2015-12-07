@@ -8,7 +8,7 @@ def export(dependencies=Dependencies()):
 
     This can serve as a backup, migration tool, or for exchange.
     """
-    nowstr = str(dt.now()).replace(' ','_').replace(':','-').split('.')[0]
+    nowstr = dependencies.getClock().getNowString()
     filepath = 'provenance_export_{0}.json'.format(nowstr)
     repository = dependencies.getRepository()
     exportDeps = Dependencies()

@@ -13,6 +13,10 @@ class Dependencies(object):
             self.config = newConfiguration
         return self.config
 
+    def getClock(self):
+        import niprov.clock
+        return niprov.clock.Clock()
+
     def getConfiguration(self):
         return self.config
 

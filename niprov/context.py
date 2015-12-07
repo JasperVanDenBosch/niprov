@@ -52,3 +52,11 @@ class Context(object):
     def report(self, *args, **kwargs):
         """See :py:mod:`niprov.reporting`  """
         return niprov.reporting.report(*args, dependencies=self.deps, **kwargs)
+
+    def export(self, *args, **kwargs):
+        """See :py:mod:`niprov.exporting`  """
+        return niprov.exporting.export(*args, dependencies=self.deps, **kwargs)
+
+    def importp(self, *args, **kwargs):
+        """See :py:mod:`niprov.exporting`  """
+        return niprov.exporting.importp(*args, dependencies=self.deps, **kwargs)

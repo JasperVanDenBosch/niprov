@@ -32,3 +32,18 @@ class ContextApiTests(unittest.TestCase):
         self.assertEqual(img.provenance['subject'], 'Jane Doe')
         self.assertEqual(img.provenance['size'], os.path.getsize(newfile))
 
+    def test_Export_Import(self):
+        from niprov.exceptions import UnknownFileError
+        self.provenance.discover('testdata')
+        discoveredFile = os.path.abspath('testdata/eeg/stub.cnt')
+        self.assertIsNotNone(self.provenance.report(forFile=discoveredFile))
+        backupFilepath = self.provenance.export()
+        os.remove(self.dbpath) # get rid of existing data.
+        with self.assertRaises(UnknownFileError):
+            self.provenance.report(forFile=discoveredFile)
+        self.provenance.importp(backupFilepath)
+        self.assertIsNotNone(self.provenance.report(forFile=discoveredFile))
+
+if __name__ == '__main__':
+    unittest.main()
+

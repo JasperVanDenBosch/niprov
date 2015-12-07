@@ -10,6 +10,7 @@ Submodules
    niprov.approval
    niprov.basefile
    niprov.capturing
+   niprov.clock
    niprov.cnt
    niprov.commandline
    niprov.config
@@ -21,6 +22,7 @@ Submodules
    niprov.exceptions
    niprov.exporter
    niprov.exporters
+   niprov.exporting
    niprov.externals
    niprov.fif
    niprov.filefilter

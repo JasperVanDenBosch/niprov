@@ -54,6 +54,7 @@ def add(filepath, transient=False, provenance=None,
         status = 'dryrun'
     elif repository.knows(img):
         listener.knownFile(img.path)
+        img = repository.byLocation(img.location.toString())
         status = 'known'
     elif repository.knowsSeries(img):
         series = repository.getSeries(img)

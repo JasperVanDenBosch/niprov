@@ -116,4 +116,10 @@ class AddTests(DependencyInjectionTestBase):
         self.assertEqual(self.lastPath,
             os.path.abspath('p/afile.f'))
 
+    def test_If_file_is_known_return_stored_provenance(self):
+        self.repo.knows.return_value = True
+        (img, status) = self.add('p/afile.f')
+        self.repo.byLocation.assert_called_with(self.img.location.toString())
+        self.assertEqual(img, self.repo.byLocation())
+
 

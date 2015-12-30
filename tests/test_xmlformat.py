@@ -8,7 +8,7 @@ class XmlFormatTests(unittest.TestCase):
         pass
 
     def test_export_item_returns_string_with_xml_header(self):
-        prolog = "<?xml version='1.0' encoding='UTF-8'?>"
+        prolog = '<?xml version="1.0" encoding="UTF-8"?>'
         doc = '<prov:document xmlns:prov="http://www.w3.org/ns/prov#">'
         from niprov.formatxml import XmlFormat
         form = XmlFormat()

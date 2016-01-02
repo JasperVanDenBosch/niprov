@@ -15,7 +15,12 @@ class XmlFormatTests(unittest.TestCase):
         out = form.export(self.aFile())
         self.assertIn(prolog, out)
         self.assertIn(doc, out)
-        
+
+    def test_export_list_creates_entity_for_each_file(self):
+        from niprov.formatxml import XmlFormat
+        form = XmlFormat()
+        out = form.export([self.aFile(), self.aFile(), self.aFile()])
+        self.assertEqual(3, out.count('prov:entity'))
 
     def aFile(self):
         somefile = Mock()

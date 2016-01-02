@@ -4,11 +4,20 @@ from xml.dom.minidom import Document
 
 class XmlFormat(object):
 
-    def export(self, fileObject):
-        provns = 'http://www.w3.org/ns/prov#'
+    def export(self, itemOrList):
+        if not isinstance(itemOrList, list):
+            itemOrList = [itemOrList]
+        ns = 'http://www.w3.org/ns/prov#'
         dom = Document()
-        doc = dom.createElementNS(provns, 'prov:document')
+        doc = self._createElementNS(dom, ns, 'prov', 'prov:document')
         dom.appendChild(doc)
-http://stackoverflow.com/questions/863774/how-to-generate-xml-documents-with-namespaces-in-python
+        for item in itemOrList:
+            entity = dom.createElementNS(ns, 'prov:entity')
+            doc.appendChild(entity)
         return dom.toprettyxml(encoding="UTF-8")
+
+    def _createElementNS(self, dom, ns, prefix, tag):
+        element = dom.createElementNS(ns, tag)
+        element.setAttribute('xmlns:'+prefix, ns)
+        return element
 

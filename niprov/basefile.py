@@ -23,9 +23,13 @@ class BaseFile(object):
         self.provenance['hash'] = self.hasher.digest(self.path)
         return self.provenance
 
-    def attach(self, form):
+    def attach(self, form='json'):
         """
         Not implemented for BaseFile parent class.
+
+        Args:
+            form (str): Data format in which to serialize provenance. Defaults 
+                to 'json'.
         """
         pass
 

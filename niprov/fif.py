@@ -22,10 +22,14 @@ class FifFile(BaseFile):
         provenance['dimensions'] = [img.info['nchan'], T]
         return provenance
 
-    def attach(self, form):
+    def attach(self, form='json'):
         """
         Attach the current provenance to the file by appending it as a
         json-encoded string to the 'description' header field.
+
+        Args:
+            form (str): Data format in which to serialize provenance. Defaults 
+                to 'json'.
         """
         info = self.libs.mne.io.read_info(self.path)
         provstr = self.getProvenance(form)

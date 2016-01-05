@@ -26,14 +26,9 @@ class BaseFile(object):
 
     def attach(self):
         """
-        Attach the current provenance to the file by saving it encoded 
-        in a small textfile alongside it.
-
-        The resulting file's name is like the file it describes,
-        but with the .provenance extension.
+        Not implemented for BaseFile parent class.
         """
-        provstr = self.serializer.serialize(self.provenance)
-        self.filesystem.write(self.path+'.provenance', provstr)
+        pass
 
     def getProvenance(self, form):
         return self.formats.create(form).serialize(self)

@@ -33,11 +33,7 @@ class BaseFileTests(DependencyInjectionTestBase):
         self.assertEqual(out, self.file.provenance)
 
     def test_Attach_method(self):
-        self.file.provenance = {'foo':'bar'}
-        self.file.attach()
-        self.serializer.serialize.assert_called_with(self.file.provenance)
-        self.filesys.write.assert_called_with(
-            self.path+'.provenance', self.serializer.serialize(self.file.provenance))
+        pass
 
     def test_Series_interface(self):
         self.assertEqual(self.file.getSeriesId(), None)

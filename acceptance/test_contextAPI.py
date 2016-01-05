@@ -46,7 +46,7 @@ class ContextApiTests(unittest.TestCase):
 
     def test_Attach_provenance_string_in_file_based_on_config(self):
         import nibabel
-        self.provenance.config.insert = 'json'
+        self.provenance.config.attach = True
         newfile = 'temp/fileX.nii.gz'
         shutil.copy('testdata/nifti/fieldmap.nii.gz', newfile)
         self.provenance.add(newfile)

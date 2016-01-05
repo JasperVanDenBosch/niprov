@@ -49,12 +49,12 @@ class DicomTests(BaseFileTests):
     def test_File_without_Rows(self):
         del(self.img.Rows)
         out = self.file.inspect()
-        assert not self.log.fileError.called
+        assert not self.listener.fileError.called
         self.assertNotIn('dimensions', out)
         del(self.img.NumberOfFrames)
         out = self.file.inspect()
         self.file.addFile(Mock())
-        assert not self.log.fileError.called
+        assert not self.listener.fileError.called
 
     def setupPydicom(self):
         self.img = Mock()

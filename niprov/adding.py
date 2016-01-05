@@ -34,9 +34,9 @@ def add(filepath, transient=False, provenance=None,
             'series': The file was deemed part of a series and has been added.
             'failed': There was an error inspecting the file.
             'known': The file was already known to niprov, nothing happened.
-            'dryrun': Function called with opts.dryrun, database not touched.
+            'dryrun': Function called with config.dryrun, database not touched.
     """
-    opts = dependencies.getConfiguration()
+    config = dependencies.getConfiguration()
     file = dependencies.getFileFactory()
     repository = dependencies.getRepository()
     listener = dependencies.getListener()
@@ -50,7 +50,7 @@ def add(filepath, transient=False, provenance=None,
 
     filepath = os.path.abspath(filepath)
     img = file.locatedAt(filepath, provenance=provenance)
-    if opts.dryrun:
+    if config.dryrun:
         status = 'dryrun'
     elif repository.knows(img):
         listener.knownFile(img.path)
@@ -72,6 +72,8 @@ def add(filepath, transient=False, provenance=None,
                 listener.fileError(img.path)
                 status = 'failed'
                 return (img, status)
+            if config.attach:
+                img.attach(config.attach_format)
         repository.add(img)
         listener.fileFound(img)
         status = 'new'

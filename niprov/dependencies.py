@@ -41,7 +41,8 @@ class Dependencies(object):
         return niprov.filesystem.Filesystem()
 
     def getFormatFactory(self):
-        pass
+        import niprov.formatfactory
+        return niprov.formatfactory.FormatFactory()
 
     def getHasher(self):
         import niprov.hashing

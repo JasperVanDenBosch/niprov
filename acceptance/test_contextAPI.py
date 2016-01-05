@@ -47,14 +47,14 @@ class ContextApiTests(unittest.TestCase):
     def test_Attach_provenance_string_in_file_based_on_config(self):
         import nibabel
         self.provenance.config.attach = True
-        newfile = 'temp/fileX.nii.gz'
+        newfile = os.path.abspath('temp/fileX.nii.gz')
         shutil.copy('testdata/nifti/fieldmap.nii.gz', newfile)
         self.provenance.add(newfile)
         img = nibabel.load(newfile)
         self.assertEqual(img.get_header().extensions.count('comment'), 1)
-        self.assertEqual(img.get_header().extensions[0].get_code(), 'comment')
+        self.assertEqual(img.get_header().extensions[0].get_code(), 6)
         content = img.get_header().extensions[0].get_content()
-        self.assertIn('"location": "{0}"'.format(newfile), content)
+        self.assertIn('"path": "{0}"'.format(newfile), content)
         
         
 

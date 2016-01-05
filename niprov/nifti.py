@@ -9,13 +9,13 @@ class NiftiFile(BaseFile):
         super(NiftiFile, self).__init__(location, **kwargs)
         self.libs = self.dependencies.getLibraries()
 
-    def attach(self):
+    def attach(self, form):
         """
         Attach the current provenance to the file by injecting it as a 
         json-encoded extension to the nifti header.
         """
         img = self.libs.nibabel.load(self.path)
-        provstr = self.serializer.serialize(self)
+        provstr = self.getProvenance(form)
         ext = self.libs.nibabel.nifti1.Nifti1Extension('comment', provstr)
         hdr = img.get_header()
         hdr.extensions.append(ext)

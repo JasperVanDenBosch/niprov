@@ -25,10 +25,11 @@ class NiftiTests(BaseFileTests):
         self.libs.hasDependency.return_value = True
 
     def test_Attach_method(self):
-        self.file.provenance = {'foo':'bar'}
-        self.file.attach()
-        self.serializer.serialize.assert_called_with(self.file)
+        self.file.getProvenance = Mock()
+        self.file.getProvenance.return_value = 'serial prov'
+        self.file.attach('json')
+        self.file.getProvenance.assert_called_with('json')
         self.hdr.extensions.append.assert_called_with(('extension','comment', 
-            self.serializer.serialize()))
+            'serial prov'))
         self.img.to_filename.assert_called_with(self.file.path)
 

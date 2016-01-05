@@ -83,14 +83,3 @@ class BaseFileTests(DependencyInjectionTestBase):
         self.format.serialize.assert_called_with(img)
         self.assertEqual(self.format.serialize(), out)
 
-
-#ATTACH
-# check if we have provenance to attach
-# call method for type-specific attachment behavior (file or insert)
-
-
-
-#READATTACHED
-# call method for type-specific attachment behavior (file or insert)
-# return provenance
-# save provenance to instance

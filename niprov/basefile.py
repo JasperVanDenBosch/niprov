@@ -8,7 +8,6 @@ class BaseFile(object):
         self.listener = dependencies.getListener()
         self.filesystem = dependencies.getFilesystem()
         self.hasher = dependencies.getHasher()
-        self.serializer = dependencies.getSerializer()
         self.location = dependencies.getLocationFactory().fromString(location)
         self.formats = dependencies.getFormatFactory()
         if provenance:
@@ -24,7 +23,7 @@ class BaseFile(object):
         self.provenance['hash'] = self.hasher.digest(self.path)
         return self.provenance
 
-    def attach(self):
+    def attach(self, form):
         """
         Not implemented for BaseFile parent class.
         """

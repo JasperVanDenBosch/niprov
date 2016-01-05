@@ -4,6 +4,7 @@ from basefile import BaseFile
 from dcm import DicomFile
 from parrec import ParrecFile
 from fif import FifFile
+from nifti import NiftiFile
 from niprov.cnt import NeuroscanFile
 
 
@@ -17,6 +18,8 @@ class FileFactory(object):
     formats = {'.par':('nibabel', ParrecFile),
                '.dcm':('dicom', DicomFile),
                '.cnt':(None, NeuroscanFile),
+               '.nii':(None, NeuroscanFile),
+               '.nii.gz':('nibabel', NiftiFile),
                '.fif':('mne',FifFile)}
 
     def __init__(self, dependencies=Dependencies()):
@@ -38,7 +41,10 @@ class FileFactory(object):
         Returns:
             :class:`.BaseFile`: An object that derives from BaseFile
         """
-        extension = os.path.splitext(location)[1].lower()
+        if location.lower()[-2:] == 'gz':
+            extension = '.'+('.'.join(location.lower().split('.')[-2:]))
+        else:
+            extension = os.path.splitext(location)[1].lower()
         if extension not in self.formats:
             return BaseFile(location, provenance=provenance, 
                 dependencies=self.dependencies)

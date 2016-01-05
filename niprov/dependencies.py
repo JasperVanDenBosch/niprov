@@ -42,7 +42,7 @@ class Dependencies(object):
 
     def getFormatFactory(self):
         import niprov.formatfactory
-        return niprov.formatfactory.FormatFactory()
+        return niprov.formatfactory.FormatFactory(dependencies=self)
 
     def getHasher(self):
         import niprov.hashing

@@ -44,6 +44,20 @@ class ContextApiTests(unittest.TestCase):
         self.provenance.importp(backupFilepath)
         self.assertIsNotNone(self.provenance.report(forFile=discoveredFile))
 
+    def test_Attach_provenance_string_in_file_based_on_config(self):
+        import nibabel
+        self.provenance.config.attach = True
+        newfile = os.path.abspath('temp/fileX.nii.gz')
+        shutil.copy('testdata/nifti/fieldmap.nii.gz', newfile)
+        self.provenance.add(newfile)
+        img = nibabel.load(newfile)
+        self.assertEqual(img.get_header().extensions.count('comment'), 1)
+        self.assertEqual(img.get_header().extensions[0].get_code(), 6)
+        content = img.get_header().extensions[0].get_content()
+        self.assertIn('"path": "{0}"'.format(newfile), content)
+        
+        
+
 if __name__ == '__main__':
     unittest.main()
 

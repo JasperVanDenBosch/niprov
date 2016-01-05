@@ -10,7 +10,6 @@ class DependencyInjectionTestBase(unittest.TestCase):
         self.listener = Mock()
         self.hasher = Mock()
         self.filesys = Mock()
-        self.json = Mock()
         self.repo = Mock()
         self.exporter = Mock()
         self.exportFactory = Mock()
@@ -19,6 +18,9 @@ class DependencyInjectionTestBase(unittest.TestCase):
         self.serializer = Mock()
         self.location = Mock()
         self.clock = Mock()
+        self.formatFactory = Mock()
+        self.format = Mock()
+        self.formatFactory.create.return_value = self.format
         self.locationFactory = Mock()
         self.locationFactory.fromString.return_value = self.location
         self.dependencies = Mock()
@@ -26,7 +28,6 @@ class DependencyInjectionTestBase(unittest.TestCase):
         self.dependencies.getListener.return_value = self.listener
         self.dependencies.getHasher.return_value = self.hasher
         self.dependencies.getFilesystem.return_value = self.filesys
-        self.dependencies.getSerializer.return_value = self.json
         self.dependencies.getRepository.return_value = self.repo
         self.dependencies.getFileFactory.return_value = self.fileFactory
         self.dependencies.getSerializer.return_value = self.serializer
@@ -34,5 +35,6 @@ class DependencyInjectionTestBase(unittest.TestCase):
         self.dependencies.getConfiguration.return_value = self.config
         self.dependencies.getClock.return_value = self.clock
         self.dependencies.getPipelineFactory.return_value = self.pipelineFactory
+        self.dependencies.getFormatFactory.return_value = self.formatFactory
 
 

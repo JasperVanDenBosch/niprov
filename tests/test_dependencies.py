@@ -82,3 +82,10 @@ class DependenciesTests(unittest.TestCase):
         self.assertIsInstance(dependencies.getPipelineFactory(), 
             PipelineFactory)
 
+    def test_provides_FormatFactory(self):
+        from niprov.dependencies import Dependencies
+        from niprov.formatfactory import FormatFactory
+        dependencies = Dependencies()
+        self.assertIsInstance(dependencies.getFormatFactory(), 
+            FormatFactory)
+

@@ -8,8 +8,8 @@ class BaseFile(object):
         self.listener = dependencies.getListener()
         self.filesystem = dependencies.getFilesystem()
         self.hasher = dependencies.getHasher()
-        self.serializer = dependencies.getSerializer()
         self.location = dependencies.getLocationFactory().fromString(location)
+        self.formats = dependencies.getFormatFactory()
         if provenance:
             self.provenance = provenance
         else:
@@ -23,16 +23,18 @@ class BaseFile(object):
         self.provenance['hash'] = self.hasher.digest(self.path)
         return self.provenance
 
-    def attach(self):
+    def attach(self, form='json'):
         """
-        Attach the current provenance to the file by saving it encoded 
-        in a small textfile alongside it.
+        Not implemented for BaseFile parent class.
 
-        The resulting file's name is like the file it describes,
-        but with the .provenance extension.
+        Args:
+            form (str): Data format in which to serialize provenance. Defaults 
+                to 'json'.
         """
-        provstr = self.serializer.serialize(self.provenance)
-        self.filesystem.write(self.path+'.provenance', provstr)
+        pass
+
+    def getProvenance(self, form):
+        return self.formats.create(form).serialize(self)
 
     def getSeriesId(self):
         pass

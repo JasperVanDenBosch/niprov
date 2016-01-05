@@ -122,4 +122,15 @@ class AddTests(DependencyInjectionTestBase):
         self.repo.byLocation.assert_called_with(self.img.location.toString())
         self.assertEqual(img, self.repo.byLocation())
 
+    def test_If_config_attach_set_calls_attach_on_file(self):
+        self.config.attach = False
+        self.add('p/afile.f')
+        assert not self.img.attach.called, "Shouldnt attach if not configured."
+        self.config.attach = True
+        self.config.attach_format = 'abracadabra'
+        self.add('p/afile.f', transient=True)
+        assert not self.img.attach.called, "Shouldnt attach to transient file."
+        self.add('p/afile.f')
+        self.img.attach.assert_called_with('abracadabra')
+
 

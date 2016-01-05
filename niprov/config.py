@@ -14,7 +14,8 @@ class Configuration(object):
     All settings:
     """
     database_type = 'file'
-    """str: Type of backend in which to store provenance. Currently only 'file'
+    """str: Type of backend in which to store provenance. Currently only 'file' 
+    or 'MongoDB'
     """
 
     database_url = '~/provenance.json'
@@ -34,6 +35,17 @@ class Configuration(object):
     """list: Discover uses this to determine which files to include. 
     Not strictly extensions, can be any string that appears in the file name. 
     Use comma's to separate items."""
+
+    attach = False
+    """bool: Attach provenance to image files. For nifti files for instance,
+    this means inserting a header extension with serialized provenance. See 
+    'attach_format' to configure which data format is used."""
+
+    attach_format = 'json'
+    """string: Format in which to attach provenance to the file.
+    For example, if set to 'json' and the 'attach' option is True, this will 
+    add a header extension to nifti files created with the relevant provenance 
+    data in json format."""
 
     def __init__(self, configFilePath='~/niprov.cfg'):
         configFilePath = os.path.expanduser(configFilePath)

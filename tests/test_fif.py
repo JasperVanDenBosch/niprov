@@ -26,12 +26,13 @@ class FifTests(BaseFileTests):
         self.assertEqual(out['dimensions'], [123, 91])
 
     def test_Attach_method(self):
-        self.file.provenance = {'foo':'bar'}
-        self.json.serialize.side_effect = lambda p: str(p)
-        self.file.attach()
+        self.file.getProvenance = Mock()
+        self.file.getProvenance.return_value = 'serial prov'
+        self.file.attach('json')
+        self.file.getProvenance.assert_called_with('json')
         self.assertIn('existing bla bla ', #original string+added space 
             self.img.info['description'])
-        self.assertIn('NIPROV:'+str(self.file), 
+        self.assertIn('NIPROV:'+'serial prov', 
             self.img.info['description'])
         self.libs.mne.io.write_info.assert_called_with(self.file.path, 
             self.img.info)

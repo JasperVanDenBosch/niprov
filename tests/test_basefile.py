@@ -1,25 +1,13 @@
-import unittest
+from tests.ditest import DependencyInjectionTestBase
 from mock import Mock
 from datetime import datetime
 
-class BaseFileTests(unittest.TestCase):
+class BaseFileTests(DependencyInjectionTestBase):
 
     def setUp(self):
-        self.log = Mock()
-        self.hasher = Mock()
-        self.filesys = Mock()
-        self.json = Mock()
+        super(BaseFileTests, self).setUp()
         self.path = 'example.abc'
-        self.location = Mock()
         self.location.toDictionary.return_value = {'path':self.path}
-        self.locationFactory = Mock()
-        self.locationFactory.fromString.return_value = self.location
-        self.dependencies = Mock()
-        self.dependencies.getLocationFactory.return_value = self.locationFactory
-        self.dependencies.getListener.return_value = self.log
-        self.dependencies.getHasher.return_value = self.hasher
-        self.dependencies.getFilesystem.return_value = self.filesys
-        self.dependencies.getSerializer.return_value = self.json
         from niprov.basefile import BaseFile
         self.constructor = BaseFile
         self.file = BaseFile(self.path, dependencies=self.dependencies)
@@ -47,9 +35,9 @@ class BaseFileTests(unittest.TestCase):
     def test_Attach_method(self):
         self.file.provenance = {'foo':'bar'}
         self.file.attach()
-        self.json.serialize.assert_called_with(self.file.provenance)
+        self.serializer.serialize.assert_called_with(self.file.provenance)
         self.filesys.write.assert_called_with(
-            self.path+'.provenance', self.json.serialize(self.file.provenance))
+            self.path+'.provenance', self.serializer.serialize(self.file.provenance))
 
     def test_Series_interface(self):
         self.assertEqual(self.file.getSeriesId(), None)
@@ -91,6 +79,13 @@ class BaseFileTests(unittest.TestCase):
         img2 = self.constructor(self.path, provenance=prov, 
             dependencies=self.dependencies)
         self.assertEqual(img2.parents, ['foo','bar'])
+
+    def test_getProvenance_provides_prov_serialized_in_requested_format(self):
+        img = self.constructor(self.path, dependencies=self.dependencies)
+        out = img.getProvenance('myformat')
+        self.formatFactory.create.assert_called_with('myformat')
+        self.format.serialize.assert_called_with(img)
+        self.assertEqual(self.format.serialize(), out)
 
 
 #ATTACH

@@ -10,6 +10,7 @@ class BaseFile(object):
         self.hasher = dependencies.getHasher()
         self.serializer = dependencies.getSerializer()
         self.location = dependencies.getLocationFactory().fromString(location)
+        self.formats = dependencies.getFormatFactory()
         if provenance:
             self.provenance = provenance
         else:
@@ -33,6 +34,9 @@ class BaseFile(object):
         """
         provstr = self.serializer.serialize(self.provenance)
         self.filesystem.write(self.path+'.provenance', provstr)
+
+    def getProvenance(self, form):
+        return self.formats.create(form).serialize(self)
 
     def getSeriesId(self):
         pass

@@ -27,7 +27,7 @@ class FifTests(BaseFileTests):
 
     def test_Attach_method(self):
         self.file.provenance = {'foo':'bar'}
-        self.json.serialize.side_effect = lambda p: str(p)
+        self.serializer.serialize.side_effect = lambda p: str(p)
         self.file.attach()
         self.assertIn('existing bla bla ', #original string+added space 
             self.img.info['description'])

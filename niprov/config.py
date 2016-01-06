@@ -42,7 +42,8 @@ class Configuration(object):
     'attach_format' to configure which data format is used."""
 
     attach_format = 'json'
-    """string: Format in which to attach provenance to the file.
+    """string: Format in which to attach provenance to the file. One of 'json',
+    or 'xml'.
     For example, if set to 'json' and the 'attach' option is True, this will 
     add a header extension to nifti files created with the relevant provenance 
     data in json format."""

@@ -13,5 +13,11 @@ class FormatFactoryTests(DependencyInjectionTestBase):
         factory = FormatFactory()
         self.assertIsInstance(factory.create('json'), JsonSerializer)
 
+    def test_Provides_xml(self):
+        from niprov.formatfactory import FormatFactory
+        from niprov.formatxml import XmlFormat
+        factory = FormatFactory()
+        self.assertIsInstance(factory.create('xml'), XmlFormat)
+
 
 

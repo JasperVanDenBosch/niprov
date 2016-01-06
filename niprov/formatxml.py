@@ -4,7 +4,10 @@ from xml.dom.minidom import Document
 
 class XmlFormat(object):
 
-    def export(self, itemOrList):
+    def __init__(self, dependencies):
+        pass
+
+    def serialize(self, itemOrList):
         if not isinstance(itemOrList, list):
             itemOrList = [itemOrList]
         ns = 'http://www.w3.org/ns/prov#'

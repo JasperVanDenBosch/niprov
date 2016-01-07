@@ -1,5 +1,5 @@
 import unittest
-from mock import Mock
+from mock import sentinel
 from tests.ditest import DependencyInjectionTestBase
 
 class ReportingTests(DependencyInjectionTestBase):
@@ -23,37 +23,35 @@ class ReportingTests(DependencyInjectionTestBase):
         self.report(medium='stdout')
         self.mediumFactory.create.assert_any_call('stdout')
 
-    def test_Passes_provenance_to_exporter(self): ######
-        self.report()
-        self.exportFactory.createExporter().export.assert_any_call(self.repo.latest())
-        self.report(forSubject='Jane')
-        self.exportFactory.createExporter().export.assert_any_call(self.repo.bySubject())
-
-    def test_Without_specifics_returns_latest_files(self): ######
+    def test_Passes_provenance_through_format_and_medium(self):
+        self.format.serialize.return_value = 'serialized prov'
+        self.medium.export.return_value = sentinel.mediumOutput
         out = self.report()
-        self.exporter.export.assert_called_with(self.repo.latest())
-        self.assertEqual(out, self.exporter.export())
+        self.format.serialize.assert_any_call(self.repo.latest())
+        self.medium.export.assert_called_with('serialized prov')
+        self.assertEqual(sentinel.mediumOutput, out)
 
-    def test_Can_report_on_one_file_specifically(self): ######
+    def test_Without_specifics_returns_latest_files(self):
+        out = self.report()
+        self.format.serialize.assert_called_with(self.repo.latest())
+
+    def test_Can_report_on_one_file_specifically(self):
         out = self.report(forFile='afile.f')
-        self.exporter.export.assert_called_with(self.repo.byLocation('afile.f'))
-        self.assertEqual(out, self.exporter.export())
+        self.format.serialize.assert_called_with(self.repo.byLocation('afile.f'))
 
-    def test_Can_report_on_all_files_for_subject(self): ######
+    def test_Can_report_on_all_files_for_subject(self):
         out = self.report(forSubject='Jane Doe')
-        self.exporter.export.assert_called_with(
+        self.format.serialize.assert_called_with(
             self.repo.bySubject('Jane Doe'))
-        self.assertEqual(out, self.exporter.export())
 
-    def test_Passes_single_item_of_provenance_to_exporter(self): ######
+    def test_Passes_single_item_of_provenance_to_exporter(self):
         self.report(forFile='xyz')
-        self.exportFactory.createExporter().export.assert_any_call(
+        self.format.serialize.assert_any_call(
             self.repo.byLocation('xyz'))
 
-    def test_Can_report_on_stats(self): ######
+    def test_Can_report_on_stats(self):
         out = self.report(statistics=True)
-        self.exporter.export.assert_called_with(self.repo.statistics())
-        self.assertEqual(out, self.exporter.export())
+        self.format.serialize.assert_called_with(self.repo.statistics())
 
     def test_Completes_locationString_forFile(self):
         out = self.report(forFile='afile.f')

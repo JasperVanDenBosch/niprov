@@ -21,7 +21,9 @@ class DependencyInjectionTestBase(unittest.TestCase):
         self.formatFactory = Mock()
         self.format = Mock()
         self.formatFactory.create.return_value = self.format
+        self.medium = Mock()
         self.mediumFactory = Mock()
+        self.mediumFactory.create.return_value = self.medium
         self.locationFactory = Mock()
         self.locationFactory.fromString.return_value = self.location
         self.dependencies = Mock()

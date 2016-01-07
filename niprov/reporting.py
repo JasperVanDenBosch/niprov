@@ -23,11 +23,15 @@ def report(medium=None, form=None, forFile=None, forSubject=None,
         Provenance reported. Either a list of dicts, or a dict.
     """
     exportFactory = dependencies.getExportFactory()
+    formatFactory = dependencies.getFormatFactory()
+    mediumFactory = dependencies.getMediumFactory()
     repository = dependencies.getRepository()
     listener = dependencies.getListener()
     location = dependencies.getLocationFactory()
 
     exporter = exportFactory.createExporter(medium, form)
+    form = formatFactory.create(form)
+    medium = mediumFactory.create(medium)
     if statistics:
         provenance = repository.statistics()
     elif forFile:

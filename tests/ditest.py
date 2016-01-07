@@ -21,6 +21,7 @@ class DependencyInjectionTestBase(unittest.TestCase):
         self.formatFactory = Mock()
         self.format = Mock()
         self.formatFactory.create.return_value = self.format
+        self.mediumFactory = Mock()
         self.locationFactory = Mock()
         self.locationFactory.fromString.return_value = self.location
         self.dependencies = Mock()
@@ -36,5 +37,6 @@ class DependencyInjectionTestBase(unittest.TestCase):
         self.dependencies.getClock.return_value = self.clock
         self.dependencies.getPipelineFactory.return_value = self.pipelineFactory
         self.dependencies.getFormatFactory.return_value = self.formatFactory
+        self.dependencies.getMediumFactory.return_value = self.mediumFactory
 
 

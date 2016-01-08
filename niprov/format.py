@@ -2,9 +2,8 @@ from niprov.dependencies import Dependencies
 from niprov.basefile import BaseFile
 
 
-class BaseExporter(object):
-    """Parent Exporter class from which exporters for specific mediums are 
-    derived.
+class Format(object):
+    """Parent Format class from which specific formats are derived.
     """
 
     def __init__(self, form=None, dependencies=Dependencies()):

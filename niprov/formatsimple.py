@@ -1,10 +1,9 @@
-#!/usr/bin/python
-# -*- coding: UTF-8 -*-
 from __future__ import print_function
 import copy
+from niprov.format import Format
 
 
-class SimpleFormat(object):
+class SimpleFormat(Format):
 
     _expectedFields = ['acquired','subject','protocol','dimensions','path']
 

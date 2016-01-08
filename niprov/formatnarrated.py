@@ -1,6 +1,7 @@
+from niprov.format import Format
 
 
-class NarratedFormat(object):
+class NarratedFormat(Format):
     """Generates human-readable text that describes provenance objects.
     """
 

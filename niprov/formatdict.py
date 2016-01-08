@@ -1,6 +1,7 @@
+from niprov.format import Format
 
 
-class DictFormat(object):
+class DictFormat(Format):
 
     def __init__(self, dependencies):
         pass

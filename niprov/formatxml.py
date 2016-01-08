@@ -1,8 +1,9 @@
 from xml.dom.minidom import Document
+from niprov.format import Format
 ## Decided not to go with prov python lib as it depends on lxml which depends on c binaries
 
 
-class XmlFormat(object):
+class XmlFormat(Format):
 
     def __init__(self, dependencies):
         pass

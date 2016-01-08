@@ -1,46 +1,41 @@
 from niprov.dependencies import Dependencies
 from niprov.basefile import BaseFile
+from niprov.pipeline import Pipeline
 
 
 class Format(object):
     """Parent Format class from which specific formats are derived.
     """
 
-    def __init__(self, form=None, dependencies=Dependencies()):
-        self.form = form
-        self.narrator = dependencies.getNarrator()
-        self.pipeline = dependencies.getPipelineFactory()
+    def __init__(self, dependencies=Dependencies()):
+        pass
 
-    def export(self, provenance):
+    def serialize(self, provenance):
         """Publish provenance.
 
         This determines if the provenance is for a single file or multiple,
-        and then calls the appropriate more specific export method.
+        and then calls the appropriate more specific serialize method.
         """
-        if self.form == 'narrative':
-            return self.exportNarrative(provenance)
-        elif self.form == 'pipeline':
-            if not isinstance(provenance, BaseFile):
-                raise TypeError('Cannot export Pipeline for multiple files.')
-            return self.exportPipeline(self.pipeline.forFile(provenance))
+        if isinstance(provenance, Pipeline):
+            return self.serializePipeline(provenance)
         elif isinstance(provenance, list):
-            return self.exportList(provenance)
+            return self.serializeList(provenance)
         elif isinstance(provenance, dict):
-            return self.exportStatistics(provenance)
+            return self.serializeStatistics(provenance)
         else:
-            return self.exportSingle(provenance)
+            return self.serializeSingle(provenance)
 
-    def exportList(self, provenance):
-        raise NotImplementedError('exportList')
+    def serializeList(self, provenance):
+        raise NotImplementedError('serializeList')
 
-    def exportSingle(self, provenance):
-        raise NotImplementedError('exportSingle')
+    def serializeSingle(self, provenance):
+        raise NotImplementedError('serializeSingle')
 
-    def exportNarrative(self, provenance):
-        raise NotImplementedError('exportNarrative')
+    def serializeNarrative(self, provenance):
+        raise NotImplementedError('serializeNarrative')
 
-    def exportStatistics(self, provenance):
-        raise NotImplementedError('exportStatistics')
+    def serializeStatistics(self, provenance):
+        raise NotImplementedError('serializeStatistics')
 
-    def exportPipeline(self, pipeline):
-        raise NotImplementedError('exportPipeline')
+    def serializePipeline(self, pipeline):
+        raise NotImplementedError('serializePipeline')

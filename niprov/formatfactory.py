@@ -11,5 +11,6 @@ class FormatFactory(object):
     def create(self, formatName):
         if formatName == 'json':
             return JsonSerializer(self.dependencies)
-        elif formatName == 'xml':
+        if formatName == 'xml':
             return XmlFormat(self.dependencies)
+        raise ValueError('Unknown format: '+str(formatName))

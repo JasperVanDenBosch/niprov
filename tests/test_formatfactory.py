@@ -19,5 +19,12 @@ class FormatFactoryTests(DependencyInjectionTestBase):
         factory = FormatFactory()
         self.assertIsInstance(factory.create('xml'), XmlFormat)
 
+    def test_Raises_exception_on_unknown_name(self):
+        from niprov.formatfactory import FormatFactory
+        factory = FormatFactory()
+        with self.assertRaisesRegexp(ValueError, 'Unknown format: hexameter'):
+           factory.create('hexameter')
+
+
 
 

@@ -12,14 +12,14 @@ class XmlFormatTests(DependencyInjectionTestBase):
         doc = '<prov:document xmlns:prov="http://www.w3.org/ns/prov#">'
         from niprov.formatxml import XmlFormat
         form = XmlFormat(self.dependencies)
-        out = form.serialize(self.aFile())
+        out = form.serializeSingle(self.aFile())
         self.assertIn(prolog, out)
         self.assertIn(doc, out)
 
     def test_serialize_list_creates_entity_for_each_file(self):
         from niprov.formatxml import XmlFormat
         form = XmlFormat(self.dependencies)
-        out = form.serialize([self.aFile(), self.aFile(), self.aFile()])
+        out = form.serializeList([self.aFile(), self.aFile(), self.aFile()])
         self.assertEqual(3, out.count('prov:entity'))
 
     def aFile(self):

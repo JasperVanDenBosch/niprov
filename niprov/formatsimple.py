@@ -45,16 +45,6 @@ class SimpleFormat(Format):
             '{0[dimensions]!s:20} {0[path]!s:24}')
         print(tmp.format(provcopy))
 
-    def serializeNarrative(self, provenance):
-        """Publish provenance in a 'story' format in the terminal.
-
-        Args:
-            provenance (dict or list): Provenance either for one file or several.
-        """
-        print('\n')
-        print(self.narrator.narrate(provenance))
-        print('\n')
-
     def serializeStatistics(self, stats):
         """Publish statistics for collected provenance in the terminal.
 

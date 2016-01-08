@@ -5,7 +5,7 @@ class NarratedFormat(Format):
     """Generates human-readable text that describes provenance objects.
     """
 
-    def serialize(self, img):
+    def serializeSingle(self, img):
         provenance = img.provenance
         story = ''
         if 'protocol' in provenance:

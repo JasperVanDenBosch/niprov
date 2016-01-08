@@ -30,7 +30,7 @@ class TerminalApiTests(unittest.TestCase):
         self.provenance.log(absp('p1a.f'), 'test', raw, transient=True)
         self.provenance.log(absp('p1b.f'), 'test', raw, transient=True)
         self.provenance.log(absp('p2.f'), 'test', absp('p1a.f'), transient=True)
-        self.provenance.report(forFile=absp('p2.f'), form='pipeline', medium='stdout')
+        self.provenance.export(forFile=absp('p2.f'), form='pipeline', medium='stdout')
         exp = ''
         exp += '+---stub.cnt\n'
         exp += '|   +---p1a.f\n'

@@ -18,16 +18,16 @@ class ApiTests(unittest.TestCase):
     def test_Discover(self):
         import niprov
         niprov.discover('testdata')
-        img = niprov.report(forFile=os.path.abspath('testdata/dicom/T1.dcm'))
+        img = niprov.get(forFile=os.path.abspath('testdata/dicom/T1.dcm'))
         self.assertEqual(img.provenance['dimensions'], [80, 80, 10])
-        img = niprov.report(forFile=os.path.abspath('testdata/eeg/stub.cnt'))
+        img = niprov.get(forFile=os.path.abspath('testdata/eeg/stub.cnt'))
         self.assertEqual(img.provenance['subject'], 'Jane Doe')
 
     def test_Export_terminal(self):
         import niprov
         niprov.discover('testdata')
-        niprov.report(medium='stdout')
-        niprov.report(medium='stdout', 
+        niprov.export(medium='stdout')
+        niprov.export(medium='stdout', 
             forFile=os.path.abspath('testdata/dicom/T1.dcm'))
 
     def test_Log(self):
@@ -36,14 +36,14 @@ class ApiTests(unittest.TestCase):
         newfile = os.path.abspath('temp/smoothed.test')
         self.touch(newfile)
         niprov.log(newfile, 'test', os.path.abspath('testdata/eeg/stub.cnt'))
-        img = niprov.report(forFile=newfile)
+        img = niprov.get(forFile=newfile)
         self.assertEqual(img.provenance['subject'], 'Jane Doe')
         self.assertEqual(img.provenance['size'], os.path.getsize(newfile))
 
     def test_Narrative_file(self):
         import niprov
         niprov.discover('testdata')
-        text = niprov.report(form='narrative', 
+        text = niprov.export(form='narrated', 
             forFile=os.path.abspath('testdata/dicom/T1.dcm'))
         self.assertEqual(text, ("This is a T1 image. It was recorded August 5, " 
             "2014. The participant's name is 05aug14test. It is 158KB in size. "))
@@ -65,7 +65,7 @@ class ApiTests(unittest.TestCase):
 #            'testdata/parrec/T2.PAR')
 #        self.touch('temp/stats.test')
 #        niprov.log('temp/stats.test','t-test','temp/smoothed.test')
-#        text = niprov.report(format='narrative', forPipeline='temp/stats.test')
+#        text = niprov.export(format='narrative', forPipeline='temp/stats.test')
 #        self.assertEqual(text, ("A T2 image was recorded. A spatial smoothing "
 #            "was then applied. A t-test was then applied."))
 
@@ -82,7 +82,7 @@ class ApiTests(unittest.TestCase):
     def test_bySubject(self):
         import niprov
         niprov.discover('testdata')
-        niprov.report(medium='stdout',forSubject='05aug14test')
+        niprov.export(medium='stdout', forSubject='05aug14test')
 
     def createExtensionlessFiles(self):
         if not os.path.exists('dicomdir'):

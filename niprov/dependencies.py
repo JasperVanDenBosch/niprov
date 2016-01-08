@@ -77,8 +77,8 @@ class Dependencies(object):
             return niprov.mongo.MongoRepository(dependencies=self)
 
     def getSerializer(self):
-        import niprov.jsonserializing
-        return niprov.jsonserializing.JsonSerializer(self)
+        import niprov.formatjson
+        return niprov.formatjson.JsonFormat(self)
 
     def getPipelineFactory(self):
         import niprov.pipelinefactory

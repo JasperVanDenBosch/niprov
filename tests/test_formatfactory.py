@@ -9,9 +9,9 @@ class FormatFactoryTests(DependencyInjectionTestBase):
 
     def test_Provides_json(self):
         from niprov.formatfactory import FormatFactory
-        from niprov.jsonserializing import JsonSerializer
+        from niprov.formatjson import JsonFormat
         factory = FormatFactory()
-        self.assertIsInstance(factory.create('json'), JsonSerializer)
+        self.assertIsInstance(factory.create('json'), JsonFormat)
 
     def test_Provides_xml(self):
         from niprov.formatfactory import FormatFactory

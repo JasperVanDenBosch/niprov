@@ -1,5 +1,5 @@
 from niprov.dependencies import Dependencies
-from niprov.stdout import StandardOutputExporter
+from niprov.mediumstdout import StandardOutputMedium
 from niprov.mediumdirect import DirectMedium
 
 
@@ -10,7 +10,7 @@ class MediumFactory(object):
 
     def create(self, mediumName):
         if mediumName == 'stdout':
-            return StandardOutputExporter(self.dependencies)
+            return StandardOutputMedium()
         if mediumName == 'direct':
             return DirectMedium()
         raise ValueError('Unknown medium: '+str(mediumName))

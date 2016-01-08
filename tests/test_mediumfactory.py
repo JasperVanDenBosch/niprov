@@ -9,9 +9,9 @@ class MediumFactoryTests(DependencyInjectionTestBase):
 
     def test_Provides_stdout(self):
         from niprov.mediumfactory import MediumFactory
-        from niprov.stdout import StandardOutputExporter
+        from niprov.mediumstdout import StandardOutputMedium
         factory = MediumFactory()
-        self.assertIsInstance(factory.create('stdout'), StandardOutputExporter)
+        self.assertIsInstance(factory.create('stdout'), StandardOutputMedium)
 
     def test_Provides_direct(self):
         from niprov.mediumfactory import MediumFactory

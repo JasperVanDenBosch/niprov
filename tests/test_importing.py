@@ -10,10 +10,10 @@ class ExportingTest(DependencyInjectionTestBase):
         self.tempRepo = Mock()
 
     def test_import(self):
-        import niprov.exporting 
+        import niprov.importing 
         self.tempRepo.all.return_value = [sentinel.p1, sentinel.p2]
-        niprov.exporting.JsonFile = self.patchJsonFileConstructor()
-        niprov.exporting.importp('target_file', dependencies=self.dependencies)
+        niprov.importing.JsonFile = self.patchJsonFileConstructor()
+        niprov.importing.importp('target_file', dependencies=self.dependencies)
         assert self.JsonFileCtr.called, "Did not create a JsonFile repo."
         urlUsed = self.tempRepo.dependencies.getConfiguration().database_url
         self.assertEqual(urlUsed, 'target_file')

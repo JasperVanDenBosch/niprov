@@ -48,21 +48,21 @@ add.add_argument('new',
 add.add_argument('--transient', action='store_const', const=True, default=False, 
     help='Indicate that the file may not exist now or may be temporary.')
 
-report = subparsers.add_parser('report',
+export = subparsers.add_parser('export',
     help='Provide provenance for known files. By default shows most recent files.')
-report.add_argument('--file', default=None,
+export.add_argument('--file', default=None,
     help='Report on the file at this location.')
-report.add_argument('--subject', default=None,
+export.add_argument('--subject', default=None,
     help='Report on files for this subject.')
-report.add_argument('--statistics', action='store_const', const=True, default=False, 
+export.add_argument('--statistics', action='store_const', const=True, default=False, 
     help='Summarize provenance collected.')
-report.add_argument('--stdout', dest='medium', action='store_const',
+export.add_argument('--stdout', dest='medium', action='store_const',
     const='stdout', default=None,
     help='Export provenance on the terminal. (default medium)')
-report.add_argument('--narrative', dest='form', action='store_const',
+export.add_argument('--narrative', dest='form', action='store_const',
     const='narrative', default=None,
     help='Provenance in story form instead of key-value pairs.')
-report.add_argument('--pipeline', dest='form', action='store_const',
+export.add_argument('--pipeline', dest='form', action='store_const',
     const='pipeline', default=None,
     help='Pretty-print pipeline for a file specified with --file.')
 
@@ -85,9 +85,6 @@ approve.add_argument('filepath',
 serve = subparsers.add_parser('serve',
     help='Start a webserver that allows browsing through provenance.')
 
-export = subparsers.add_parser('export',
-    help='Backup provenance metadata to a file.')
-
 importp = subparsers.add_parser('import',
     help='Load backup data from a file.')
 importp.add_argument('file',
@@ -104,10 +101,10 @@ elif args.command == 'record':
         transient=args.transient)
 elif args.command == 'add':
     niprov.add(args.new, transient=args.transient)
-elif args.command == 'report':
+elif args.command == 'export':
     if args.medium is None:
         args.medium = 'stdout'
-    niprov.report(medium=args.medium, form=args.form, forFile=args.file, 
+    niprov.export(medium=args.medium, form=args.form, forFile=args.file, 
         forSubject=args.subject, statistics=args.statistics)
 elif args.command == 'version':
     import pkg_resources
@@ -120,7 +117,5 @@ elif args.command == 'approve':
     niprov.approve(args.filepath)
 elif args.command == 'serve':
     niprov.serve()
-elif args.command == 'export':
-    niprov.export()
 elif args.command == 'import':
     niprov.importp(args.file)

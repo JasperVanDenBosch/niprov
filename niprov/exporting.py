@@ -3,7 +3,7 @@
 from niprov.dependencies import Dependencies
 
 
-def report(medium=None, form=None, forFile=None, forSubject=None, 
+def export(medium=None, form=None, forFile=None, forSubject=None, 
         statistics=False, dependencies=Dependencies()):
     """Publish or simply return provenance for selected files.
 

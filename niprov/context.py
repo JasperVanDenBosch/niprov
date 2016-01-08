@@ -57,6 +57,18 @@ class Context(object):
         """See :py:mod:`niprov.exporting`  """
         return niprov.exporting.export(*args, dependencies=self.deps, **kwargs)
 
+    def get(self, *args, **kwargs):
+        """See :py:mod:`niprov.exporting`  """
+        return niprov.exporting.get(*args, dependencies=self.deps, **kwargs)
+
+    def print_(self, *args, **kwargs):
+        """See :py:mod:`niprov.exporting`  """
+        return niprov.exporting.print_(*args, dependencies=self.deps, **kwargs)
+
+    def backup(self, *args, **kwargs):
+        """See :py:mod:`niprov.exporting`  """
+        return niprov.exporting.backup(*args, dependencies=self.deps, **kwargs)
+
     def importp(self, *args, **kwargs):
         """See :py:mod:`niprov.exporting`  """
         return niprov.exporting.importp(*args, dependencies=self.deps, **kwargs)

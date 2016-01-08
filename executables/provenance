@@ -56,15 +56,13 @@ export.add_argument('--subject', default=None,
     help='Report on files for this subject.')
 export.add_argument('--statistics', action='store_const', const=True, default=False, 
     help='Summarize provenance collected.')
-export.add_argument('--stdout', dest='medium', action='store_const',
-    const='stdout', default=None,
-    help='Export provenance on the terminal. (default medium)')
-export.add_argument('--narrative', dest='form', action='store_const',
-    const='narrative', default=None,
-    help='Provenance in story form instead of key-value pairs.')
-export.add_argument('--pipeline', dest='form', action='store_const',
-    const='pipeline', default=None,
-    help='Pretty-print pipeline for a file specified with --file.')
+export.add_argument('--medium', '-m', default='stdout',
+    help='One of "stdout" or "file".')
+export.add_argument('--format', '-f', default='simple',
+    help='Format in which to print. One of "simple","narrated", "xml","json".')
+#export.add_argument('--pipeline', dest='form', action='store_const',
+#    const='pipeline', default=None,
+#    help='Pretty-print pipeline for a file specified with --file.')
 
 version = subparsers.add_parser('version',
     help='Show niprov software version.')
@@ -102,9 +100,7 @@ elif args.command == 'record':
 elif args.command == 'add':
     niprov.add(args.new, transient=args.transient)
 elif args.command == 'export':
-    if args.medium is None:
-        args.medium = 'stdout'
-    niprov.export(medium=args.medium, form='simple', forFile=args.file, 
+    niprov.export(medium=args.medium, form=args.format, forFile=args.file, 
         forSubject=args.subject, statistics=args.statistics)
 elif args.command == 'version':
     import pkg_resources

@@ -104,7 +104,7 @@ elif args.command == 'add':
 elif args.command == 'export':
     if args.medium is None:
         args.medium = 'stdout'
-    niprov.export(medium=args.medium, form=args.form, forFile=args.file, 
+    niprov.export(medium=args.medium, form='simple', forFile=args.file, 
         forSubject=args.subject, statistics=args.statistics)
 elif args.command == 'version':
     import pkg_resources

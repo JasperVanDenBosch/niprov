@@ -25,6 +25,12 @@ class FormatFactoryTests(DependencyInjectionTestBase):
         factory = FormatFactory()
         self.assertIsInstance(factory.create('narrated'), NarratedFormat)
 
+    def test_Provides_simple(self):
+        from niprov.formatfactory import FormatFactory
+        from niprov.formatsimple import SimpleFormat
+        factory = FormatFactory()
+        self.assertIsInstance(factory.create('simple'), SimpleFormat)
+
     def test_Raises_exception_on_unknown_name(self):
         from niprov.formatfactory import FormatFactory
         factory = FormatFactory()

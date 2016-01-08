@@ -13,6 +13,18 @@ class MediumFactoryTests(DependencyInjectionTestBase):
         factory = MediumFactory()
         self.assertIsInstance(factory.create('stdout'), StandardOutputExporter)
 
+    def test_Provides_direct(self):
+        from niprov.mediumfactory import MediumFactory
+        from niprov.mediumdirect import DirectMedium
+        factory = MediumFactory()
+        self.assertIsInstance(factory.create('direct'), DirectMedium)
+
+    def test_Raises_exception_on_unknown_name(self):
+        from niprov.mediumfactory import MediumFactory
+        factory = MediumFactory()
+        with self.assertRaisesRegexp(ValueError, 'Unknown medium: poetry'):
+           factory.create('poetry')
+
 
 
 

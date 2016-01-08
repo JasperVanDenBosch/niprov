@@ -37,6 +37,12 @@ class FormatFactoryTests(DependencyInjectionTestBase):
         factory = FormatFactory()
         self.assertIsInstance(factory.create('dict'), DictFormat)
 
+    def test_Provides_object(self):
+        from niprov.formatfactory import FormatFactory
+        from niprov.formatobject import ObjectFormat
+        factory = FormatFactory()
+        self.assertIsInstance(factory.create('object'), ObjectFormat)
+
     def test_Raises_exception_on_unknown_name(self):
         from niprov.formatfactory import FormatFactory
         factory = FormatFactory()

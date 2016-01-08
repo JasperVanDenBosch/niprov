@@ -1,10 +1,10 @@
 
 
-class Narrator(object):
+class NarratedFormat(object):
     """Generates human-readable text that describes provenance objects.
     """
 
-    def narrate(self, img):
+    def serialize(self, img):
         provenance = img.provenance
         story = ''
         if 'protocol' in provenance:

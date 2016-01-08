@@ -1,6 +1,7 @@
 from niprov.dependencies import Dependencies
 from niprov.jsonserializing import JsonSerializer
 from niprov.formatxml import XmlFormat
+from niprov.formatnarrated import NarratedFormat
 
 
 class FormatFactory(object):
@@ -13,4 +14,6 @@ class FormatFactory(object):
             return JsonSerializer(self.dependencies)
         if formatName == 'xml':
             return XmlFormat(self.dependencies)
+        if formatName == 'narrated':
+            return NarratedFormat()
         raise ValueError('Unknown format: '+str(formatName))

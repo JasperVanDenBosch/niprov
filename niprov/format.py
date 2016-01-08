@@ -31,9 +31,6 @@ class Format(object):
     def serializeSingle(self, provenance):
         raise NotImplementedError('serializeSingle')
 
-    def serializeNarrative(self, provenance):
-        raise NotImplementedError('serializeNarrative')
-
     def serializeStatistics(self, provenance):
         raise NotImplementedError('serializeStatistics')
 

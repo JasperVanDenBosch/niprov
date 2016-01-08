@@ -37,7 +37,7 @@ class ContextApiTests(unittest.TestCase):
         self.provenance.discover('testdata')
         discoveredFile = os.path.abspath('testdata/eeg/stub.cnt')
         self.assertIsNotNone(self.provenance.get(forFile=discoveredFile))
-        backupFilepath = self.provenance.export()
+        backupFilepath = self.provenance.backup()
         os.remove(self.dbpath) # get rid of existing data.
         with self.assertRaises(UnknownFileError):
             self.provenance.get(forFile=discoveredFile)

@@ -26,9 +26,8 @@ class ApiTests(unittest.TestCase):
     def test_Export_terminal(self):
         import niprov
         niprov.discover('testdata')
-        niprov.export(medium='stdout')
-        niprov.export(medium='stdout', 
-            forFile=os.path.abspath('testdata/dicom/T1.dcm'))
+        niprov.print_()
+        niprov.print_(forFile=os.path.abspath('testdata/dicom/T1.dcm'))
 
     def test_Log(self):
         import niprov
@@ -43,7 +42,7 @@ class ApiTests(unittest.TestCase):
     def test_Narrative_file(self):
         import niprov
         niprov.discover('testdata')
-        text = niprov.export(form='narrated', 
+        text = niprov.export('direct','narrated', 
             forFile=os.path.abspath('testdata/dicom/T1.dcm'))
         self.assertEqual(text, ("This is a T1 image. It was recorded August 5, " 
             "2014. The participant's name is 05aug14test. It is 158KB in size. "))
@@ -82,7 +81,7 @@ class ApiTests(unittest.TestCase):
     def test_bySubject(self):
         import niprov
         niprov.discover('testdata')
-        niprov.export(medium='stdout', forSubject='05aug14test')
+        niprov.print_(forSubject='05aug14test')
 
     def createExtensionlessFiles(self):
         if not os.path.exists('dicomdir'):

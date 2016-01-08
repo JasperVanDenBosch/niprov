@@ -3,7 +3,7 @@
 from niprov.dependencies import Dependencies
 
 
-def export(medium='direct', form=None, forFile=None, forSubject=None, 
+def export(medium='direct', form='object', forFile=None, forSubject=None, 
         statistics=False, dependencies=Dependencies()):
     """Publish or simply return provenance for selected files.
 
@@ -53,9 +53,9 @@ def export(medium='direct', form=None, forFile=None, forSubject=None,
 
 def get(forFile=None, forSubject=None, statistics=False, 
     dependencies=Dependencies()):
-    """Shortcut for export(medium='direct', form='dict').
+    """Shortcut for export(medium='direct', form='object').
     """
-    return export(medium='direct', form='dict', 
+    return export(medium='direct', form='object', 
         forFile=forFile, forSubject=forSubject, statistics=statistics, 
         dependencies=dependencies)
 

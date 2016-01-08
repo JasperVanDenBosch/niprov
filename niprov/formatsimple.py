@@ -13,11 +13,13 @@ class SimpleFormat(Format):
         Args:
             provenance (list): List of provenance dictionaries.
         """
-        print('\n')
-        print('{0:20} {1:12} {2:24} {3:20} {4:24}'.format(*self._expectedFields))
+        text = ''
+        text += '\n'
+        text += '{0:20} {1:12} {2:24} {3:20} {4:24}'.format(*self._expectedFields)
         for image in images:
-            self.serializeSummary(image)
-        print('\n')
+            text += self.serializeSummary(image)
+        text += '\n'
+        return text
 
     def serializeSingle(self, img):
         """Publish the provenance for one image on the commandline.
@@ -25,10 +27,12 @@ class SimpleFormat(Format):
         Args:
             provenance (dict): Provenance for one image file
         """
-        print('\n')
+        text = ''
+        text += '\n'
         for field, value in img.provenance.items():
-            print('{0:24} {1}'.format(field+':', str(value)))
-        print('\n')
+            text += '{0:24} {1}'.format(field+':', str(value))
+        text += '\n'
+        return text
 
     def serializeSummary(self, image):
         """Publish a summary of the provenance for one image as one line in 
@@ -43,7 +47,7 @@ class SimpleFormat(Format):
                 provcopy[field] = None
         tmp = ('{0[acquired]!s}  {0[subject]!s:12} {0[protocol]!s:24} '
             '{0[dimensions]!s:20} {0[path]!s:24}')
-        print(tmp.format(provcopy))
+        return tmp.format(provcopy)
 
     def serializeStatistics(self, stats):
         """Publish statistics for collected provenance in the terminal.

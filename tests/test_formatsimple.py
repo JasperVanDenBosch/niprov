@@ -25,3 +25,14 @@ class SimpleFormatTests(TestCase):
         out = exporter.serializePipeline(pipeline)
         self.assertEqual(exp, out)
 
+    def test_SerializeSingle(self):
+        from niprov.formatsimple import SimpleFormat
+        exporter = SimpleFormat()
+        out = exporter.serializeSingle(self.aFile())
+        self.assertIn('a:                       b\n', out)
+
+    def aFile(self):
+        somefile = Mock()
+        somefile.provenance = {'a':'b'}
+        return somefile
+

@@ -11,9 +11,6 @@ class DependencyInjectionTestBase(unittest.TestCase):
         self.hasher = Mock()
         self.filesys = Mock()
         self.repo = Mock()
-        self.exporter = Mock()
-        self.exportFactory = Mock()
-        self.exportFactory.createExporter.return_value = self.exporter
         self.fileFactory = Mock()
         self.serializer = Mock()
         self.location = Mock()
@@ -34,7 +31,6 @@ class DependencyInjectionTestBase(unittest.TestCase):
         self.dependencies.getRepository.return_value = self.repo
         self.dependencies.getFileFactory.return_value = self.fileFactory
         self.dependencies.getSerializer.return_value = self.serializer
-        self.dependencies.getExportFactory.return_value = self.exportFactory
         self.dependencies.getConfiguration.return_value = self.config
         self.dependencies.getClock.return_value = self.clock
         self.dependencies.getPipelineFactory.return_value = self.pipelineFactory

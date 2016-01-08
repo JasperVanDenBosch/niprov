@@ -66,5 +66,5 @@ class Context(object):
         return niprov.exporting.backup(*args, dependencies=self.deps, **kwargs)
 
     def importp(self, *args, **kwargs):
-        """See :py:mod:`niprov.exporting`  """
-        return niprov.exporting.importp(*args, dependencies=self.deps, **kwargs)
+        """See :py:mod:`niprov.importing`  """
+        return niprov.importing.importp(*args, dependencies=self.deps, **kwargs)

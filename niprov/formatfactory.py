@@ -3,6 +3,7 @@ from niprov.jsonserializing import JsonSerializer
 from niprov.formatxml import XmlFormat
 from niprov.formatnarrated import NarratedFormat
 from niprov.formatsimple import SimpleFormat
+from niprov.formatdict import DictFormat
 
 
 class FormatFactory(object):
@@ -19,4 +20,6 @@ class FormatFactory(object):
             return NarratedFormat()
         if formatName == 'simple':
             return SimpleFormat()
+        if formatName == 'dict':
+            return DictFormat()
         raise ValueError('Unknown format: '+str(formatName))

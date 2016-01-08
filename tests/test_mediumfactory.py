@@ -19,6 +19,12 @@ class MediumFactoryTests(DependencyInjectionTestBase):
         factory = MediumFactory()
         self.assertIsInstance(factory.create('direct'), DirectMedium)
 
+    def test_Provides_file(self):
+        from niprov.mediumfactory import MediumFactory
+        from niprov.mediumfile import FileMedium
+        factory = MediumFactory()
+        self.assertIsInstance(factory.create('file'), FileMedium)
+
     def test_Raises_exception_on_unknown_name(self):
         from niprov.mediumfactory import MediumFactory
         factory = MediumFactory()

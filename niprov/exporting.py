@@ -3,7 +3,7 @@
 from niprov.dependencies import Dependencies
 
 
-def export(medium=None, form=None, forFile=None, forSubject=None, 
+def export(medium='direct', form=None, forFile=None, forSubject=None, 
         statistics=False, dependencies=Dependencies()):
     """Publish or simply return provenance for selected files.
 
@@ -14,13 +14,16 @@ def export(medium=None, form=None, forFile=None, forSubject=None,
 
     Args:
         medium (str): The medium in which to publish the provenance. 
-            One of 'stdout' (print the provenance to the terminal) or None.
+            One of 'stdout' (print the provenance to the terminal), 'direct' 
+            (return object to caller), or 'file' (write to a text file).
+        form (str): The format in which to serialize the provenance. 
+            One of 'json','xml','narrated','simple','dict'.
         forFile (str): Select one file based on this path.
         forSubject (str): Select files regarding this subject.
         statistics (bool): Print overall statistics.
 
     Returns:
-        Provenance reported. Either a list of dicts, or a dict.
+        Depends on medium selected. 
     """
     formatFactory = dependencies.getFormatFactory()
     mediumFactory = dependencies.getMediumFactory()
@@ -46,4 +49,29 @@ def export(medium=None, form=None, forFile=None, forSubject=None,
 
     formattedProvenance = form.serialize(provenance)
     return medium.export(formattedProvenance)
+
+
+def get(forFile=None, forSubject=None, statistics=False, 
+    dependencies=Dependencies()):
+    """Shortcut for export(medium='direct', form='dict').
+    """
+    return export(medium='direct', form='dict', 
+        forFile=forFile, forSubject=forSubject, statistics=statistics, 
+        dependencies=dependencies)
+
+def print_(forFile=None, forSubject=None, statistics=False, 
+    dependencies=Dependencies()):
+    """Shortcut for export(medium='stdout', form='simple').
+    """
+    return export(medium='stdout', form='simple', 
+        forFile=forFile, forSubject=forSubject, statistics=statistics, 
+        dependencies=dependencies)
+
+def backup(forFile=None, forSubject=None, statistics=False, 
+    dependencies=Dependencies()):
+    """Shortcut for export(medium='file', form='json').
+    """
+    return export(medium='file', form='json', 
+        forFile=forFile, forSubject=forSubject, statistics=statistics, 
+        dependencies=dependencies)
 

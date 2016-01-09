@@ -21,6 +21,13 @@ class FileMediumTests(DependencyInjectionTestBase):
         self.filesys.write.assert_called_with('provenance_hammertime.txt',
             'provstr')
 
+    def test_Returns_filename(self):
+        from niprov.mediumfile import FileMedium
+        self.clock.getNowString.return_value = 'hammertime'
+        medium = FileMedium(self.dependencies)
+        out = medium.export('provstr')
+        self.assertEqual('provenance_hammertime.txt', out)
+
 
 
 

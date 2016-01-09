@@ -1,37 +1,77 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
 from niprov.dependencies import Dependencies
-from niprov.jsonfile import JsonFile
-from datetime import datetime as dt
 
 
-def export(dependencies=Dependencies()):
-    """Save all current provenance to a file in the current working directory.
+def export(medium, form, forFile=None, forSubject=None, 
+        statistics=False, dependencies=Dependencies()):
+    """Publish or simply return provenance for selected files.
 
-    This can serve as a backup, migration tool, or for exchange.
+    To get provenance on one specific file, pass its path as the 'forFile' 
+    argument. Alternatively, to get all files associated with a certain subject,
+    use the 'forSubject' argument. If none of these is used, provenance for the 
+    most recently registered files is reported.
+
+    Args:
+        medium (str): The medium in which to publish the provenance. 
+            One of 'stdout' (print the provenance to the terminal), 'direct' 
+            (return object to caller), or 'file' (write to a text file).
+        form (str): The format in which to serialize the provenance. 
+            One of 'json','xml','narrated','simple','dict'.
+        forFile (str): Select one file based on this path.
+        forSubject (str): Select files regarding this subject.
+        statistics (bool): Print overall statistics.
+
+    Returns:
+        Depends on medium selected. 
     """
-    nowstr = dependencies.getClock().getNowString()
-    filepath = 'provenance_export_{0}.json'.format(nowstr)
+    formatFactory = dependencies.getFormatFactory()
+    mediumFactory = dependencies.getMediumFactory()
     repository = dependencies.getRepository()
-    exportDeps = Dependencies()
-    exportDeps.getConfiguration().database_url = filepath
-    exportRepo = JsonFile(exportDeps)
-    allFiles = repository.all()
-    for pfile in allFiles:
-        exportRepo.add(pfile)
-    return filepath
+    listener = dependencies.getListener()
+    location = dependencies.getLocationFactory()
+
+    form = formatFactory.create(form)
+    medium = mediumFactory.create(medium)
+    
+    if statistics:
+        provenance = repository.statistics()
+    elif forFile:
+        forFile = location.completeString(forFile)
+        if not repository.knowsByLocation(forFile):
+            listener.unknownFile(forFile)
+            return
+        provenance = repository.byLocation(forFile)
+    elif forSubject:
+        provenance = repository.bySubject(forSubject)
+    else:
+        provenance = repository.latest()
+
+    formattedProvenance = form.serialize(provenance)
+    return medium.export(formattedProvenance)
 
 
-def importp(filepath, dependencies=Dependencies()):
-    """Add provenance in bulk from a file, such as saved by export().
-
-    Named importp as opposed to import because the latter is a reserved word
-    in Python.
-
-    This can serve as a backup, migration tool, or for exchange.
+def get(forFile=None, forSubject=None, statistics=False, 
+    dependencies=Dependencies()):
+    """Shortcut for export(medium='direct', form='object').
     """
-    repository = dependencies.getRepository()
-    importDeps = Dependencies()
-    importDeps.getConfiguration().database_url = filepath
-    importRepo = JsonFile(importDeps)
-    allFiles = importRepo.all()
-    for pfile in allFiles:
-        repository.add(pfile)
+    return export(medium='direct', form='object', 
+        forFile=forFile, forSubject=forSubject, statistics=statistics, 
+        dependencies=dependencies)
+
+def print_(forFile=None, forSubject=None, statistics=False, 
+    dependencies=Dependencies()):
+    """Shortcut for export(medium='stdout', form='simple').
+    """
+    return export(medium='stdout', form='simple', 
+        forFile=forFile, forSubject=forSubject, statistics=statistics, 
+        dependencies=dependencies)
+
+def backup(forFile=None, forSubject=None, statistics=False, 
+    dependencies=Dependencies()):
+    """Shortcut for export(medium='file', form='json').
+    """
+    return export(medium='file', form='json', 
+        forFile=forFile, forSubject=forSubject, statistics=statistics, 
+        dependencies=dependencies)
+

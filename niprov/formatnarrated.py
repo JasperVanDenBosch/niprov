@@ -1,10 +1,11 @@
+from niprov.format import Format
 
 
-class Narrator(object):
+class NarratedFormat(Format):
     """Generates human-readable text that describes provenance objects.
     """
 
-    def narrate(self, img):
+    def serializeSingle(self, img):
         provenance = img.provenance
         story = ''
         if 'protocol' in provenance:

@@ -5,9 +5,8 @@ from datetime import datetime
 
 class NarratorTests(unittest.TestCase):
 
-
     def test_File(self):
-        from niprov.narrator import Narrator
+        from niprov.formatnarrated import NarratedFormat
         img = Mock()
         p = {}
         p['protocol'] = 'T1'
@@ -15,8 +14,8 @@ class NarratorTests(unittest.TestCase):
         p['subject'] = 'John Doe'
         p['size'] = 345123
         img.provenance = p
-        storyteller = Narrator()
-        self.assertEqual(storyteller.narrate(img), ("This is a T1 image. "
+        storyteller = NarratedFormat()
+        self.assertEqual(storyteller.serializeSingle(img), ("This is a T1 image. "
             "It was recorded September 7, 2013. "
             "The participant's name is John Doe. "
             "It is 345KB in size. "))

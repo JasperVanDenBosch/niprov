@@ -89,3 +89,10 @@ class DependenciesTests(unittest.TestCase):
         self.assertIsInstance(dependencies.getFormatFactory(), 
             FormatFactory)
 
+    def test_provides_MediumFactory(self):
+        from niprov.dependencies import Dependencies
+        from niprov.mediumfactory import MediumFactory
+        dependencies = Dependencies()
+        self.assertIsInstance(dependencies.getMediumFactory(), 
+            MediumFactory)
+

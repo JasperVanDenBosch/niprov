@@ -28,7 +28,7 @@ class ContextApiTests(unittest.TestCase):
         parent = os.path.abspath('testdata/eeg/stub.cnt')
         self.provenance.log(newfile, 'test', parent)
         testfpath = os.path.abspath(newfile)
-        img = self.provenance.report(forFile=testfpath)
+        img = self.provenance.get(forFile=testfpath)
         self.assertEqual(img.provenance['subject'], 'Jane Doe')
         self.assertEqual(img.provenance['size'], os.path.getsize(newfile))
 
@@ -36,13 +36,13 @@ class ContextApiTests(unittest.TestCase):
         from niprov.exceptions import UnknownFileError
         self.provenance.discover('testdata')
         discoveredFile = os.path.abspath('testdata/eeg/stub.cnt')
-        self.assertIsNotNone(self.provenance.report(forFile=discoveredFile))
-        backupFilepath = self.provenance.export()
+        self.assertIsNotNone(self.provenance.get(forFile=discoveredFile))
+        backupFilepath = self.provenance.backup()
         os.remove(self.dbpath) # get rid of existing data.
         with self.assertRaises(UnknownFileError):
-            self.provenance.report(forFile=discoveredFile)
+            self.provenance.get(forFile=discoveredFile)
         self.provenance.importp(backupFilepath)
-        self.assertIsNotNone(self.provenance.report(forFile=discoveredFile))
+        self.assertIsNotNone(self.provenance.get(forFile=discoveredFile))
 
     def test_Attach_provenance_string_in_file_based_on_config(self):
         import nibabel

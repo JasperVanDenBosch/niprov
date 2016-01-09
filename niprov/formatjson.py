@@ -1,11 +1,10 @@
-#!/usr/bin/python
-# -*- coding: UTF-8 -*-
 import json
 import copy
 from datetime import datetime
+from niprov.format import Format
 
 
-class JsonSerializer(object):
+class JsonFormat(Format):
     """Helper to convert provenance data to and from json encoded strings.
     """
 
@@ -14,7 +13,7 @@ class JsonSerializer(object):
     def __init__(self, dependencies):
         self.file = dependencies.getFileFactory()
 
-    def serialize(self, record):
+    def serializeSingle(self, record):
         """
         Convert one provenance item from its native python dict type to
         a json string.

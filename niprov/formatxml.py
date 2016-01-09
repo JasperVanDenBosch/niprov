@@ -1,15 +1,14 @@
 from xml.dom.minidom import Document
+from niprov.format import Format
 ## Decided not to go with prov python lib as it depends on lxml which depends on c binaries
 
 
-class XmlFormat(object):
+class XmlFormat(Format):
 
-    def __init__(self, dependencies):
-        pass
+    def serializeSingle(self, item):
+        return self.serializeList([item])
 
-    def serialize(self, itemOrList):
-        if not isinstance(itemOrList, list):
-            itemOrList = [itemOrList]
+    def serializeList(self, itemOrList):
         ns = 'http://www.w3.org/ns/prov#'
         dom = Document()
         doc = self._createElementNS(dom, ns, 'prov', 'prov:document')

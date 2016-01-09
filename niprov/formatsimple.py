@@ -1,38 +1,40 @@
-#!/usr/bin/python
-# -*- coding: UTF-8 -*-
 from __future__ import print_function
 import copy
-from niprov.exporter import BaseExporter
+from niprov.format import Format
 
 
-class StandardOutputExporter(BaseExporter):
+class SimpleFormat(Format):
 
     _expectedFields = ['acquired','subject','protocol','dimensions','path']
 
-    def exportList(self, images):
+    def serializeList(self, images):
         """Publish the provenance for several images on the commandline.
 
         Args:
             provenance (list): List of provenance dictionaries.
         """
-        print('\n')
-        print('{0:20} {1:12} {2:24} {3:20} {4:24}'.format(*self._expectedFields))
+        text = ''
+        text += '\n'
+        text += '{0:20} {1:12} {2:24} {3:20} {4:24}'.format(*self._expectedFields)
         for image in images:
-            self.exportSummary(image)
-        print('\n')
+            text += self.serializeSummary(image)
+        text += '\n'
+        return text
 
-    def exportSingle(self, img):
+    def serializeSingle(self, img):
         """Publish the provenance for one image on the commandline.
 
         Args:
             provenance (dict): Provenance for one image file
         """
-        print('\n')
+        text = ''
+        text += '\n'
         for field, value in img.provenance.items():
-            print('{0:24} {1}'.format(field+':', str(value)))
-        print('\n')
+            text += '{0:24} {1}'.format(field+':', str(value))
+        text += '\n'
+        return text
 
-    def exportSummary(self, image):
+    def serializeSummary(self, image):
         """Publish a summary of the provenance for one image as one line in 
         the terminal.
 
@@ -45,30 +47,22 @@ class StandardOutputExporter(BaseExporter):
                 provcopy[field] = None
         tmp = ('{0[acquired]!s}  {0[subject]!s:12} {0[protocol]!s:24} '
             '{0[dimensions]!s:20} {0[path]!s:24}')
-        print(tmp.format(provcopy))
+        return tmp.format(provcopy)
 
-    def exportNarrative(self, provenance):
-        """Publish provenance in a 'story' format in the terminal.
-
-        Args:
-            provenance (dict or list): Provenance either for one file or several.
-        """
-        print('\n')
-        print(self.narrator.narrate(provenance))
-        print('\n')
-
-    def exportStatistics(self, stats):
+    def serializeStatistics(self, stats):
         """Publish statistics for collected provenance in the terminal.
 
         Args:
             stats (dict): Dictionary with summary values.
         """
-        print('\n')
-        print(' Number of files: {0}'.format(stats['count']))
-        print(' Total file size: {0}'.format(stats['totalsize']))
-        print('\n')
+        text = ''
+        text += '\n'
+        text += ' Number of files: {0}'.format(stats['count'])
+        text += ' Total file size: {0}'.format(stats['totalsize'])
+        text += '\n'
+        return text
 
-    def exportPipeline(self, pipeline):
+    def serializePipeline(self, pipeline):
         """Pretty-print a pipeline to the terminal
 
         Args:
@@ -80,5 +74,5 @@ class StandardOutputExporter(BaseExporter):
                 s += '{0}+---{1}\n'.format('|   '*lvl,key)
                 s = prettyPrintTree(value, s, lvl+1)
             return s
-        print(prettyPrintTree(tree))
+        return prettyPrintTree(tree)
 

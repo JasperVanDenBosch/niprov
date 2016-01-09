@@ -17,29 +17,36 @@ Submodules
    niprov.context
    niprov.dcm
    niprov.dependencies
-   niprov.directexporter
    niprov.discovery
    niprov.exceptions
-   niprov.exporter
-   niprov.exporters
    niprov.exporting
    niprov.externals
    niprov.fif
    niprov.filefilter
    niprov.files
    niprov.filesystem
+   niprov.format
+   niprov.formatdict
+   niprov.formatfactory
+   niprov.formatjson
+   niprov.formatnarrated
+   niprov.formatobject
+   niprov.formatsimple
+   niprov.formatxml
    niprov.hashing
-   niprov.html
+   niprov.importing
    niprov.inspection
    niprov.jsonfile
-   niprov.jsonserializing
    niprov.libraries
    niprov.location
    niprov.locationfactory
    niprov.logging
+   niprov.mediumdirect
+   niprov.mediumfactory
+   niprov.mediumfile
+   niprov.mediumstdout
    niprov.mnefunsupport
    niprov.mongo
-   niprov.narrator
    niprov.nifti
    niprov.parrec
    niprov.pipeline
@@ -48,10 +55,8 @@ Submodules
    niprov.renaming
    niprov.reporting
    niprov.repository
-   niprov.stdout
    niprov.views
    niprov.webapp
-
 
 
 

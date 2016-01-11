@@ -56,13 +56,12 @@ export.add_argument('--subject', default=None,
     help='Report on files for this subject.')
 export.add_argument('--statistics', action='store_const', const=True, default=False, 
     help='Summarize provenance collected.')
+export.add_argument('--pipeline', action='store_const', const=True, default=False, 
+        help='Export pipeline for a file specified with --file.')
 export.add_argument('--medium', '-m', default='stdout',
     help='One of "stdout" or "file".')
 export.add_argument('--format', '-f', default='simple',
     help='Format in which to print. One of "simple","narrated", "xml","json".')
-#export.add_argument('--pipeline', dest='form', action='store_const',
-#    const='pipeline', default=None,
-#    help='Pretty-print pipeline for a file specified with --file.')
 
 version = subparsers.add_parser('version',
     help='Show niprov software version.')
@@ -101,7 +100,8 @@ elif args.command == 'add':
     niprov.add(args.new, transient=args.transient)
 elif args.command == 'export':
     niprov.export(medium=args.medium, form=args.format, forFile=args.file, 
-        forSubject=args.subject, statistics=args.statistics)
+        forSubject=args.subject, statistics=args.statistics, 
+        pipeline=args.pipeline)
 elif args.command == 'version':
     import pkg_resources
     print(pkg_resources.get_distribution("niprov").version)

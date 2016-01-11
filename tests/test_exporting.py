@@ -65,6 +65,12 @@ class ExportingTests(DependencyInjectionTestBase):
         self.export('a medium','a format',forFile='xyz')
         self.listener.unknownFile.assert_called_with('xyz')
 
+    def test_Can_export_pipeline_for_file(self):
+        out = self.export('a medium','a format', forFile='a/b/c', pipeline=True)
+        self.pipelineFactory.forFile.assert_called_with(self.repo.byLocation())
+        self.format.serialize.assert_called_with(
+            self.pipelineFactory.forFile())
+
 
 
 

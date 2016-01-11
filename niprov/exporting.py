@@ -30,6 +30,7 @@ def export(medium, form, forFile=None, forSubject=None,
     repository = dependencies.getRepository()
     listener = dependencies.getListener()
     location = dependencies.getLocationFactory()
+    makePipeline = dependencies.getPipelineFactory()
 
     form = formatFactory.create(form)
     medium = mediumFactory.create(medium)
@@ -42,6 +43,8 @@ def export(medium, form, forFile=None, forSubject=None,
             listener.unknownFile(forFile)
             return
         provenance = repository.byLocation(forFile)
+        if pipeline:
+            provenance = makePipeline.forFile(provenance)
     elif forSubject:
         provenance = repository.bySubject(forSubject)
     else:
@@ -51,27 +54,24 @@ def export(medium, form, forFile=None, forSubject=None,
     return medium.export(formattedProvenance)
 
 
-def get(forFile=None, forSubject=None, statistics=False, 
+def get(forFile=None, forSubject=None, statistics=False, pipeline=False, 
     dependencies=Dependencies()):
     """Shortcut for export(medium='direct', form='object').
     """
     return export(medium='direct', form='object', 
         forFile=forFile, forSubject=forSubject, statistics=statistics, 
-        dependencies=dependencies)
+        pipeline=pipeline, dependencies=dependencies)
 
-def print_(forFile=None, forSubject=None, statistics=False, 
+def print_(forFile=None, forSubject=None, statistics=False, pipeline=False, 
     dependencies=Dependencies()):
     """Shortcut for export(medium='stdout', form='simple').
     """
     return export(medium='stdout', form='simple', 
         forFile=forFile, forSubject=forSubject, statistics=statistics, 
-        dependencies=dependencies)
+        pipeline=pipeline, dependencies=dependencies)
 
-def backup(forFile=None, forSubject=None, statistics=False, 
-    dependencies=Dependencies()):
-    """Shortcut for export(medium='file', form='json').
+def backup(dependencies=Dependencies()):
+    """Shortcut for export(medium='file', form='json') for all provenance.
     """
-    return export(medium='file', form='json', 
-        forFile=forFile, forSubject=forSubject, statistics=statistics, 
-        dependencies=dependencies)
+    return export(medium='file', form='json', dependencies=dependencies)
 

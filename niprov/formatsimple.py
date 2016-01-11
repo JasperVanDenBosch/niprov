@@ -18,6 +18,7 @@ class SimpleFormat(Format):
         text += '{0:20} {1:12} {2:24} {3:20} {4:24}'.format(*self._expectedFields)
         for image in images:
             text += self.serializeSummary(image)
+            text += '\n'
         text += '\n'
         return text
 
@@ -30,7 +31,7 @@ class SimpleFormat(Format):
         text = ''
         text += '\n'
         for field, value in img.provenance.items():
-            text += '{0:24} {1}'.format(field+':', str(value))
+            text += '{0:24} {1}\n'.format(field+':', str(value))
         text += '\n'
         return text
 
@@ -57,8 +58,8 @@ class SimpleFormat(Format):
         """
         text = ''
         text += '\n'
-        text += ' Number of files: {0}'.format(stats['count'])
-        text += ' Total file size: {0}'.format(stats['totalsize'])
+        text += ' Number of files: {0}\n'.format(stats['count'])
+        text += ' Total file size: {0}\n'.format(stats['totalsize'])
         text += '\n'
         return text
 

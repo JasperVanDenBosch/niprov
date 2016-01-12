@@ -49,3 +49,9 @@ class LocationTests(DependencyInjectionTestBase):
             factory.fromString.assert_called_with('/j/k/l')
             self.assertEqual(str(factory.fromString()), outstr)
 
+    def test_Location_toUrl(self):
+        from niprov.location import Location
+        loc = Location('HAL:/p/n1.f')
+        expected = 'file://HAL/p/n1.f'
+        self.assertEqual(expected, loc.toUrl())
+

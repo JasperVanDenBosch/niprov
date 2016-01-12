@@ -63,5 +63,5 @@ class XmlFormatTests(DependencyInjectionTestBase):
     def aFile(self):
         somefile = Mock()
         somefile.provenance = {}
-        somefile.location.toUrl.return_value = 'xkcd://location.loc'
+        somefile.location.toUrl.return_value = 'xkcd://HAL/location.loc'
         return somefile

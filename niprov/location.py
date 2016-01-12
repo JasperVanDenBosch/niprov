@@ -20,6 +20,9 @@ class Location(object):
         d['location'] = str(self)
         return d
 
+    def toUrl(self):
+        return 'file://{0}{1}'.format(self.hostname, self.path)
+
     def __str__(self):
         return self.toString()
 

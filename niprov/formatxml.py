@@ -9,17 +9,20 @@ class XmlFormat(Format):
         return self.serializeList([item])
 
     def serializeList(self, itemOrList):
-        ns = 'http://www.w3.org/ns/prov#'
+        prov = 'http://www.w3.org/ns/prov#'
+        nfo = 'http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#'
         dom = Document()
-        doc = self._createElementNS(dom, ns, 'prov', 'prov:document')
+        doc = dom.createElementNS(prov, 'prov:document')
+        doc.setAttribute('xmlns:prov', prov)
+        doc.setAttribute('xmlns:nfo', nfo)
         dom.appendChild(doc)
         for item in itemOrList:
-            entity = dom.createElementNS(ns, 'prov:entity')
+            entity = dom.createElementNS(prov, 'prov:entity')
+            fileUrl = dom.createElementNS(nfo, 'nfo:fileUrl')
+            fileUrlVal = dom.createTextNode(item.location.toUrl())
+            fileUrl.appendChild(fileUrlVal)
+            entity.appendChild(fileUrl)
             doc.appendChild(entity)
         return dom.toprettyxml(encoding="UTF-8")
 
-    def _createElementNS(self, dom, ns, prefix, tag):
-        element = dom.createElementNS(ns, tag)
-        element.setAttribute('xmlns:'+prefix, ns)
-        return element
 

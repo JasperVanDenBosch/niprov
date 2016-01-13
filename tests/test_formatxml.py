@@ -1,5 +1,6 @@
 from tests.ditest import DependencyInjectionTestBase
 from mock import Mock
+import datetime
 
 
 class XmlFormatTests(DependencyInjectionTestBase):
@@ -79,6 +80,19 @@ class XmlFormatTests(DependencyInjectionTestBase):
         self.assertEqual(str(56789), 
             self.getElementContent(targetPropElements[0]))
 
+    def test_serialize_file_entity_has_fileLastModified_prop(self):
+        from niprov.formatxml import XmlFormat
+        form = XmlFormat(self.dependencies)
+        aFile = self.aFile()
+        out = form.serializeSingle(aFile)
+        from xml.dom.minidom import parseString
+        dom = parseString(out)
+        entity = dom.getElementsByTagName("prov:entity")[0]
+        targetPropElements = entity.getElementsByTagName("nfo:fileLastModified")
+        self.assertEqual(1, len(targetPropElements))
+        self.assertEqual(aFile.provenance['created'].isoformat(), 
+            self.getElementContent(targetPropElements[0]))
+
     def getElementContent(self, element):
         rc = []
         for node in element.childNodes:
@@ -90,5 +104,6 @@ class XmlFormatTests(DependencyInjectionTestBase):
         somefile = Mock()
         somefile.provenance = {}
         somefile.provenance['size'] = 56789
+        somefile.provenance['created'] = datetime.datetime.now()
         somefile.location.toUrl.return_value = 'xkcd://HAL/location.loc'
         return somefile

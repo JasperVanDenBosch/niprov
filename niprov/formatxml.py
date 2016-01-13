@@ -29,6 +29,11 @@ class XmlFormat(Format):
             fileSize.appendChild(fileSizeVal)
             entity.appendChild(fileSize)
 
+            fileLastMod = dom.createElementNS(nfo, 'nfo:fileLastModified')
+            fileLastModVal = dom.createTextNode(item.provenance['created'].isoformat())
+            fileLastMod.appendChild(fileLastModVal)
+            entity.appendChild(fileLastMod)
+
             doc.appendChild(entity)
         return dom.toprettyxml(encoding="UTF-8")
 

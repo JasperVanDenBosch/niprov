@@ -53,6 +53,32 @@ class XmlFormatTests(DependencyInjectionTestBase):
         self.assertEqual(str(aFile.location.toUrl()), 
             self.getElementContent(targetPropElements[0]))
 
+    def test_serialize_file_entity_has_fileUrl_prop(self):
+        from niprov.formatxml import XmlFormat
+        form = XmlFormat(self.dependencies)
+        aFile = self.aFile()
+        out = form.serializeSingle(aFile)
+        from xml.dom.minidom import parseString
+        dom = parseString(out)
+        entity = dom.getElementsByTagName("prov:entity")[0]
+        targetPropElements = entity.getElementsByTagName("nfo:fileUrl")
+        self.assertEqual(1, len(targetPropElements))
+        self.assertEqual(str(aFile.location.toUrl()), 
+            self.getElementContent(targetPropElements[0]))
+
+    def test_serialize_file_entity_has_fileSize_prop(self):
+        from niprov.formatxml import XmlFormat
+        form = XmlFormat(self.dependencies)
+        aFile = self.aFile()
+        out = form.serializeSingle(aFile)
+        from xml.dom.minidom import parseString
+        dom = parseString(out)
+        entity = dom.getElementsByTagName("prov:entity")[0]
+        targetPropElements = entity.getElementsByTagName("nfo:fileSize")
+        self.assertEqual(1, len(targetPropElements))
+        self.assertEqual(str(56789), 
+            self.getElementContent(targetPropElements[0]))
+
     def getElementContent(self, element):
         rc = []
         for node in element.childNodes:
@@ -63,5 +89,6 @@ class XmlFormatTests(DependencyInjectionTestBase):
     def aFile(self):
         somefile = Mock()
         somefile.provenance = {}
+        somefile.provenance['size'] = 56789
         somefile.location.toUrl.return_value = 'xkcd://HAL/location.loc'
         return somefile

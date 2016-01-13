@@ -18,10 +18,17 @@ class XmlFormat(Format):
         dom.appendChild(doc)
         for item in itemOrList:
             entity = dom.createElementNS(prov, 'prov:entity')
+
             fileUrl = dom.createElementNS(nfo, 'nfo:fileUrl')
             fileUrlVal = dom.createTextNode(item.location.toUrl())
             fileUrl.appendChild(fileUrlVal)
             entity.appendChild(fileUrl)
+
+            fileSize = dom.createElementNS(nfo, 'nfo:fileSize')
+            fileSizeVal = dom.createTextNode(str(item.provenance['size']))
+            fileSize.appendChild(fileSizeVal)
+            entity.appendChild(fileSize)
+
             doc.appendChild(entity)
         return dom.toprettyxml(encoding="UTF-8")
 

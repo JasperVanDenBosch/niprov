@@ -41,6 +41,15 @@ class XmlFormatTests(DependencyInjectionTestBase):
         nsattr = 'xmlns:nfo="{0}"'.format(nfo)
         self.assertIn(nsattr, docline)
 
+    def test_has_DCT_namespace(self):
+        from niprov.formatxml import XmlFormat
+        form = XmlFormat(self.dependencies)
+        out = form.serializeSingle(self.aFile())
+        docline = [l for l in out.split('\n') if 'prov:doc' in l][0]
+        dct = 'http://purl.org/dc/terms/'
+        nsattr = 'xmlns:dct="{0}"'.format(dct)
+        self.assertIn(nsattr, docline)
+
     def test_Entity_has_id(self):
         from niprov.formatxml import XmlFormat
         form = XmlFormat(self.dependencies)
@@ -81,6 +90,7 @@ class XmlFormatTests(DependencyInjectionTestBase):
         from niprov.formatxml import XmlFormat
         form = XmlFormat(self.dependencies)
         aFile = self.aFile()
+        aFile.provenance['size'] = 56789
         out = form.serializeSingle(aFile)
         from xml.dom.minidom import parseString
         dom = parseString(out)
@@ -94,6 +104,7 @@ class XmlFormatTests(DependencyInjectionTestBase):
         from niprov.formatxml import XmlFormat
         form = XmlFormat(self.dependencies)
         aFile = self.aFile()
+        aFile.provenance['created'] = datetime.datetime.now()
         out = form.serializeSingle(aFile)
         from xml.dom.minidom import parseString
         dom = parseString(out)
@@ -107,6 +118,7 @@ class XmlFormatTests(DependencyInjectionTestBase):
         from niprov.formatxml import XmlFormat
         form = XmlFormat(self.dependencies)
         aFile = self.aFile()
+        aFile.provenance['hash'] = 'abraca777'
         out = form.serializeSingle(aFile)
         from xml.dom.minidom import parseString
         dom = parseString(out)
@@ -134,6 +146,7 @@ class XmlFormatTests(DependencyInjectionTestBase):
         from niprov.formatxml import XmlFormat
         form = XmlFormat(self.dependencies)
         aFile = self.aFile()
+        aFile.provenance['hash'] = 'abraca777'
         out = form.serializeSingle(aFile)
         from xml.dom.minidom import parseString
         dom = parseString(out)
@@ -143,8 +156,33 @@ class XmlFormatTests(DependencyInjectionTestBase):
         hashref = self.getElementContent(targetPropElements[0])
         self.assertEqual(entity.attributes['id'].value+'.hash', hashref)
 
+    def test_file_with_transformation_has_activity_w_corresponding_id(self):
+        from niprov.formatxml import XmlFormat
+        form = XmlFormat(self.dependencies)
+        aFile = self.aFile()
+        aFile.provenance['transformation'] = 'enchantment'
+        out = form.serializeSingle(aFile)
+        from xml.dom.minidom import parseString
+        dom = parseString(out)
+        entity = dom.getElementsByTagName("prov:entity")[0]
+        fileId = entity.attributes['id'].value
+        activity = dom.getElementsByTagName("prov:activity")[0]
+        self.assertEqual(fileId+'.xform', activity.attributes['id'].value)
 
-
+    def test_file_with_transformation_has_activity_w_label(self):
+        from niprov.formatxml import XmlFormat
+        form = XmlFormat(self.dependencies)
+        aFile = self.aFile()
+        aFile.provenance['transformation'] = 'enchantment'
+        out = form.serializeSingle(aFile)
+        from xml.dom.minidom import parseString
+        dom = parseString(out)
+        entity = dom.getElementsByTagName("prov:entity")[0]
+        fileId = entity.attributes['id'].value
+        activity = dom.getElementsByTagName("prov:activity")[0]
+        titleElems = activity.getElementsByTagName('dct:title')
+        self.assertEqual(1, len(titleElems))
+        self.assertEqual('enchantment', self.getElementContent(titleElems[0]))
 
     def getElementContent(self, element):
         rc = []
@@ -156,8 +194,5 @@ class XmlFormatTests(DependencyInjectionTestBase):
     def aFile(self):
         somefile = Mock()
         somefile.provenance = {}
-        somefile.provenance['size'] = 56789
-        somefile.provenance['created'] = datetime.datetime.now()
-        somefile.provenance['hash'] = 'abraca777'
         somefile.location.toUrl.return_value = 'xkcd://HAL/location.loc'
         return somefile

@@ -11,10 +11,12 @@ class XmlFormat(Format):
     def serializeList(self, itemOrList):
         prov = 'http://www.w3.org/ns/prov#'
         nfo = 'http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#'
+        dct = 'http://purl.org/dc/terms/'
         dom = Document()
         doc = dom.createElementNS(prov, 'prov:document')
         doc.setAttribute('xmlns:prov', prov)
         doc.setAttribute('xmlns:nfo', nfo)
+        doc.setAttribute('xmlns:dct', dct)
         dom.appendChild(doc)
         for i, item in enumerate(itemOrList):
             entity = dom.createElementNS(prov, 'prov:entity')
@@ -26,37 +28,57 @@ class XmlFormat(Format):
             fileUrl.appendChild(fileUrlVal)
             entity.appendChild(fileUrl)
 
-            fileSize = dom.createElementNS(nfo, 'nfo:fileSize')
-            fileSizeVal = dom.createTextNode(str(item.provenance['size']))
-            fileSize.appendChild(fileSizeVal)
-            entity.appendChild(fileSize)
+            if 'size' in item.provenance:
 
-            fileLastMod = dom.createElementNS(nfo, 'nfo:fileLastModified')
-            fileLastModVal = dom.createTextNode(item.provenance['created'].isoformat())
-            fileLastMod.appendChild(fileLastModVal)
-            entity.appendChild(fileLastMod)
+                fileSize = dom.createElementNS(nfo, 'nfo:fileSize')
+                fileSizeVal = dom.createTextNode(str(item.provenance['size']))
+                fileSize.appendChild(fileSizeVal)
+                entity.appendChild(fileSize)
 
-            fileHash = dom.createElementNS(nfo, 'nfo:FileHash')
-            hashId = entityId+'.hash'
-            fileHash.setAttribute('id', hashId)
+            if 'created' in item.provenance:
 
-            hashAlgo = dom.createElementNS(nfo, 'nfo:hashAlgorithm')
-            hashAlgoVal = dom.createTextNode('MD5')
-            hashAlgo.appendChild(hashAlgoVal)
-            fileHash.appendChild(hashAlgo)
+                fileLastMod = dom.createElementNS(nfo, 'nfo:fileLastModified')
+                fileLastModVal = dom.createTextNode(item.provenance['created'].isoformat())
+                fileLastMod.appendChild(fileLastModVal)
+                entity.appendChild(fileLastMod)
 
-            hashValue = dom.createElementNS(nfo, 'nfo:hashValue')
-            hashValueVal = dom.createTextNode(item.provenance['hash'])
-            hashValue.appendChild(hashValueVal)
-            fileHash.appendChild(hashValue)
+            if 'hash' in item.provenance:
 
-            hasHash = dom.createElementNS(nfo, 'nfo:hasHash')
-            hasHashVal = dom.createTextNode(hashId)
-            hasHash.appendChild(hasHashVal)
-            entity.appendChild(hasHash)
+                fileHash = dom.createElementNS(nfo, 'nfo:FileHash')
+                hashId = entityId+'.hash'
+                fileHash.setAttribute('id', hashId)
+
+                hashAlgo = dom.createElementNS(nfo, 'nfo:hashAlgorithm')
+                hashAlgoVal = dom.createTextNode('MD5')
+                hashAlgo.appendChild(hashAlgoVal)
+                fileHash.appendChild(hashAlgo)
+
+                hashValue = dom.createElementNS(nfo, 'nfo:hashValue')
+                hashValueVal = dom.createTextNode(item.provenance['hash'])
+                hashValue.appendChild(hashValueVal)
+                fileHash.appendChild(hashValue)
+
+                hasHash = dom.createElementNS(nfo, 'nfo:hasHash')
+                hasHashVal = dom.createTextNode(hashId)
+                hasHash.appendChild(hasHashVal)
+                entity.appendChild(hasHash)
+
+                doc.appendChild(fileHash)
+
+            if 'transformation' in item.provenance:
+
+                act = dom.createElementNS(prov, 'prov:activity')
+                actId = entityId+'.xform'
+                act.setAttribute('id', actId)
+
+                actTitle = dom.createElementNS(dct, 'dct:title')
+                actTitleVal = dom.createTextNode(item.provenance['transformation'])
+                actTitle.appendChild(actTitleVal)
+                act.appendChild(actTitle)
+                doc.appendChild(act)
 
             doc.appendChild(entity)
-            doc.appendChild(fileHash)
+
         return dom.toprettyxml(encoding="UTF-8")
 
 

@@ -77,6 +77,9 @@ class XmlFormat(Format):
                 act.appendChild(actTitle)
                 doc.appendChild(act)
 
+                wasGen = dom.createElementNS(prov, 'prov:wasGeneratedBy')
+                doc.appendChild(wasGen)
+
             doc.appendChild(entity)
 
         return dom.toprettyxml(encoding="UTF-8")

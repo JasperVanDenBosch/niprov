@@ -16,8 +16,10 @@ class XmlFormat(Format):
         doc.setAttribute('xmlns:prov', prov)
         doc.setAttribute('xmlns:nfo', nfo)
         dom.appendChild(doc)
-        for item in itemOrList:
+        for i, item in enumerate(itemOrList):
             entity = dom.createElementNS(prov, 'prov:entity')
+            entityId = 'niprov:file'+str(i)
+            entity.setAttribute('id', entityId)
 
             fileUrl = dom.createElementNS(nfo, 'nfo:fileUrl')
             fileUrlVal = dom.createTextNode(item.location.toUrl())
@@ -34,7 +36,27 @@ class XmlFormat(Format):
             fileLastMod.appendChild(fileLastModVal)
             entity.appendChild(fileLastMod)
 
+            fileHash = dom.createElementNS(nfo, 'nfo:FileHash')
+            hashId = entityId+'.hash'
+            fileHash.setAttribute('id', hashId)
+
+            hashAlgo = dom.createElementNS(nfo, 'nfo:hashAlgorithm')
+            hashAlgoVal = dom.createTextNode('MD5')
+            hashAlgo.appendChild(hashAlgoVal)
+            fileHash.appendChild(hashAlgo)
+
+            hashValue = dom.createElementNS(nfo, 'nfo:hashValue')
+            hashValueVal = dom.createTextNode(item.provenance['hash'])
+            hashValue.appendChild(hashValueVal)
+            fileHash.appendChild(hashValue)
+
+            hasHash = dom.createElementNS(nfo, 'nfo:hasHash')
+            hasHashVal = dom.createTextNode(hashId)
+            hasHash.appendChild(hasHashVal)
+            entity.appendChild(hasHash)
+
             doc.appendChild(entity)
+            doc.appendChild(fileHash)
         return dom.toprettyxml(encoding="UTF-8")
 
 

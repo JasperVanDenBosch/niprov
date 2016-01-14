@@ -86,6 +86,12 @@ class XmlFormat(Format):
                 wasGen.appendChild(activityRef)
                 doc.appendChild(wasGen)
 
+                if 'created' in item.provenance:
+                    wasGenTime = dom.createElementNS(prov, 'prov:time')
+                    wasGenTimeVal = dom.createTextNode(item.provenance['created'].isoformat())
+                    wasGenTime.appendChild(wasGenTimeVal)
+                    wasGen.appendChild(wasGenTime)
+
             doc.appendChild(entity)
 
         return dom.toprettyxml(encoding="UTF-8")

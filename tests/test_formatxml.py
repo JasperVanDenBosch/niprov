@@ -131,6 +131,16 @@ class XmlFormatTests(DependencyInjectionTestBase):
         self.assertHasAttributeWithValue(refEnt, 'prov:ref', entId)
         self.assertHasAttributeWithValue(refAct, 'prov:ref', actId)
 
+    def test_file_with_transformation_has_wasGeneratedBy_with_time(self):
+        from niprov.formatxml import XmlFormat
+        form = XmlFormat(self.dependencies)
+        aFile = self.aFile()
+        aFile.provenance['transformation'] = 'enchantment'
+        aFile.provenance['created'] = datetime.datetime.now()
+        doc = self.parseDoc(form.serializeSingle(aFile))
+        wasGen = self.assertOneChildWithTagName(doc, "prov:wasGeneratedBy")
+        self.assertOneChildWithTagAndText(wasGen, 'prov:time', 
+            aFile.provenance['created'].isoformat())
 
     def parseDoc(self, xmlString):
         from xml.dom.minidom import parseString

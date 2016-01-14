@@ -123,9 +123,14 @@ class XmlFormatTests(DependencyInjectionTestBase):
         aFile = self.aFile()
         aFile.provenance['transformation'] = 'enchantment'
         doc = self.parseDoc(form.serializeSingle(aFile))
+        ent, entId = self.assertOneChildWithTagThatHasAnId(doc, 'prov:entity')
+        act, actId = self.assertOneChildWithTagThatHasAnId(doc, 'prov:activity')
         wasGen = self.assertOneChildWithTagName(doc, "prov:wasGeneratedBy")
-        entity = self.assertOneChildWithTagName(wasGen, "prov:entity")
-        activity = self.assertOneChildWithTagName(wasGen, "prov:activity")
+        refEnt = self.assertOneChildWithTagName(wasGen, "prov:entity")
+        refAct = self.assertOneChildWithTagName(wasGen, "prov:activity")
+        self.assertHasAttributeWithValue(refEnt, 'prov:ref', entId)
+        self.assertHasAttributeWithValue(refAct, 'prov:ref', actId)
+
 
     def parseDoc(self, xmlString):
         from xml.dom.minidom import parseString

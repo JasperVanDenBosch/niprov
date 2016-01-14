@@ -68,8 +68,8 @@ class XmlFormat(Format):
             if 'transformation' in item.provenance:
 
                 act = dom.createElementNS(prov, 'prov:activity')
-                actId = entityId+'.xform'
-                act.setAttribute('id', actId)
+                activityId = entityId+'.xform'
+                act.setAttribute('id', activityId)
 
                 actTitle = dom.createElementNS(dct, 'dct:title')
                 actTitleVal = dom.createTextNode(item.provenance['transformation'])
@@ -79,8 +79,10 @@ class XmlFormat(Format):
 
                 wasGen = dom.createElementNS(prov, 'prov:wasGeneratedBy')
                 entityRef = dom.createElementNS(prov, 'prov:entity')
+                entityRef.setAttribute('prov:ref', entityId)
                 wasGen.appendChild(entityRef)
                 activityRef = dom.createElementNS(prov, 'prov:activity')
+                activityRef.setAttribute('prov:ref', activityId)
                 wasGen.appendChild(activityRef)
                 doc.appendChild(wasGen)
 

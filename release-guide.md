@@ -1,3 +1,6 @@
+new release checklist
+=====================
+
 * bump version in setup.py
 * bump version in sphinx
 * close milestone

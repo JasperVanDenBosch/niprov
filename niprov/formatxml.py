@@ -78,6 +78,10 @@ class XmlFormat(Format):
                 doc.appendChild(act)
 
                 wasGen = dom.createElementNS(prov, 'prov:wasGeneratedBy')
+                entityRef = dom.createElementNS(prov, 'prov:entity')
+                wasGen.appendChild(entityRef)
+                activityRef = dom.createElementNS(prov, 'prov:activity')
+                wasGen.appendChild(activityRef)
                 doc.appendChild(wasGen)
 
             doc.appendChild(entity)

@@ -77,15 +77,13 @@ class XmlFormatTests(DependencyInjectionTestBase):
         aFile.provenance['hash'] = 'abraca777'
         doc = self.parseDoc(form.serializeSingle(aFile))
         entity = doc.getElementsByTagName("prov:entity")[0]
-        hasHash = assertOneChildWithTagName(entity, 'nfo:hasHash')
+        hasHash = self.assertOneChildWithTagName(entity, 'nfo:hasHash')
         hashref = self.getElementContent(hasHash)
         allHashes = doc.getElementsByTagName("nfo:FileHash")
         hashesWithId = [e for e in allHashes if e.attributes['id'].value==hashref]
         self.assertEqual(1, len(hashesWithId))
         hashEl = hashesWithId[0]
-        #algorithm
         self.assertOneChildWithTagAndText(hashEl, 'nfo:hashAlgorithm', 'MD5')
-        #value
         self.assertOneChildWithTagAndText(hashEl, 'nfo:hashValue', 
             aFile.provenance['hash'])
 
@@ -105,10 +103,9 @@ class XmlFormatTests(DependencyInjectionTestBase):
         aFile = self.aFile()
         aFile.provenance['transformation'] = 'enchantment'
         doc = self.parseDoc(form.serializeSingle(aFile))
-        entity = doc.getElementsByTagName("prov:entity")[0]
-        fileId = entity.attributes['id'].value
-        activity = doc.getElementsByTagName("prov:activity")[0]
-        self.assertEqual(fileId+'.xform', activity.attributes['id'].value)
+        ent, entId = self.assertOneChildWithTagThatHasAnId(doc, 'prov:entity')
+        act, actId = self.assertOneChildWithTagThatHasAnId(doc, 'prov:activity')
+        self.assertEqual(entId+'.xform', actId)
 
     def test_file_with_transformation_has_activity_w_label(self):
         from niprov.formatxml import XmlFormat
@@ -126,7 +123,9 @@ class XmlFormatTests(DependencyInjectionTestBase):
         aFile = self.aFile()
         aFile.provenance['transformation'] = 'enchantment'
         doc = self.parseDoc(form.serializeSingle(aFile))
-        self.assertOneChildWithTagName(doc, "prov:wasGeneratedBy")
+        wasGen = self.assertOneChildWithTagName(doc, "prov:wasGeneratedBy")
+        entity = self.assertOneChildWithTagName(wasGen, "prov:entity")
+        activity = self.assertOneChildWithTagName(wasGen, "prov:activity")
 
     def parseDoc(self, xmlString):
         from xml.dom.minidom import parseString
@@ -140,6 +139,14 @@ class XmlFormatTests(DependencyInjectionTestBase):
     def assertHasAttributeWithValue(self, element, attName, attValue):
         assert element.hasAttribute(attName), "Can't find attribute: "+attName
         self.assertEqual(attValue, element.attributes[attName].value)
+
+    def assertOneChildWithTagThatHasAnId(self, parent, tag):
+        elements = parent.getElementsByTagName(tag)
+        elements = [e for e in elements if e.hasAttribute('id')]
+        msg = 'Expected exactly one {0} with ID in {1}, but found {2}'
+        nElem = len(elements)
+        self.assertEqual(1, nElem, msg.format(tag, parent.tagName, nElem))
+        return elements[0], elements[0].attributes['id'].value
 
     def assertOneChildWithTagName(self, parent, tag):
         elements = parent.getElementsByTagName(tag)

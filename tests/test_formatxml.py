@@ -23,128 +23,146 @@ class XmlFormatTests(DependencyInjectionTestBase):
         out = form.serializeList([self.aFile(), self.aFile(), self.aFile()])
         self.assertEqual(3, out.count('<prov:entity'))
 
-    def test_has_PROV_namespace(self):
+    def test_has_namespaces(self):
         from niprov.formatxml import XmlFormat
         form = XmlFormat(self.dependencies)
         out = form.serializeSingle(self.aFile())
-        docline = [l for l in out.split('\n') if 'prov:doc' in l][0]
         prov = 'http://www.w3.org/ns/prov#'
-        nsattr = 'xmlns:prov="{0}"'.format(prov)
-        self.assertIn(nsattr, docline)
-
-    def test_has_NFO_namespace(self):
-        from niprov.formatxml import XmlFormat
-        form = XmlFormat(self.dependencies)
-        out = form.serializeSingle(self.aFile())
-        docline = [l for l in out.split('\n') if 'prov:doc' in l][0]
+        self.assertNamespaceDefined('prov', prov, out)
         nfo = 'http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#'
-        nsattr = 'xmlns:nfo="{0}"'.format(nfo)
-        self.assertIn(nsattr, docline)
+        self.assertNamespaceDefined('nfo', nfo, out)
+        dct = 'http://purl.org/dc/terms/'
+        self.assertNamespaceDefined('dct', dct, out)
 
     def test_Entity_has_id(self):
         from niprov.formatxml import XmlFormat
         form = XmlFormat(self.dependencies)
         aFile = self.aFile()
-        out = form.serializeSingle(aFile)
-        from xml.dom.minidom import parseString
-        dom = parseString(out)
-        entity = dom.getElementsByTagName("prov:entity")[0]
-        self.assertEqual(entity.attributes['id'].value, 'niprov:file0')
+        doc = self.parseDoc(form.serializeSingle(aFile))
+        entity = doc.getElementsByTagName("prov:entity")[0]
+        self.assertHasAttributeWithValue(entity, 'id', 'niprov:file0')
 
     def test_serialize_file_entity_has_fileUrl_prop(self):
         from niprov.formatxml import XmlFormat
         form = XmlFormat(self.dependencies)
         aFile = self.aFile()
-        out = form.serializeSingle(aFile)
-        from xml.dom.minidom import parseString
-        dom = parseString(out)
-        entity = dom.getElementsByTagName("prov:entity")[0]
-        targetPropElements = entity.getElementsByTagName("nfo:fileUrl")
-        self.assertEqual(1, len(targetPropElements))
-        self.assertEqual(str(aFile.location.toUrl()), 
-            self.getElementContent(targetPropElements[0]))
-
-    def test_serialize_file_entity_has_fileUrl_prop(self):
-        from niprov.formatxml import XmlFormat
-        form = XmlFormat(self.dependencies)
-        aFile = self.aFile()
-        out = form.serializeSingle(aFile)
-        from xml.dom.minidom import parseString
-        dom = parseString(out)
-        entity = dom.getElementsByTagName("prov:entity")[0]
-        targetPropElements = entity.getElementsByTagName("nfo:fileUrl")
-        self.assertEqual(1, len(targetPropElements))
-        self.assertEqual(str(aFile.location.toUrl()), 
-            self.getElementContent(targetPropElements[0]))
+        doc = self.parseDoc(form.serializeSingle(aFile))
+        entity = doc.getElementsByTagName("prov:entity")[0]
+        self.assertOneChildWithTagAndText(entity, 'nfo:fileUrl', 
+            str(aFile.location.toUrl()))
 
     def test_serialize_file_entity_has_fileSize_prop(self):
         from niprov.formatxml import XmlFormat
         form = XmlFormat(self.dependencies)
         aFile = self.aFile()
-        out = form.serializeSingle(aFile)
-        from xml.dom.minidom import parseString
-        dom = parseString(out)
-        entity = dom.getElementsByTagName("prov:entity")[0]
-        targetPropElements = entity.getElementsByTagName("nfo:fileSize")
-        self.assertEqual(1, len(targetPropElements))
-        self.assertEqual(str(56789), 
-            self.getElementContent(targetPropElements[0]))
+        aFile.provenance['size'] = 56789
+        doc = self.parseDoc(form.serializeSingle(aFile))
+        entity = doc.getElementsByTagName("prov:entity")[0]
+        self.assertOneChildWithTagAndText(entity, 'nfo:fileSize', str(56789))
 
     def test_serialize_file_entity_has_fileLastModified_prop(self):
         from niprov.formatxml import XmlFormat
         form = XmlFormat(self.dependencies)
         aFile = self.aFile()
-        out = form.serializeSingle(aFile)
-        from xml.dom.minidom import parseString
-        dom = parseString(out)
-        entity = dom.getElementsByTagName("prov:entity")[0]
-        targetPropElements = entity.getElementsByTagName("nfo:fileLastModified")
-        self.assertEqual(1, len(targetPropElements), 'Should have exactly one match')
-        self.assertEqual(aFile.provenance['created'].isoformat(), 
-            self.getElementContent(targetPropElements[0]))
+        aFile.provenance['created'] = datetime.datetime.now()
+        doc = self.parseDoc(form.serializeSingle(aFile))
+        entity = doc.getElementsByTagName("prov:entity")[0]
+        self.assertOneChildWithTagAndText(entity, 'nfo:fileLastModified', 
+            aFile.provenance['created'].isoformat())
 
     def test_serialize_file_entity_has_hash(self):
         from niprov.formatxml import XmlFormat
         form = XmlFormat(self.dependencies)
         aFile = self.aFile()
-        out = form.serializeSingle(aFile)
-        from xml.dom.minidom import parseString
-        dom = parseString(out)
-        entity = dom.getElementsByTagName("prov:entity")[0]
-        #hasHash + FileHash with matching id
-        targetPropElements = entity.getElementsByTagName("nfo:hasHash")
-        self.assertEqual(1, len(targetPropElements))
-        hashref = self.getElementContent(targetPropElements[0])
-        allHashes = dom.getElementsByTagName("nfo:FileHash")
+        aFile.provenance['hash'] = 'abraca777'
+        doc = self.parseDoc(form.serializeSingle(aFile))
+        entity = doc.getElementsByTagName("prov:entity")[0]
+        hasHash = self.assertOneChildWithTagName(entity, 'nfo:hasHash')
+        hashref = self.getElementContent(hasHash)
+        allHashes = doc.getElementsByTagName("nfo:FileHash")
         hashesWithId = [e for e in allHashes if e.attributes['id'].value==hashref]
         self.assertEqual(1, len(hashesWithId))
-        hashElement = hashesWithId[0]
-        #algorithm
-        targetPropElements = hashElement.getElementsByTagName("nfo:hashAlgorithm")
-        self.assertEqual(1, len(targetPropElements), 'Should have exactly one match')
-        self.assertEqual('MD5', 
-            self.getElementContent(targetPropElements[0]))
-        #value
-        targetPropElements = hashElement.getElementsByTagName("nfo:hashValue")
-        self.assertEqual(1, len(targetPropElements), 'Should have exactly one match')
-        self.assertEqual(aFile.provenance['hash'], 
-            self.getElementContent(targetPropElements[0]))
+        hashEl = hashesWithId[0]
+        self.assertOneChildWithTagAndText(hashEl, 'nfo:hashAlgorithm', 'MD5')
+        self.assertOneChildWithTagAndText(hashEl, 'nfo:hashValue', 
+            aFile.provenance['hash'])
 
     def test_FileHash_id_follows_sensible_format(self):
         from niprov.formatxml import XmlFormat
         form = XmlFormat(self.dependencies)
         aFile = self.aFile()
-        out = form.serializeSingle(aFile)
+        aFile.provenance['hash'] = 'abraca777'
+        doc = self.parseDoc(form.serializeSingle(aFile))
+        entity = doc.getElementsByTagName("prov:entity")[0]
+        fileId = entity.attributes['id'].value
+        self.assertOneChildWithTagAndText(entity, 'nfo:hasHash', fileId+'.hash')
+
+    def test_file_with_transformation_has_activity_w_corresponding_id(self):
+        from niprov.formatxml import XmlFormat
+        form = XmlFormat(self.dependencies)
+        aFile = self.aFile()
+        aFile.provenance['transformation'] = 'enchantment'
+        doc = self.parseDoc(form.serializeSingle(aFile))
+        ent, entId = self.assertOneChildWithTagThatHasAnId(doc, 'prov:entity')
+        act, actId = self.assertOneChildWithTagThatHasAnId(doc, 'prov:activity')
+        self.assertEqual(entId+'.xform', actId)
+
+    def test_file_with_transformation_has_activity_w_label(self):
+        from niprov.formatxml import XmlFormat
+        form = XmlFormat(self.dependencies)
+        aFile = self.aFile()
+        aFile.provenance['transformation'] = 'enchantment'
+        doc = self.parseDoc(form.serializeSingle(aFile))
+        entity = doc.getElementsByTagName("prov:entity")[0]
+        activity = doc.getElementsByTagName("prov:activity")[0]
+        self.assertOneChildWithTagAndText(activity, 'dct:title', 'enchantment')
+
+    def test_file_with_transformation_has_wasGeneratedBy_element(self):
+        from niprov.formatxml import XmlFormat
+        form = XmlFormat(self.dependencies)
+        aFile = self.aFile()
+        aFile.provenance['transformation'] = 'enchantment'
+        doc = self.parseDoc(form.serializeSingle(aFile))
+        ent, entId = self.assertOneChildWithTagThatHasAnId(doc, 'prov:entity')
+        act, actId = self.assertOneChildWithTagThatHasAnId(doc, 'prov:activity')
+        wasGen = self.assertOneChildWithTagName(doc, "prov:wasGeneratedBy")
+        refEnt = self.assertOneChildWithTagName(wasGen, "prov:entity")
+        refAct = self.assertOneChildWithTagName(wasGen, "prov:activity")
+        self.assertHasAttributeWithValue(refEnt, 'prov:ref', entId)
+        self.assertHasAttributeWithValue(refAct, 'prov:ref', actId)
+
+
+    def parseDoc(self, xmlString):
         from xml.dom.minidom import parseString
-        dom = parseString(out)
-        entity = dom.getElementsByTagName("prov:entity")[0]
-        targetPropElements = entity.getElementsByTagName("nfo:hasHash")
-        self.assertEqual(1, len(targetPropElements))
-        hashref = self.getElementContent(targetPropElements[0])
-        self.assertEqual(entity.attributes['id'].value+'.hash', hashref)
+        dom = parseString(xmlString)
+        return dom.documentElement
 
+    def assertNamespaceDefined(self, prefix, ns, xmlString):
+        doc = self.parseDoc(xmlString)
+        self.assertHasAttributeWithValue(doc, 'xmlns:'+prefix, ns)
+        
+    def assertHasAttributeWithValue(self, element, attName, attValue):
+        assert element.hasAttribute(attName), "Can't find attribute: "+attName
+        self.assertEqual(attValue, element.attributes[attName].value)
 
+    def assertOneChildWithTagThatHasAnId(self, parent, tag):
+        elements = parent.getElementsByTagName(tag)
+        elements = [e for e in elements if e.hasAttribute('id')]
+        msg = 'Expected exactly one {0} with ID in {1}, but found {2}'
+        nElem = len(elements)
+        self.assertEqual(1, nElem, msg.format(tag, parent.tagName, nElem))
+        return elements[0], elements[0].attributes['id'].value
 
+    def assertOneChildWithTagName(self, parent, tag):
+        elements = parent.getElementsByTagName(tag)
+        msg = 'Expected exactly one {0} in {1}, but found {2}'
+        nElem = len(elements)
+        self.assertEqual(1, nElem, msg.format(tag, parent.tagName, nElem))
+        return elements[0]
+
+    def assertOneChildWithTagAndText(self, parent, tag, expValue):
+        elem = self.assertOneChildWithTagName(parent, tag)
+        self.assertEqual(expValue, self.getElementContent(elem))
 
     def getElementContent(self, element):
         rc = []
@@ -156,8 +174,5 @@ class XmlFormatTests(DependencyInjectionTestBase):
     def aFile(self):
         somefile = Mock()
         somefile.provenance = {}
-        somefile.provenance['size'] = 56789
-        somefile.provenance['created'] = datetime.datetime.now()
-        somefile.provenance['hash'] = 'abraca777'
         somefile.location.toUrl.return_value = 'xkcd://HAL/location.loc'
         return somefile

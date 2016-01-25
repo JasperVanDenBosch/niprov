@@ -27,7 +27,7 @@ class ConfigurationTests(unittest.TestCase):
     def test_If_no_config_file_uses_defaults(self):
         self.ospath.isfile.return_value = False
         conf = self.createConfiguration()
-        self.assertEqual('warning', conf.verbosity)
+        self.assertEqual('info', conf.verbosity)
         self.assertEqual(False, conf.dryrun)
 
     def test_If_config_file_reads_it(self):

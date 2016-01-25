@@ -64,6 +64,9 @@ class Commandline(object):
         paths = '\n'.join([img.path for img in images])
         self.log('info', 'Files marked for approval: \n{0}'.format(paths))
 
+    def exportedToFile(self, fname):
+        self.log('info', 'Exported to file: {0}'.format(fname))
+
     def log(self, level, message, exceptionClass=None):
         if self.vlevels.index(level) >= self.vlevels.index(self.verbosity):
             if level == 'error':

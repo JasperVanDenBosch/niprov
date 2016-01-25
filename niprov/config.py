@@ -26,7 +26,7 @@ class Configuration(object):
     """bool: Do not execute commands or make lasting changes to the 
     provenance database."""
 
-    verbosity = 'warning'
+    verbosity = 'info'
     """string: Level of information to report. One of 'debug','info','warning',
     'error'. Any level includes higher levels, i.e. 'info' will log messages of 
     that are deemed 'info', 'warning' or 'error'. """

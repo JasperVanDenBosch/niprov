@@ -40,5 +40,13 @@ class CommandlineTests(DependencyInjectionTestBase):
         cmd.unknownFile('abc')
         cmd.log.assert_called_with('info','Unknown file: abc', UnknownFileError)
 
+    def test_exportedToFile_logs_info(self):
+        from niprov.commandline import Commandline
+        self.dependencies.config.verbosity = 'info'
+        cmd = Commandline(self.dependencies)
+        cmd.log = Mock()
+        cmd.exportedToFile('backupfile.x')
+        cmd.log.assert_called_with('info','Exported to file: backupfile.x')
+
 
         

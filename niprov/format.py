@@ -8,7 +8,7 @@ class Format(object):
     """
 
     def __init__(self, dependencies=Dependencies()):
-        pass
+        self.fileExtension = 'txt'
 
     def serialize(self, provenance):
         """Publish provenance.

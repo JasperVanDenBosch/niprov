@@ -9,7 +9,7 @@ class FileMediumTests(DependencyInjectionTestBase):
     def test_Writes_formattedProvenance_to_file(self):
         from niprov.mediumfile import FileMedium
         medium = FileMedium(self.dependencies)
-        out = medium.export('Once upon a time..')
+        out = medium.export('Once upon a time..', self.format)
         self.assertEqual('Once upon a time..', 
             self.filesys.write.call_args[0][1])
 
@@ -17,7 +17,7 @@ class FileMediumTests(DependencyInjectionTestBase):
         from niprov.mediumfile import FileMedium
         self.clock.getNowString.return_value = 'hammertime'
         medium = FileMedium(self.dependencies)
-        out = medium.export('provstr')
+        out = medium.export('provstr', self.format)
         self.filesys.write.assert_called_with('provenance_hammertime.txt',
             'provstr')
 
@@ -25,16 +25,26 @@ class FileMediumTests(DependencyInjectionTestBase):
         from niprov.mediumfile import FileMedium
         self.clock.getNowString.return_value = 'hammertime'
         medium = FileMedium(self.dependencies)
-        out = medium.export('provstr')
+        out = medium.export('provstr', self.format)
         self.assertEqual('provenance_hammertime.txt', out)
 
     def test_Reports_filename_to_listener(self):
         from niprov.mediumfile import FileMedium
         self.clock.getNowString.return_value = 'hammertime'
         medium = FileMedium(self.dependencies)
-        out = medium.export('provstr')
+        out = medium.export('provstr', self.format)
         self.listener.exportedToFile.assert_called_with(
             'provenance_hammertime.txt')
+
+    def test_Specific_extension_for_format(self):
+        from niprov.mediumfile import FileMedium
+        self.clock.getNowString.return_value = 'hammertime'
+        medium = FileMedium(self.dependencies)
+        fmt = Mock()
+        fmt.fileExtension = 'prv'
+        out = medium.export('provstr', fmt)
+        self.listener.exportedToFile.assert_called_with(
+            'provenance_hammertime.prv')
 
 
 

@@ -9,7 +9,8 @@ class DirectMediumTests(DependencyInjectionTestBase):
     def test_Returns_input(self):
         from niprov.mediumdirect import DirectMedium
         exporter = DirectMedium()
-        self.assertEqual(sentinel.one, exporter.export(sentinel.one))
+        fmt = Mock()
+        self.assertEqual(sentinel.one, exporter.export(sentinel.one, fmt))
 
 
 

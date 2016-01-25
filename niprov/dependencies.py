@@ -24,10 +24,6 @@ class Dependencies(object):
         import niprov.externals
         return niprov.externals.Externals()
 
-    def getExportFactory(self):
-        import niprov.exporters
-        return niprov.exporters.ExportFactory(dependencies=self)
-
     def getFileFactory(self):
         import niprov.files
         return niprov.files.FileFactory(dependencies=self)
@@ -63,10 +59,6 @@ class Dependencies(object):
     def getMediumFactory(self):
         import niprov.mediumfactory
         return niprov.mediumfactory.MediumFactory(dependencies=self)
-
-    def getNarrator(self):
-        import niprov.narrator
-        return niprov.narrator.Narrator()
 
     def getRepository(self):
         import niprov.jsonfile

@@ -96,3 +96,24 @@ class DependenciesTests(unittest.TestCase):
         self.assertIsInstance(dependencies.getMediumFactory(), 
             MediumFactory)
 
+    def test_provides_Externals(self):
+        from niprov.dependencies import Dependencies
+        from niprov.externals import Externals
+        dependencies = Dependencies()
+        self.assertIsInstance(dependencies.getExternals(), 
+            Externals)
+
+    def test_provides_FileFilter(self):
+        from niprov.dependencies import Dependencies
+        from niprov.filefilter import FileFilter
+        dependencies = Dependencies()
+        self.assertIsInstance(dependencies.getFileFilter(), 
+            FileFilter)
+
+    def test_provides_Hasher(self):
+        from niprov.dependencies import Dependencies
+        from niprov.hashing import Hasher
+        dependencies = Dependencies()
+        self.assertIsInstance(dependencies.getHasher(), 
+            Hasher)
+

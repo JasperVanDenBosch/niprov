@@ -7,6 +7,6 @@ class DirectMedium(object):
     passed.
     """
 
-    def export(self, formattedProvenance):
+    def export(self, formattedProvenance, form):
         return formattedProvenance
 

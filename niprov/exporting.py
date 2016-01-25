@@ -51,7 +51,7 @@ def export(medium, form, forFile=None, forSubject=None,
         provenance = repository.latest()
 
     formattedProvenance = form.serialize(provenance)
-    return medium.export(formattedProvenance)
+    return medium.export(formattedProvenance, form)
 
 
 def get(forFile=None, forSubject=None, statistics=False, pipeline=False, 

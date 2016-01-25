@@ -17,6 +17,7 @@ class DependencyInjectionTestBase(unittest.TestCase):
         self.clock = Mock()
         self.formatFactory = Mock()
         self.format = Mock()
+        self.format.fileExtension = 'txt'
         self.formatFactory.create.return_value = self.format
         self.medium = Mock()
         self.mediumFactory = Mock()

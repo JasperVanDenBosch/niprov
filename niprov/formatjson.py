@@ -11,6 +11,8 @@ class JsonFormat(Format):
     datetimeFields = ['acquired','created','added']
 
     def __init__(self, dependencies):
+        super(JsonFormat, self).__init__(dependencies)
+        self.fileExtension = 'json'
         self.file = dependencies.getFileFactory()
 
     def serializeSingle(self, record):

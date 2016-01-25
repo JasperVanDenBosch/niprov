@@ -5,6 +5,10 @@ from niprov.format import Format
 
 class XmlFormat(Format):
 
+    def __init__(self, dependencies):
+        super(XmlFormat, self).__init__(dependencies)
+        self.fileExtension = 'xml'
+
     def serializeSingle(self, item):
         return self.serializeList([item])
 

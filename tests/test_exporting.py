@@ -28,7 +28,7 @@ class ExportingTests(DependencyInjectionTestBase):
         self.medium.export.return_value = sentinel.mediumOutput
         out = self.export('a medium','a format')
         self.format.serialize.assert_any_call(self.repo.latest())
-        self.medium.export.assert_called_with('serialized prov')
+        self.medium.export.assert_called_with('serialized prov', self.format)
         self.assertEqual(sentinel.mediumOutput, out)
 
     def test_Without_specifics_returns_latest_files(self):

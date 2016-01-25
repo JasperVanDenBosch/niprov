@@ -63,6 +63,9 @@ export.add_argument('--medium', '-m', default='stdout',
 export.add_argument('--format', '-f', default='simple',
     help='Format in which to print. One of "simple","narrated", "xml","json".')
 
+backup = subparsers.add_parser('backup',
+    help='Save data provenance to a json textfile.')
+
 version = subparsers.add_parser('version',
     help='Show niprov software version.')
 
@@ -102,6 +105,8 @@ elif args.command == 'export':
     niprov.export(medium=args.medium, form=args.format, forFile=args.file, 
         forSubject=args.subject, statistics=args.statistics, 
         pipeline=args.pipeline)
+elif args.command == 'backup':
+    niprov.backup()
 elif args.command == 'version':
     import pkg_resources
     print(pkg_resources.get_distribution("niprov").version)

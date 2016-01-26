@@ -31,6 +31,13 @@ class FileFactoryTests(unittest.TestCase):
         fileCreated = factory.locatedAt('example.PAR')
         self.assertIsInstance(fileCreated, ParrecFile)
 
+    def test_If_nii_passed_uses_NiftiFile(self):
+        from niprov.files import FileFactory
+        from niprov.nifti import NiftiFile
+        factory = FileFactory(dependencies=self.dependencies)
+        fileCreated = factory.locatedAt('example.nii')
+        self.assertIsInstance(fileCreated, NiftiFile)
+
     def test_If_compressed_nii_passed_uses_NiftiFile(self):
         from niprov.files import FileFactory
         from niprov.nifti import NiftiFile

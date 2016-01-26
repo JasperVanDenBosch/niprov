@@ -18,7 +18,7 @@ class FileFactory(object):
     formats = {'.par':('nibabel', ParrecFile),
                '.dcm':('dicom', DicomFile),
                '.cnt':(None, NeuroscanFile),
-               '.nii':(None, NeuroscanFile),
+               '.nii':(None, NiftiFile),
                '.nii.gz':('nibabel', NiftiFile),
                '.fif':('mne',FifFile)}
 

@@ -13,8 +13,7 @@ This module provides handlers to attach to mnefun events.
 """
 import os
 from niprov.dependencies import Dependencies
-from niprov.discovery import discover
-from niprov.logging import log
+from niprov import Context
 
 
 def handler(text, func, out, params, dependencies=Dependencies()):
@@ -28,63 +27,52 @@ def handler(text, func, out, params, dependencies=Dependencies()):
     """
     listener = dependencies.getListener()
     libs = dependencies.getLibraries()
-
+    provenance = Context()
     funcname = func.func_name
     listener.mnefunEventReceived(funcname)
     paramdict = {}
-    for param in provenanceParams:
-        if hasattr(params, param):
-            paramdict[param] = getattr(params, param)
+    for paramname in dir(params):
+        objectvalue = getattr(params, paramname)
+        blacklist = ['get_projs_from', 'inv_runs']
+        if hasattr(objectvalue, '__call__'):
+            continue
+        if paramname[0] == '_':
+            continue
+        if 'array' in str(type(objectvalue)):
+            continue
+        if paramname in blacklist:
+            continue
+        paramdict[paramname] = objectvalue
     customprov = {'mnefun':paramdict}
     for subj in params.subjects:
         if funcname == 'fetch_raw_files':
-            subjrawdir = os.path.join(params.work_dir, subj, params.raw_dir)
-            discover(subjrawdir)
+            for f in libs.mnefun.get_raw_fnames(params, subj, 'raw'):
+                provenance.add(f, provenance=customprov)
+        elif funcname == 'score_fun':
+            eventfiles = libs.mnefun._paths.get_event_fnames(params, subj,
+                                                        params.subject_run_indices)
+            rawfiles = libs.mnefun.get_raw_fnames(params, subj, 'raw')
+            for rawfile, eventfile in zip(rawfiles, eventfiles):
+                provenance.log(eventfile, 'scoring', rawfile, provenance=customprov)
         elif funcname == 'fetch_sss_files':
             trans = 'Signal Space Separation'
             rawfiles = libs.mnefun.get_raw_fnames(params, subj, 'raw')
             sssfiles = libs.mnefun.get_raw_fnames(params, subj, 'sss')
             for rawfile, sssfile in zip(rawfiles, sssfiles):
-                log(sssfile, trans, rawfile, provenance=customprov)
+                provenance.log(sssfile, trans, rawfile, provenance=customprov)
         elif funcname == 'apply_preprocessing_combined':
             trans = 'Signal Space Projection'
             sssfiles = libs.mnefun.get_raw_fnames(params, subj, 'sss')
             pcafiles = libs.mnefun.get_raw_fnames(params, subj, 'pca')
             for sssfile, pcafile in zip(sssfiles, pcafiles):
-                log(pcafile, trans, sssfile, provenance=customprov)
+                provenance.log(pcafile, trans, sssfile, provenance=customprov)
         elif funcname == 'save_epochs':
             pcafiles = libs.mnefun.get_raw_fnames(params, subj, 'pca')
             evtfiles = libs.mnefun._paths.get_epochs_evokeds_fnames(params, 
                 subj, params.analyses)
             for evtfile in evtfiles:
-                log(evtfile, 'Epoching', pcafiles, provenance=customprov)
+                provenance.log(evtfile, 'Epoching', pcafiles, provenance=customprov)
 
-
-provenanceParams = [
-'tmin',
-'tmax',
-'t_adjust',
-'bmin',
-'bmax',
-'filter_length',
-'cont_lp',
-'lp_cut',
-'proj_sfreq',
-'decim',
-'drop_thresh',
-'bem_type',
-'fwd_mindist',
-'auto_bad',
-'auto_bad_reject',
-'auto_bad_flat',
-'auto_bad_meg_thresh',
-'auto_bad_eeg_thresh',
-'ecg_channel',
-'eog_channel',
-'translate_positions',
-'quat_tol',
-'tsss_dur',
-'mri']
 
 
 #        self.reject = dict(eog=np.inf, grad=1500e-13, mag=5000e-15, eeg=150e-6)

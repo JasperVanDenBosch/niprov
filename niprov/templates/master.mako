@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="neuroimaging provenance">
     <meta name="author" content="Jasper J.F. van den Bosch">
-    <link rel="shortcut icon" href="${request.static_url('niprov:static/pyramid-16x16.png')}">
+    <link rel="shortcut icon" href="${request.static_url('niprov:static/niprov.ico')}">
     <link rel="stylesheet" type="text/css" href="${request.static_url('niprov:static/master.css')}">
     <link rel="stylesheet" type="text/css" href="${request.static_url('niprov:static/pipeline.css')}">
     <script type="text/javascript" src="${request.static_url('niprov:static/d3.min.js')}"></script>

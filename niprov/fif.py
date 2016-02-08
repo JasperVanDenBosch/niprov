@@ -11,6 +11,15 @@ class FifFile(BaseFile):
 
     def inspect(self):
         provenance = super(FifFile, self).inspect()
+        #TODO try statement loop to check & inspect different fif filetypes
+        """ try:
+                img = self.libs.mne.io.Raw(self.path, allow_maxshield=True)
+                except ValueError:
+                    pass
+                else:
+                    inspect file
+                    Return
+        """
         img = self.libs.mne.io.Raw(self.path, allow_maxshield=True)
         sub = img.info['subject_info']
         if sub is not None:

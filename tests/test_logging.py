@@ -1,5 +1,4 @@
-import unittest
-from mock import Mock, sentinel, patch
+from mock import Mock, patch
 from datetime import datetime as dt
 from tests.ditest import DependencyInjectionTestBase
 
@@ -26,7 +25,8 @@ class LoggingTests(DependencyInjectionTestBase):
         self.repo.byLocation.return_value = img
         self.newimg = Mock()
         self.provenancesCreated = []
-        def wrapProv(location,transient,provenance,dependencies):
+
+        def wrapProv(location, transient=False, provenance=False, dependencies=None):
             self.provenancesCreated.append(provenance)
             return self.newimg
         self.dependencies.reconfigureOrGetConfiguration.return_value = self.opts
@@ -124,13 +124,13 @@ class LoggingTests(DependencyInjectionTestBase):
         self.assertEqual(self.provenancesCreated[0]['parents'], ['l:p1','l:p2'])
         self.assertEqual(self.provenancesCreated[1]['parents'], ['l:p1','l:p2'])
 
-    def test_Notifies_listener_and_exits_if_parent_unknown(self):
+    def test_Add_parent_if_parent_unknown(self):
         self.repo.knowsByLocation.return_value = False
         parent = '/p/f1'
         parents = [parent]
         provenance = self.log('new', 'trans', parents)
-        self.listener.unknownFile.assert_called_with(parent)
-        assert not self.add.called
+        self.listener.addUnknownParent.assert_called_with(parent)
+        self.add.assert_any_call(parent)
 
     def test_Finds_parent_provenance_using_completedString(self):
         self.locationFactory.completeString.side_effect = lambda p: 'l:'+p

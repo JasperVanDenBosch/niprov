@@ -51,7 +51,7 @@ class FileFactory(object):
         elif not self.libs.hasDependency(self.formats[extension][0]):
             self.listener.missingDependencyForImage(
                 self.formats[extension][0], location)
-            return BaseFile(location, 
+            return BaseFile(location, provenance=provenance, 
                 dependencies=self.dependencies)
         return self.formats[extension][1](location, provenance=provenance, 
                 dependencies=self.dependencies)

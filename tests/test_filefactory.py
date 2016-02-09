@@ -1,5 +1,5 @@
 import unittest
-from mock import Mock
+from mock import Mock, patch
 
 class FileFactoryTests(unittest.TestCase):
 
@@ -114,6 +114,17 @@ class FileFactoryTests(unittest.TestCase):
         factory = FileFactory(dependencies=self.dependencies)
         fileCreated = factory.locatedAt('example.cnt')
         self.assertIsInstance(fileCreated, NeuroscanFile)
+
+    def test_fromProvenance_inserts_provenance_also_if_lib_missing(self):
+        import niprov.files
+        self.libs.hasDependency.return_value = False
+        with patch('niprov.files.BaseFile') as BaseFileCtor:
+            factory = niprov.files.FileFactory(dependencies=self.dependencies)
+            inProvenance = {'location':'some.dcm','aproperty':'avalue'}
+            fileCreated = factory.fromProvenance(inProvenance)
+            BaseFileCtor.assert_called_with('some.dcm', 
+                provenance=inProvenance, dependencies=self.dependencies)
+
 
 
 

@@ -71,10 +71,9 @@ def handler(text, func, out, params, dependencies=Dependencies()):
             evtfiles = libs.mnefun._paths.get_epochs_evokeds_fnames(params, 
                 subj, params.analyses)
             for evtfile in evtfiles:
-                provenance.log(evtfile, 'Epoching', pcafiles, provenance=customprov)
-
+                if os.path.isfile(evtfile[0]):
+                    provenance.log(evtfile[0], 'Epoching', pcafiles, provenance=customprov)
 
 
 #        self.reject = dict(eog=np.inf, grad=1500e-13, mag=5000e-15, eeg=150e-6)
 #        self.flat = dict(eog=-1, grad=1e-13, mag=1e-15, eeg=1e-6)
-

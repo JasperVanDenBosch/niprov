@@ -76,6 +76,9 @@ class Commandline(object):
                     raise exceptionClass(message)
             else:
                 print('[provenance:{0}] {1}'.format(level, message))
+
+    def addUnknownParent(self, fpath):
+        self.log('warning', '{0} unknown. Adding to provenance'.format(fpath))
         
 
 SUFFIXES = {1: 'st', 2: 'nd', 3: 'rd'}

@@ -80,17 +80,16 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
         commonProvenance['code'] = code
     if logtext:
         commonProvenance['logtext'] = logtext
-    if repository.knowsByLocation(commonProvenance['parents'][0]):
-        parentProvenance = repository.byLocation(
-            commonProvenance['parents'][0]).provenance
-        for field in inheritableFields:
-            if field in parentProvenance:
-                commonProvenance[field] = parentProvenance[field]
-    else:
-        listener.unknownFile(parents[0])
-        return
+    if not repository.knowsByLocation(commonProvenance['parents'][0]):
+        add(parents[0])
+        listener.addUnknownParent(parents[0])
+    parentProvenance = repository.byLocation(
+        commonProvenance['parents'][0]).provenance
+    for field in inheritableFields:
+        if field in parentProvenance:
+            commonProvenance[field] = parentProvenance[field]
 
-    #do things specific to each new file
+    # do things specific to each new file
     newImages = []
     for newfile in new:
         singleProvenance = copy.deepcopy(commonProvenance)
@@ -98,12 +97,9 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
             dependencies=dependencies)
         newImages.append(image)
 
-    #only return one image if only one file was created
+    # only return one image if only one file was created
     if len(new) == 1:
         return image
 
     return newImages
 
-
-
-    

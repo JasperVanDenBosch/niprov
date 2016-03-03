@@ -45,18 +45,19 @@ def handler(text, func, out, params, dependencies=Dependencies()):
         paramdict[paramname] = objectvalue
     customprov = {'mnefun':paramdict}
     for subj in params.subjects:
+        if funcname in ['fetch_raw_files', 'score_fun', 'fetch_sss_files']:
+            rawfiles = libs.mnefun.get_raw_fnames(params, subj, 'raw', add_splits=True,
+                                                  run_indices=params.subject_run_indices)
         if funcname == 'fetch_raw_files':
-            for f in libs.mnefun.get_raw_fnames(params, subj, 'raw'):
+            for f in rawfiles:
                 provenance.add(f, provenance=customprov)
         elif funcname == 'score_fun':
             eventfiles = libs.mnefun._paths.get_event_fnames(params, subj,
-                                                        params.subject_run_indices)
-            rawfiles = libs.mnefun.get_raw_fnames(params, subj, 'raw')
+                                                             params.subject_run_indices)
             for rawfile, eventfile in zip(rawfiles, eventfiles):
                 provenance.log(eventfile, 'scoring', rawfile, provenance=customprov)
         elif funcname == 'fetch_sss_files':
             trans = 'Signal Space Separation'
-            rawfiles = libs.mnefun.get_raw_fnames(params, subj, 'raw')
             sssfiles = libs.mnefun.get_raw_fnames(params, subj, 'sss')
             for rawfile, sssfile in zip(rawfiles, sssfiles):
                 provenance.log(sssfile, trans, rawfile, provenance=customprov)

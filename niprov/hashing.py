@@ -16,7 +16,7 @@ class Hasher(object):
             filename (str): Path to the file for which a hash digest should be made.
         """
         hash = hashlib.md5()
-        with open(filename, "r+b") as f:
+        with open(filename, "rb") as f:
             for block in iter(lambda: f.read(self.blocksize), ""):
                 hash.update(block)
         return hash.hexdigest()

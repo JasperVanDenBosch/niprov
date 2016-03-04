@@ -44,7 +44,8 @@ def handler(text, func, out, params, dependencies=Dependencies()):
             continue
         paramdict[paramname] = objectvalue
     customprov = {'mnefun':paramdict}
-    for subj in params.subjects:
+    subjects = [params.subjects[i] for i in params.subject_indices.tolist()]
+    for subj in subjects:
         if funcname in ['fetch_raw_files', 'score_fun', 'fetch_sss_files']:
             rawfiles = libs.mnefun.get_raw_fnames(params, subj, 'raw', add_splits=True,
                                                   run_indices=params.subject_run_indices)

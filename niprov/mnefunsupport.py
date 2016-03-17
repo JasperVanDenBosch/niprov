@@ -43,7 +43,7 @@ def handler(text, func, out, params, dependencies=Dependencies()):
         if paramname in blacklist:
             continue
         paramdict[paramname] = objectvalue
-    subjects = [params.subjects[i] for i in params.subject_indices.tolist()]
+    subjects = [params.subjects[i] for i in params.subject_indices]
     for subj in subjects:
         customprov = {'mnefun':paramdict}
         if funcname in ['fetch_raw_files', 'score_fun', 'fetch_sss_files']:

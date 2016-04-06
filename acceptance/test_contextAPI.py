@@ -1,5 +1,6 @@
 import unittest
 import os, shutil
+from os.path import abspath
 
 
 class ContextApiTests(unittest.TestCase):
@@ -64,8 +65,19 @@ class ContextApiTests(unittest.TestCase):
         imgs = self.provenance.markedForApproval()
         self.provenance.approve(os.path.abspath('testdata/dicom/T1.dcm'))
         imgs = self.provenance.markedForApproval()
-        
-        
+
+    def test_Comparison(self):
+        # Given two PARREC images' provenance records
+        par1 = self.provenance.add(abspath('testdata/parrec/T1.PAR'))
+        par2 = self.provenance.add(abspath('testdata/parrec/T2.PAR'))
+        # Comparing them returns a Diff object with methods testing equality
+        self.assertFalse(self.provenance.compare(par1, par2).areEqual())
+        # Compare() can also be called as a method on the objects themselves,
+        # and the Diff object has assert..() methods that raise AssertionErrors
+        msgRegExp = "*echo-time*2.08*80.0"
+        with self.assertRaisesRegExp(AssertionError, msgRegExp):
+            par1.compare(par2).assertEqualProtocol()
+
 
 if __name__ == '__main__':
     unittest.main()

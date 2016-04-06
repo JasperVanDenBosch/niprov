@@ -13,6 +13,10 @@ class Context(object):
         """See :py:mod:`niprov.config`  """
         return niprov.adding.add(filepath, **kwargs)
 
+    def compare(self, file1, file2):
+        """See :py:mod:`niprov.comparing`  """
+        return niprov.comparing.compare(file1, file2, dependencies=self.deps)
+
     def discover(self, root):
         """See :py:mod:`niprov.discovery`  """
         return niprov.discovery.discover(root, dependencies=self.deps)

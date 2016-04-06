@@ -1,4 +1,5 @@
 from niprov.dependencies import Dependencies
+import niprov.comparing
 
 
 class BaseFile(object):
@@ -42,3 +43,6 @@ class BaseFile(object):
     @property
     def parents(self):
         return self.provenance.get('parents', [])
+
+    def compare(self, other):
+        return niprov.comparing.compare(self, other)

@@ -68,14 +68,14 @@ class ContextApiTests(unittest.TestCase):
 
     def test_Comparison(self):
         # Given two PARREC images' provenance records
-        par1 = self.provenance.add(abspath('testdata/parrec/T1.PAR'))
-        par2 = self.provenance.add(abspath('testdata/parrec/T2.PAR'))
+        par1 = self.provenance.add(abspath('testdata/parrec/T1.PAR'))[0]
+        par2 = self.provenance.add(abspath('testdata/parrec/T2.PAR'))[0]
         # Comparing them returns a Diff object with methods testing equality
         self.assertFalse(self.provenance.compare(par1, par2).areEqual())
         # Compare() can also be called as a method on the objects themselves,
         # and the Diff object has assert..() methods that raise AssertionErrors
         msgRegExp = "*echo-time*2.08*80.0"
-        with self.assertRaisesRegExp(AssertionError, msgRegExp):
+        with self.assertRaisesRegexp(AssertionError, msgRegExp):
             par1.compare(par2).assertEqualProtocol()
 
 

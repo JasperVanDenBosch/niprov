@@ -65,7 +65,7 @@ class DiffTests(DependencyInjectionTestBase):
         with self.assertRaises(AssertionError):
             diff.assertEqual()
 
-    def test_areEqualProtocol(self):
+    def test_areEqualProtocol_selects_on_BaseFile_getProtocolFields(self):
         from niprov.diff import Diff
         diff = Diff(self.fileWithP({'a':1,'x':7}, protocol=['x']), 
                     self.fileWithP({'a':2,'x':7}))
@@ -73,6 +73,13 @@ class DiffTests(DependencyInjectionTestBase):
         diff = Diff(self.fileWithP({'a':1,'x':7}, protocol=['x']), 
                     self.fileWithP({'a':2,'x':8}))
         self.assertFalse(diff.areEqualProtocol())
+
+    def test_assertEqualProtocol_throws_if_not_areEqualProtocol(self):
+        from niprov.diff import Diff
+        diff = Diff(self.fileWithP({'a':1,'x':7}, protocol=['x']), 
+                    self.fileWithP({'a':2,'x':8}))
+        with self.assertRaises(AssertionError):
+            diff.assertEqualProtocol()
 
     def fileWithP(self, provenance, protocol=None):
         mfile = Mock()

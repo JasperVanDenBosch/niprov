@@ -43,4 +43,5 @@ class Diff(object):
             raise AssertionError()
 
     def assertEqualProtocol(self):
-        pass
+        if not self.areEqualProtocol():
+            raise AssertionError()

@@ -74,7 +74,7 @@ class ContextApiTests(unittest.TestCase):
         self.assertFalse(self.provenance.compare(par1, par2).areEqual())
         # Compare() can also be called as a method on the objects themselves,
         # and the Diff object has assert..() methods that raise AssertionErrors
-        msgRegExp = "*echo-time*2.08*80.0"
+        msgRegExp = ".*echo-time.*2\.08.*80\.0.*"
         with self.assertRaisesRegexp(AssertionError, msgRegExp):
             par1.compare(par2).assertEqualProtocol()
 

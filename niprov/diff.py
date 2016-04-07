@@ -34,6 +34,10 @@ class Diff(object):
     def areEqual(self, ignore=None, select=None):
         return len(self._checkDiff(ignore, select)) == 0
 
+    def areEqualProtocol(self):
+        protocol = self.file1.getProtocolFields()
+        return self.areEqual(select=protocol)
+
     def assertEqual(self):
         if not self.areEqual():
             raise AssertionError()

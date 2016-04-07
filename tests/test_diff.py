@@ -65,9 +65,19 @@ class DiffTests(DependencyInjectionTestBase):
         with self.assertRaises(AssertionError):
             diff.assertEqual()
 
-    def fileWithP(self, provenance):
+    def test_areEqualProtocol(self):
+        from niprov.diff import Diff
+        diff = Diff(self.fileWithP({'a':1,'x':7}, protocol=['x']), 
+                    self.fileWithP({'a':2,'x':7}))
+        self.assertTrue(diff.areEqualProtocol())
+        diff = Diff(self.fileWithP({'a':1,'x':7}, protocol=['x']), 
+                    self.fileWithP({'a':2,'x':8}))
+        self.assertFalse(diff.areEqualProtocol())
+
+    def fileWithP(self, provenance, protocol=None):
         mfile = Mock()
         mfile.getProvenance.return_value = provenance
+        mfile.getProtocolFields.return_value = protocol
         return mfile
 
 

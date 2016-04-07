@@ -29,7 +29,16 @@ class DiffTests(DependencyInjectionTestBase):
                     self.fileWithP({'a':2}))
         self.assertFalse(diff.areEqual())
 
-    def test_areEqual_ignores_id(self):
+    def test_can_ignore_key(self):
+        from niprov.diff import Diff
+        diff = Diff(self.fileWithP({'a':1}), 
+                    self.fileWithP({'a':1,'b':3}))
+        self.assertTrue(diff.areEqual(ignore=['b','c']))
+        diff = Diff(self.fileWithP({'a':1,'b':3}), 
+                    self.fileWithP({'a':2,'b':3}))
+        self.assertTrue(diff.areEqual(ignore=['a','c']))
+
+    def test_areEqual_ignores_id_by_default(self):
         from niprov.diff import Diff
         diff = Diff(self.fileWithP({'_id':1,'b':3}), 
                     self.fileWithP({'_id':2,'b':3}))
@@ -37,6 +46,9 @@ class DiffTests(DependencyInjectionTestBase):
         diff = Diff(self.fileWithP({'_id':1,'b':3}), 
                     self.fileWithP({'b':3}))
         self.assertTrue(diff.areEqual())
+        diff = Diff(self.fileWithP({'_id':1,'b':3}), 
+                    self.fileWithP({'b':3}))
+        self.assertTrue(diff.areEqual(ignore=['d']))
 
     def test_assertEqual_throws_for_different_value(self):
         from niprov.diff import Diff

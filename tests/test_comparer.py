@@ -1,5 +1,5 @@
 import unittest, os
-from mock import Mock, patch, call
+from mock import Mock, patch, sentinel
 from tests.ditest import DependencyInjectionTestBase
 
 
@@ -13,3 +13,10 @@ class ComparerTests(DependencyInjectionTestBase):
         from niprov.diff import Diff
         out = compare(None, None, self.dependencies)
         self.assertIsInstance(out, Diff)
+
+    def test_compare_creates_basic_diff(self):
+        from niprov.comparing import compare
+        with patch('niprov.comparing.Diff') as DiffCtor:
+            compare(sentinel.f1, sentinel.f2, self.dependencies)
+            DiffCtor.assert_called_with(sentinel.f1, sentinel.f2)
+

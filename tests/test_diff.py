@@ -8,14 +8,16 @@ class DiffTests(DependencyInjectionTestBase):
     def setUp(self):
         super(DiffTests, self).setUp()
 
-    def test_assertSame(self):
-        # method on Diff object that throws an AssertionError if
-        # provenance is different
-        pass
+    def test_areEqual_true_for_same_provenance(self):
+        from niprov.diff import Diff
+        file1 = self.baseFileMock({'a':1,'b':2})
+        file2 = self.baseFileMock({'a':1,'b':2})
+        diff = Diff(file1, file2)
+        self.assertTrue(diff.areEqual())
 
-    def test_assertSame_with_fieldsOfInterest(self):
-        # only raises AssertionError if passed keys are different
-        # or don't exist in either object
-        pass
+    def baseFileMock(self, provenance):
+        mfile = Mock()
+        mfile.getProvenance.return_value = provenance
+        return mfile
 
 

@@ -45,4 +45,4 @@ class BaseFile(object):
         return self.provenance.get('parents', [])
 
     def compare(self, other):
-        return niprov.comparing.compare(self, other)
+        return niprov.comparing.compare(self, other, self.dependencies)

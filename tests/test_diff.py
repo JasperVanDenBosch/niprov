@@ -10,14 +10,23 @@ class DiffTests(DependencyInjectionTestBase):
 
     def test_areEqual_true_for_same_provenance(self):
         from niprov.diff import Diff
-        file1 = self.baseFileMock({'a':1,'b':2})
-        file2 = self.baseFileMock({'a':1,'b':2})
-        diff = Diff(file1, file2)
+        diff = Diff(self.fileWithP({'a':1,'b':2}), 
+                    self.fileWithP({'a':1,'b':2}))
         self.assertTrue(diff.areEqual())
 
-    def baseFileMock(self, provenance):
+    def test_areEqual_false_for_missing_key(self):
+        from niprov.diff import Diff
+        diff = Diff(self.fileWithP({'a':1,'b':2,'c':3}), 
+                    self.fileWithP({'a':1,'b':2}))
+        self.assertFalse(diff.areEqual())
+        diff = Diff(self.fileWithP({'a':1,'b':2}), 
+                    self.fileWithP({'a':1,'b':2,'d':4}))
+        self.assertFalse(diff.areEqual())
+
+    def fileWithP(self, provenance):
         mfile = Mock()
         mfile.getProvenance.return_value = provenance
         return mfile
+
 
 

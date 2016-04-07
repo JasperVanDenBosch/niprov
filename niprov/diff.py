@@ -3,10 +3,16 @@
 class Diff(object):
 
     def __init__(self, file1, file2):
-        pass
+        self.diffDict = {}
+        prov1 = file1.getProvenance()
+        prov2 = file2.getProvenance()
+        for k in set(prov1.keys()).difference(prov2.keys()):
+            self.diffDict[k] = 'missingIn2'
+        for k in set(prov2.keys()).difference(prov1.keys()):
+            self.diffDict[k] = 'missingIn1'
 
     def areEqual(self):
-        return True
+        return len(self.diffDict) == 0
 
     def assertEqualProtocol(self):
         pass

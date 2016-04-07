@@ -34,7 +34,7 @@ class BaseFile(object):
         """
         pass
 
-    def getProvenance(self, form):
+    def getProvenance(self, form='dict'):
         return self.formats.create(form).serialize(self)
 
     def getSeriesId(self):
@@ -46,3 +46,6 @@ class BaseFile(object):
 
     def compare(self, other):
         return niprov.comparing.compare(self, other, self.dependencies)
+
+    def getProtocolFields(self):
+        return None

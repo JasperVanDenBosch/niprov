@@ -38,6 +38,13 @@ class DiffTests(DependencyInjectionTestBase):
                     self.fileWithP({'b':3}))
         self.assertTrue(diff.areEqual())
 
+    def test_assertEqual_throws_for_different_value(self):
+        from niprov.diff import Diff
+        diff = Diff(self.fileWithP({'a':1}), 
+                    self.fileWithP({'a':2}))
+        with self.assertRaises(AssertionError):
+            diff.assertEqual()
+
     def fileWithP(self, provenance):
         mfile = Mock()
         mfile.getProvenance.return_value = provenance

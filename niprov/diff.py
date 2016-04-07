@@ -21,5 +21,9 @@ class Diff(object):
     def areEqual(self):
         return len(self.diffDict) == 0
 
+    def assertEqual(self):
+        if not self.areEqual():
+            raise AssertionError()
+
     def assertEqualProtocol(self):
         pass

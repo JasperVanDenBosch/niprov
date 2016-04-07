@@ -8,14 +8,17 @@ class Diff(object):
         self.file1 = file1
         self.file2 = file2
 
-    def _checkDiff(self, ignore=None):
+    def _checkDiff(self, ignore=None, select=None):
         assert isinstance(ignore, list) or ignore is None
         if ignore is None:
             ignore = []
         ignore += self.defaultIgnore
-        diffDict = {}
         prov1 = self.file1.getProvenance()
         prov2 = self.file2.getProvenance()
+        if select:
+            allkeys = set(prov1.keys()+prov2.keys())
+            ignore = [k for k in allkeys if k not in select]
+        diffDict = {}
         for k in set(prov1.keys()).difference(prov2.keys()):
             if k not in ignore:
                 diffDict[k] = 'missingIn2'
@@ -28,8 +31,8 @@ class Diff(object):
                     diffDict[k] = 'value'
         return diffDict
 
-    def areEqual(self, ignore=None):
-        return len(self._checkDiff(ignore)) == 0
+    def areEqual(self, ignore=None, select=None):
+        return len(self._checkDiff(ignore, select)) == 0
 
     def assertEqual(self):
         if not self.areEqual():

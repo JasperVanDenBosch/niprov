@@ -50,6 +50,14 @@ class DiffTests(DependencyInjectionTestBase):
                     self.fileWithP({'b':3}))
         self.assertTrue(diff.areEqual(ignore=['d']))
 
+    def test_can_select_specific_keys_and_ignore_the_rest(self):
+        from niprov.diff import Diff
+        diff = Diff(self.fileWithP({'a':1,'b':2,'c':3}), 
+                    self.fileWithP({'a':1,'b':9,'c':3,'d':4}))
+        self.assertTrue(diff.areEqual(select=['a','c']))
+        self.assertFalse(diff.areEqual(select=['b']))
+        self.assertFalse(diff.areEqual(select=['d']))
+
     def test_assertEqual_throws_for_different_value(self):
         from niprov.diff import Diff
         diff = Diff(self.fileWithP({'a':1}), 

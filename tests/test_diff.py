@@ -81,8 +81,41 @@ class DiffTests(DependencyInjectionTestBase):
         with self.assertRaises(AssertionError):
             diff.assertEqualProtocol()
 
+    def test_getDifferenceString(self):
+        from niprov.diff import Diff
+        n = Diff.NCHARSCOL
+        diff = Diff(self.fileWithP({'a':1}), 
+                    self.fileWithP({'a':2,'b':3}))
+        diffStr = diff.getDifferenceString()
+        line = ' '.ljust(n)+'afilename'.ljust(n)+' '+'afilename'.ljust(n)
+        self.assertIn(line, diffStr)
+        line = 'a'.ljust(n)+' '+str(1).ljust(n)+' '+str(2).ljust(n)
+        self.assertIn(line, diffStr)
+        line = 'b'.ljust(n)+' '+'n/a'.ljust(n)+' '+str(3).ljust(n)
+        self.assertIn(line, diffStr)
+
+    def test_assertEqual_exception_message_is_getDifferenceString(self):
+        from niprov.diff import Diff
+        n = Diff.NCHARSCOL
+        diff = Diff(self.fileWithP({'a':1}), 
+                    self.fileWithP({'a':2,'b':2}))
+        exception = None
+        try:
+            diff.assertEqual()
+        except AssertionError as e:
+            exception = e
+        self.assertIsNotNone(exception, 'No AssertionError raised')
+        self.assertEqual(diff.getDifferenceString(), str(e))
+
+    def test_Diff_to_string_is_(self):
+        from niprov.diff import Diff
+        diff = Diff(self.fileWithP({'a':1}), 
+                    self.fileWithP({'a':2}))
+        self.assertEqual(diff.getDifferenceString(), str(diff))
+
     def fileWithP(self, provenance, protocol=None):
         mfile = Mock()
+        mfile.location = 'afilename'
         mfile.getProvenance.return_value = provenance
         mfile.getProtocolFields.return_value = protocol
         return mfile

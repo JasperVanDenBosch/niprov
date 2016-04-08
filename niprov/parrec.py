@@ -33,3 +33,6 @@ class ParrecFile(BaseFile):
         provenance['flip-angle'] = img0info['image_flip_angle']
         provenance['inversion-time'] = img0info['Inversion delay']
         return provenance
+
+    def getProtocolFields(self):
+        return ['repetition-time', 'echo-time']

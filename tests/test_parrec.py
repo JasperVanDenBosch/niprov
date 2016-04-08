@@ -40,6 +40,11 @@ class ParrecTests(BaseFileTests):
         self.assertEqual(out['flip-angle'], 8.0)
         self.assertEqual(out['inversion-time'], 0.0)
 
+    def test_getProtocolFields(self):
+        protocol = self.file.getProtocolFields()
+        self.assertIn('repetition-time', protocol)
+        self.assertIn('echo-time', protocol)
+
     def setupNibabel(self):
         import numpy
         img = Mock()

@@ -1,15 +1,38 @@
 from os.path import basename
 
 class Diff(object):
+    """Difference between two files.
 
-    NCHARSCOL = 20
-    defaultIgnore = ['_id']
+    This represents differences in provenance between two files.
+
+    See :py:mod:`niprov.comparing`
+
+    Args:
+        file1 (:class:`.BaseFile`): One of two niprov BaseFile objects to 
+            compare.
+        file2 (:class:`.BaseFile`): As file1
+    """
+
+    NCHARSCOL = 20              # width of columns
+    defaultIgnore = ['_id']     # these fields are always ignored
 
     def __init__(self, file1, file2):
         self.file1 = file1
         self.file2 = file2
 
     def getDifferences(self, ignore=None, select=None):
+        """Get dictionary with fields that differ and how they differ.
+
+        Args:
+            ignore (list): Optional. List of fields not to evaluate when 
+                determining differences.
+            select (list): Optional. List of fields that should be specifically
+                evaluated. All other fields will be ignored.
+
+        Returns:
+            dict: A dictionary with provenance fields as keys and strings
+                indicating how they differ.
+        """
         assert isinstance(ignore, list) or ignore is None
         if ignore is None:
             ignore = []
@@ -33,7 +56,18 @@ class Diff(object):
         return diffDict
 
     def getDifferenceString(self, ignore=None, select=None):
+        """Get table of differences as string.
 
+        Args:
+            ignore (list): Optional. List of fields not to evaluate when 
+                determining differences.
+            select (list): Optional. List of fields that should be specifically
+                evaluated. All other fields will be ignored.
+
+        Returns:
+            str: A three-columns table listing provenance fields and their
+                respective values for the two files.
+        """
         differences = self.getDifferences(ignore, select)
         if not differences:
             return ''
@@ -54,20 +88,58 @@ class Diff(object):
         return diffStr
 
     def areEqual(self, ignore=None, select=None):
+        """Whether there are any differences between the files.
+
+        Args:
+            ignore (list): Optional. List of fields not to evaluate when 
+                determining differences.
+            select (list): Optional. List of fields that should be specifically
+                evaluated. All other fields will be ignored.
+
+        Returns:
+            bool: True if no differences, False otherwise.
+        """
         differences = self.getDifferences(ignore, select)
         return len(differences) == 0
 
     def areEqualProtocol(self):
+        """Whether there are any differences for protocol fields.
+
+        Each :class:`.BaseFile` subtype has a getProtocolFields() method
+        that is used here to selectively see if any of these are different.
+
+        Returns:
+            bool: True if no differences, False otherwise.
+        """
         protocol = self.file1.getProtocolFields()
         differences = self.getDifferences(select=protocol)
         return len(differences) == 0
 
     def assertEqual(self, ignore=None, select=None):
+        """Raises exception if there are differences.
+
+        Args:
+            ignore (list): Optional. List of fields not to evaluate when 
+                determining differences.
+            select (list): Optional. List of fields that should be specifically
+                evaluated. All other fields will be ignored.
+
+        Raises:
+            AssertionError: Message with differences in a table.
+        """
         differences = self.getDifferenceString(ignore, select)
         if differences:
             raise AssertionError(differences)
 
     def assertEqualProtocol(self):
+        """Raises exception if there are differences in protocol fields.
+
+        Each :class:`.BaseFile` subtype has a getProtocolFields() method
+        that is used here to selectively see if any of these are different.
+
+        Raises:
+            AssertionError: Message with protocol differences in a table.
+        """
         protocol = self.file1.getProtocolFields()
         differences = self.getDifferenceString(select=protocol)
         if differences:

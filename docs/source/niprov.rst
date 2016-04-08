@@ -13,10 +13,12 @@ Submodules
    niprov.clock
    niprov.cnt
    niprov.commandline
+   niprov.comparing
    niprov.config
    niprov.context
    niprov.dcm
    niprov.dependencies
+   niprov.diff
    niprov.discovery
    niprov.exceptions
    niprov.exporting

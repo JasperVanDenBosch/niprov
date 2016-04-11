@@ -19,6 +19,8 @@ class NeuroscanFile(BaseFile):
         provenance['subject'] = header.patient.translate(None, '\x00')
         nchannels = unpack('H',header.nchannels)[0]
         numsamples = unpack('I',header.numsamples)[0]
+        sfreq = unpack('H', header.rate)[0]
+        provenance['sampling-frequency'] = sfreq
         provenance['dimensions'] = [nchannels, numsamples]
         acqstring = (header.date+' '+header.time).translate(None, '\x00')
         dtformat = '%d/%m/%y %H:%M:%S'

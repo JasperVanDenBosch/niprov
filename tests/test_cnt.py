@@ -18,6 +18,7 @@ class CNTTests(BaseFileTests):
         self.assertEqual(out['subject'], 'Jane Doe')
         self.assertEqual(out['dimensions'], [32, 2080])
         self.assertEqual(out['acquired'], datetime(2015,3,9,13,7,3))
+        self.assertEqual(out['sampling-frequency'], 1000)
 
 
 class MockFile(object):
@@ -78,7 +79,7 @@ b' \x00',   #h.nchannels         = self._fread(fid,1,'ushort')
 None,   #h.avgupdate         = self._fread(fid,1,'ushort')
 None,   #h.domain            = self._fread(fid,1,'char')
 None,   #h.variance          = self._fread(fid,1,'char')
-None,   #h.rate              = self._fread(fid,1,'ushort')
+b'\xe8\x03',   #h.rate              = self._fread(fid,1,'ushort')
 None,   #h.scale             = self._fread(fid,1,'double')
 None,   #h.veogcorrect       = self._fread(fid,1,'char')
 None,   #h.heogcorrect       = self._fread(fid,1,'char')

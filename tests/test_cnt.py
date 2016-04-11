@@ -1,6 +1,6 @@
 import unittest
 from mock import Mock
-from datetime import datetime
+from datetime import datetime, timedelta
 from tests.test_basefile import BaseFileTests
 
 
@@ -19,6 +19,7 @@ class CNTTests(BaseFileTests):
         self.assertEqual(out['dimensions'], [32, 2080])
         self.assertEqual(out['acquired'], datetime(2015,3,9,13,7,3))
         self.assertEqual(out['sampling-frequency'], 1000)
+        self.assertEqual(out['duration'], timedelta(seconds=2080/1000.))
 
 
 class MockFile(object):

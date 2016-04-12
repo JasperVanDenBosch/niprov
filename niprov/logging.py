@@ -71,6 +71,9 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     'echo-time',
     'flip-angle',
     'inversion-time',
+    'duration',
+    'subject-position',
+    'water-fat-shift',
     ]
     commonProvenance = provenance
     commonProvenance['parents'] = [location.completeString(p) for p in parents]

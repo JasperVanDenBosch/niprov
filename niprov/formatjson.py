@@ -1,6 +1,6 @@
 import json
 import copy
-from datetime import datetime
+from datetime import datetime, timedelta
 from niprov.format import Format
 
 
@@ -9,6 +9,7 @@ class JsonFormat(Format):
     """
 
     datetimeFields = ['acquired','created','added']
+    timedeltaFields = ['duration']
 
     def __init__(self, dependencies):
         super(JsonFormat, self).__init__(dependencies)
@@ -79,6 +80,9 @@ class JsonFormat(Format):
         for field in self.datetimeFields:
             if field in record:
                 flatRecord[field] = record[field].strftime(isoformat)
+        for field in self.timedeltaFields:
+            if field in record:
+                flatRecord[field] = record[field].total_seconds()
         if 'args' in record:
             flatRecord['args'] = [self._strcust(a) for a in record['args']]
         if 'kwargs' in record:
@@ -95,6 +99,9 @@ class JsonFormat(Format):
         for field in self.datetimeFields:
             if field in record:
                 record[field] = datetime.strptime(record[field], isoformat)
+        for field in self.timedeltaFields:
+            if field in record:
+                record[field] = timedelta(seconds=record[field])
         return record
 
     def _strcust(self, val):

@@ -1,6 +1,6 @@
 import unittest
 from mock import Mock, MagicMock, PropertyMock
-from datetime import datetime
+from datetime import datetime, timedelta
 from tests.test_basefile import BaseFileTests
 
 
@@ -46,6 +46,12 @@ class DicomTests(BaseFileTests):
         self.file.addFile(Mock())
         self.assertEqual(out['dimensions'], [11, 12, 2])
 
+    def test_Gets_other_fields(self):
+        out = self.file.inspect()
+        self.assertEqual(out['duration'], timedelta(seconds=65.04713439941406))
+        self.assertEqual(out['subject-position'], 'HFS')
+        self.assertEqual(out['water-fat-shift'], 1.1173381805419922)
+
     def test_File_without_Rows(self):
         del(self.img.Rows)
         out = self.file.inspect()
@@ -59,12 +65,17 @@ class DicomTests(BaseFileTests):
     def setupPydicom(self):
         self.img = Mock()
         self.img.AcquisitionDateTime = '20140805121914.59000'
+        self.img.AcquisitionDuration = 65.04713439941406
         self.img.SeriesDescription = 'T1 SENSE'
         self.img.PatientID = 'John Doeish'
+        self.img.PatientPosition = 'HFS'
         self.img.SeriesInstanceUID = '1.3.46.670589.11.17388.5.0.6340.2011121308140690488'
         self.img.Rows = 11
         self.img.Columns = 12
         self.img.NumberOfFrames = 13
+        wfs = Mock()
+        wfs.value = 1.1173381805419922
+        self.img.__getitem__ = Mock(side_effect=lambda x: {(0x2001, 0x1022):wfs}[x])
         self.libs.dicom.read_file.return_value = self.img
         self.libs.hasDependency.return_value = True
 

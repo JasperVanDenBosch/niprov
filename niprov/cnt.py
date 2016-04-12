@@ -1,5 +1,6 @@
+from __future__ import division
 from struct import unpack
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from niprov.basefile import BaseFile
 
 
@@ -19,7 +20,10 @@ class NeuroscanFile(BaseFile):
         provenance['subject'] = header.patient.translate(None, '\x00')
         nchannels = unpack('H',header.nchannels)[0]
         numsamples = unpack('I',header.numsamples)[0]
+        sfreq = unpack('H', header.rate)[0]
+        provenance['sampling-frequency'] = sfreq
         provenance['dimensions'] = [nchannels, numsamples]
+        provenance['duration'] = timedelta(seconds=numsamples/sfreq)
         acqstring = (header.date+' '+header.time).translate(None, '\x00')
         dtformat = '%d/%m/%y %H:%M:%S'
         provenance['acquired'] = datetime.strptime(acqstring, dtformat)

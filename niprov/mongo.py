@@ -1,4 +1,5 @@
-import pymongo
+import pymongo, copy
+from datetime import timedelta
 from niprov.dependencies import Dependencies
 
 
@@ -23,11 +24,11 @@ class MongoRepository(object):
             dict: Provenance for one image file.
         """
         record = self.db.provenance.find_one({'location':locationString})
-        return self.factory.fromProvenance(record)
+        return self.inflate(record)
 
     def byLocations(self, listOfLocations):
         records = self.db.provenance.find({'location':{'$in':listOfLocations}})
-        return [self.factory.fromProvenance(record) for record in records]
+        return [self.inflate(record) for record in records]
 
     def knowsByLocation(self, locationString):
         """Whether the file at this location has provenance associated with it.
@@ -58,7 +59,7 @@ class MongoRepository(object):
         """
         seriesUid = image.getSeriesId()
         record = self.db.provenance.find_one({'seriesuid':seriesUid})
-        return self.factory.fromProvenance(record)
+        return self.inflate(record)
 
     def knowsSeries(self, image):
         """Whether this file is part of a series for which provenance 
@@ -81,7 +82,7 @@ class MongoRepository(object):
         Args:
             image (:class:`.BaseFile`): Image file to store.
         """
-        self.db.provenance.insert_one(image.provenance)
+        self.db.provenance.insert_one(self.deflate(image))
 
     def update(self, image):
         """Save changed provenance for this file..
@@ -90,7 +91,11 @@ class MongoRepository(object):
             image (:class:`.BaseFile`): Image file that has changed.
         """
         self.db.provenance.update({'location':image.location.toString()}, 
-            image.provenance)
+            self.deflate(image))
+
+    def updateApproval(self, locationString, approvalStatus):
+        self.db.provenance.update({'location':locationString}, 
+            {'$set': {'approval': approvalStatus}})
 
     def all(self):
         """Retrieve all known provenance from storage.
@@ -99,7 +104,7 @@ class MongoRepository(object):
             list: List of provenance for known files.
         """
         records = self.db.provenance.find()
-        return [self.factory.fromProvenance(record) for record in records]
+        return [self.inflate(record) for record in records]
 
 
     def bySubject(self, subject):
@@ -112,19 +117,16 @@ class MongoRepository(object):
             list: List of provenance for known files imaging this subject.
         """
         records = self.db.provenance.find({'subject':subject})
-        return [self.factory.fromProvenance(record) for record in records]
+        return [self.inflate(record) for record in records]
 
     def byApproval(self, approvalStatus):
         records = self.db.provenance.find({'approval':approvalStatus})
-        return [self.factory.fromProvenance(record) for record in records]
+        return [self.inflate(record) for record in records]
 
-    def updateApproval(self, locationString, approvalStatus):
-        self.db.provenance.update({'location':locationString}, 
-            {'$set': {'approval': approvalStatus}})
 
     def latest(self):
         records = self.db.provenance.find().sort('added', -1).limit(20)
-        return [self.factory.fromProvenance(record) for record in records]
+        return [self.inflate(record) for record in records]
 
     def statistics(self):
         grps = self.db.provenance.aggregate(
@@ -142,12 +144,22 @@ class MongoRepository(object):
 
     def byId(self, uid):
         record = self.db.provenance.find_one({'id':uid})
-        return self.factory.fromProvenance(record)
+        return self.inflate(record)
 
     def byParents(self, listOfParentLocations):
         records = self.db.provenance.find({'parents':{
             '$in':listOfParentLocations}})
-        return [self.factory.fromProvenance(record) for record in records]
+        return [self.inflate(record) for record in records]
 
+    def deflate(self, img):
+        record = copy.deepcopy(img.provenance)
+        if 'duration' in record:
+            record['duration'] = record['duration'].total_seconds()
+        return record
+
+    def inflate(self, record):
+        if 'duration' in record:
+            record['duration'] = timedelta(seconds=record['duration'])
+        return self.factory.fromProvenance(record)
 
 

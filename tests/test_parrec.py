@@ -1,6 +1,6 @@
 import unittest
 from mock import Mock
-from datetime import datetime
+from datetime import datetime, timedelta
 from tests.test_basefile import BaseFileTests
 
 
@@ -33,6 +33,9 @@ class ParrecTests(BaseFileTests):
         self.assertEqual(out['epi-factor'], 1)
         self.assertEqual(out['magnetization-transfer-contrast'], False)
         self.assertEqual(out['diffusion'], False)
+        self.assertEqual(out['duration'], timedelta(seconds=65))
+        self.assertEqual(out['subject-position'], 'Head First Supine')
+        self.assertEqual(out['water-fat-shift'], 1.117)
         # per-image
         self.assertEqual(out['slice-thickness'], 10.0)
         self.assertEqual(out['slice-orientation'], 1)

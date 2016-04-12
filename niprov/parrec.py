@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from niprov.basefile import BaseFile
 from niprov.libraries import Libraries
 
@@ -18,6 +18,7 @@ class ParrecFile(BaseFile):
         acqstring = info['exam_date']
         provenance['acquired'] = datetime.strptime(acqstring, dateformat)
         provenance['subject'] = info['patient_name']
+        provenance['subject-position'] = info['patient_position']
         provenance['protocol'] = info['protocol_name']
         provenance['technique'] = info['tech']
         provenance['repetition-time'] = info['repetition_time']
@@ -25,6 +26,8 @@ class ParrecFile(BaseFile):
         provenance['epi-factor'] = info['epi_factor']
         provenance['magnetization-transfer-contrast'] = bool(info['mtc'])
         provenance['diffusion'] = bool(info['diffusion'])
+        provenance['duration'] = timedelta(seconds=info['scan_duration'])
+        provenance['water-fat-shift'] = info['water_fat_shift']
         # per-image
         img0info = img.header.image_defs[0]
         provenance['slice-thickness'] = img0info['slice thickness']
@@ -35,5 +38,6 @@ class ParrecFile(BaseFile):
         return provenance
 
     def getProtocolFields(self):
-        return ['repetition-time', 'echo-time', 'flip-angle', 'epi-factor']
+        return ['repetition-time', 'echo-time', 'flip-angle', 'epi-factor', 
+                'water-fat-shift', 'subject-position']
 

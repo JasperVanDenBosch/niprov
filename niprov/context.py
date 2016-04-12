@@ -11,7 +11,7 @@ class Context(object):
 
     def add(self, filepath, **kwargs):
         """See :py:mod:`niprov.config`  """
-        return niprov.adding.add(filepath, **kwargs)
+        return niprov.adding.add(filepath, dependencies=self.deps, **kwargs)
 
     def compare(self, file1, file2):
         """See :py:mod:`niprov.comparing`  """

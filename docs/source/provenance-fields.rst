@@ -25,6 +25,8 @@ Overview of provenance attributes collected:
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-acquired`                       |             | inherited   | yes     | yes   | yes | yes |
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
+| :ref:`field-duration`                       |             | inherited   | yes     | yes   | yes | yes |
++---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-subject`                        |             | inherited   | yes     | yes   | yes | yes |
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-dimensions`                     |             |             | yes     | maybe | yes | yes |
@@ -32,6 +34,10 @@ Overview of provenance attributes collected:
 | :ref:`field-project`                        |             | inherited   |         |       | yes |     |
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-protocol`                       |             | inherited   | yes     | yes   |     |     |
++---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
+| :ref:`field-subject-position`               |             | inherited   | yes     | yes   |     |     |
++---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
+| :ref:`field-water-fat-shift`                |             | inherited   | yes     | yes   |     |     |
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-transformation`                 |             | yes         |         |       |     |     |
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
@@ -46,6 +52,8 @@ Overview of provenance attributes collected:
 | :ref:`field-args`                           |             | yes         |         |       |     |     |
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-kwargs`                         |             | yes         |         |       |     |     |
++---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
+| :ref:`field-sampling-frequency`             |             | inherited   |         |       | yes | yes |
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-seriesuid`                      |             |             |         | yes   |     |     |
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
@@ -139,6 +147,13 @@ acquired
 
 When the data was collected.
 
+.. _field-duration:
+
+duration
+--------
+
+Duration of the acquisition as python datetime.timedelta
+
 .. _field-subject:
 
 subject
@@ -166,6 +181,20 @@ protocol
 --------
 
 The name of the pulse sequence used.
+
+.. _field-subject-position:
+
+subject-position
+----------------
+
+The position and orientation of the subject during during the scan. E.g. head first supine.
+
+.. _field-water-fat-shift:
+
+water-fat-shift
+---------------
+
+Water fat shift value.
 
 .. _field-transformation:
 
@@ -215,6 +244,13 @@ kwargs
 ------
 
 The keyword arguments passed to a python-based transformation command.
+
+.. _field-sampling-frequency:
+
+sampling-frequency
+------------------
+
+How many samples were acquired per second.
 
 .. _field-seriesuid:
 

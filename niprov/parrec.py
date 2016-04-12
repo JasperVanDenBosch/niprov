@@ -38,5 +38,6 @@ class ParrecFile(BaseFile):
         return provenance
 
     def getProtocolFields(self):
-        return ['repetition-time', 'echo-time', 'flip-angle', 'epi-factor']
+        return ['repetition-time', 'echo-time', 'flip-angle', 'epi-factor', 
+                'water-fat-shift', 'subject-position']
 

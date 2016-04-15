@@ -55,6 +55,15 @@ class Diff(object):
                     diffDict[k] = 'value'
         return diffDict
 
+    def getSame(self):
+        prov1 = self.file1.getProvenance()
+        prov2 = self.file2.getProvenance()
+        sameDict = {}
+        for k in set(prov1.keys()).intersection(prov2.keys()):
+            if prov1[k] == prov2[k]:
+                sameDict[k] = 'same'
+        return sameDict
+
     def getDifferenceString(self, ignore=None, select=None):
         """Get table of differences as string.
 
@@ -69,7 +78,14 @@ class Diff(object):
                 respective values for the two files.
         """
         differences = self.getDifferences(ignore, select)
-        if not differences:
+        return self._tableStringFromDiffDict(differences)
+
+    def getSameString(self):
+        same = self.getSame()
+        return self._tableStringFromDiffDict(same)
+
+    def _tableStringFromDiffDict(self, diffDict):
+        if not diffDict:
             return ''
         name1 = basename(str(self.file1.location))
         name2 = basename(str(self.file2.location))
@@ -81,7 +97,7 @@ class Diff(object):
             return ' '.join(cells)+'\n'
         diffStr = 'Differences:\n'
         diffStr += row('', name1, name2)
-        for field, status in differences.items():
+        for field, status in diffDict.items():
             val1 = prov1.get(field, 'n/a')
             val2 = prov2.get(field, 'n/a')
             diffStr += row(field, str(val1), str(val2))

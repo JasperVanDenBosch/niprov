@@ -1,4 +1,5 @@
 import unittest
+import numpy
 from mock import Mock
 from datetime import datetime, timedelta
 from tests.test_basefile import BaseFileTests
@@ -50,7 +51,7 @@ class ParrecTests(BaseFileTests):
 
     def test_multiple_TRs(self):
         img = self.libs.nibabel.load.return_value
-        img.header.general_info['repetition_time'] = [130, 450]
+        img.header.general_info['repetition_time'] = numpy.array([130, 450])
         self.libs.nibabel.load.return_value = img
         out = self.file.inspect()
         self.assertEqual(out['repetition-time'], [130, 450])

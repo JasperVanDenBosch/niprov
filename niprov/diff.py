@@ -56,6 +56,12 @@ class Diff(object):
         return diffDict
 
     def getSame(self):
+        """Get dictionary with fields that have equal values.
+
+        Returns:
+            dict: A dictionary with provenance fields as keys the string
+                  'same' as value.
+        """
         prov1 = self.file1.getProvenance()
         prov2 = self.file2.getProvenance()
         sameDict = {}
@@ -81,6 +87,12 @@ class Diff(object):
         return self._tableStringFromDiffDict(differences)
 
     def getSameString(self):
+        """Get table of values that are the same for the compared files.
+
+        Returns:
+            str: A three-columns table listing provenance fields and their
+                respective values for the two files.
+        """
         same = self.getSame()
         return self._tableStringFromDiffDict(same)
 

@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import numpy
 from niprov.basefile import BaseFile
 from niprov.libraries import Libraries
 
@@ -21,7 +22,10 @@ class ParrecFile(BaseFile):
         provenance['subject-position'] = info['patient_position']
         provenance['protocol'] = info['protocol_name']
         provenance['technique'] = info['tech']
-        provenance['repetition-time'] = info['repetition_time']
+        tr = info['repetition_time']
+        if isinstance(tr, numpy.ndarray):
+            tr = tr.tolist()
+        provenance['repetition-time'] = tr
         provenance['field-of-view'] = info['fov'].tolist()
         provenance['epi-factor'] = info['epi_factor']
         provenance['magnetization-transfer-contrast'] = bool(info['mtc'])

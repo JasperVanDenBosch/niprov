@@ -48,6 +48,13 @@ class ParrecTests(BaseFileTests):
         self.assertIn('repetition-time', protocol)
         self.assertIn('echo-time', protocol)
 
+    def test_multiple_TRs(self):
+        img = self.libs.nibabel.load.return_value
+        img.header.general_info['repetition_time'] = [130, 450]
+        self.libs.nibabel.load.return_value = img
+        out = self.file.inspect()
+        self.assertEqual(out['repetition-time'], [130, 450])
+
     def setupNibabel(self):
         import numpy
         img = Mock()

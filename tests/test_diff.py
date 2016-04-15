@@ -113,6 +113,23 @@ class DiffTests(DependencyInjectionTestBase):
                     self.fileWithP({'a':2}))
         self.assertEqual(diff.getDifferenceString(), str(diff))
 
+    def test_getSame(self):
+        from niprov.diff import Diff
+        diff = Diff(self.fileWithP({'a':1,'b':2}), 
+                    self.fileWithP({'a':1,'b':3}))
+        self.assertEqual(diff.getSame(), {'a':'same'})
+
+    def test_getSameString(self):
+        from niprov.diff import Diff
+        n = Diff.NCHARSCOL
+        diff = Diff(self.fileWithP({'a':1}), 
+                    self.fileWithP({'a':1,'b':3}))
+        diffStr = diff.getSameString()
+        line = ' '.ljust(n)+'afilename'.ljust(n)+' '+'afilename'.ljust(n)
+        self.assertIn(line, diffStr)
+        line = 'a'.ljust(n)+' '+str(1).ljust(n)+' '+str(1).ljust(n)
+        self.assertIn(line, diffStr)
+
     def fileWithP(self, provenance, protocol=None):
         mfile = Mock()
         mfile.location = 'afilename'

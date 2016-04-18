@@ -117,3 +117,10 @@ class DependenciesTests(unittest.TestCase):
         self.assertIsInstance(dependencies.getHasher(), 
             Hasher)
 
+    def test_provides_Users(self):
+        from niprov.dependencies import Dependencies
+        from niprov.users import Users
+        dependencies = Dependencies()
+        self.assertIsInstance(dependencies.getUsers(), 
+            Users)
+

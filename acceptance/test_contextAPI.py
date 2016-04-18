@@ -41,7 +41,7 @@ class ContextApiTests(unittest.TestCase):
         self.provenance.record('echo hallo', newfile, parent, user='007')
         testfpath = os.path.abspath(newfile)
         img = self.provenance.get(forFile=testfpath)
-        self.assertEqual(img.provenance['user'], 007)
+        self.assertEqual(img.provenance['user'], '007')
 
     def test_Export_Import(self):
         from niprov.exceptions import UnknownFileError

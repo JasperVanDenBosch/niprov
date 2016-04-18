@@ -85,9 +85,9 @@ class LoggingTests(DependencyInjectionTestBase):
         self.assertEqual(self.provenancesCreated[0]['logtext'],'def')
 
     def test_Determines_user_and_logs_them(self):
-        self.dependencies.users.determineUser.return_value = 'paprika'
+        self.users.determineUser.return_value = 'paprika'
         self.log('new', 'trans', 'old', user='mononoko')
-        self.dependencies.users.determineUser.assert_called_with('mononoko')
+        self.users.determineUser.assert_called_with('mononoko')
         self.assertEqual(self.provenancesCreated[0]['user'],'paprika')
 
     def test_Script_added_to_provenance(self):

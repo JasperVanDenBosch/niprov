@@ -6,7 +6,8 @@ import copy
 
 
 def log(new, transformation, parents, code=None, logtext=None, transient=False,
-        script=None, provenance=None, opts=None, dependencies=Dependencies()):
+        script=None, user=None, provenance=None, opts=None,
+        dependencies=Dependencies()):
     """
     Register a transformation that creates a new image (or several).
 
@@ -31,6 +32,7 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
             is only temporary and future checks should not expect it to be 
             physically present. Defaults to False, assuming that the file 
             remains.
+        user (string, optional): Name of the user logging provenance.
         provenance (dict, optional): Add the key-value pairs in this dictionary 
             to the provenance record for the new files.
         opts (Configuration): General settings for niprov. 
@@ -50,6 +52,7 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     filesys = dependencies.getFilesystem()
     opts = dependencies.reconfigureOrGetConfiguration(opts)
     location = dependencies.getLocationFactory()
+    users = dependencies.getUsers()
 
     if isinstance(new, basestring):
         new = [new]
@@ -79,6 +82,7 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     commonProvenance['parents'] = [location.completeString(p) for p in parents]
     commonProvenance['transformation'] = transformation
     commonProvenance['script'] = script
+    commonProvenance['user'] = users.determineUser(user)
     if code:
         commonProvenance['code'] = code
     if logtext:

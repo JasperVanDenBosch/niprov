@@ -76,3 +76,7 @@ class Dependencies(object):
         import niprov.pipelinefactory
         return niprov.pipelinefactory.PipelineFactory(dependencies=self)
 
+    def getUsers(self):
+        import niprov.users
+        return niprov.users.Users(dependencies=self)
+

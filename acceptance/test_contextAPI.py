@@ -33,6 +33,16 @@ class ContextApiTests(unittest.TestCase):
         self.assertEqual(img.provenance['subject'], 'Jane Doe')
         self.assertEqual(img.provenance['size'], os.path.getsize(newfile))
 
+    def test_Record_with_user(self):
+        self.provenance.discover('testdata')
+        newfile = 'temp/recorded.test'
+        self.touch(newfile)
+        parent = os.path.abspath('testdata/eeg/stub.cnt')
+        self.provenance.record('echo hallo', newfile, parent, user='007')
+        testfpath = os.path.abspath(newfile)
+        img = self.provenance.get(forFile=testfpath)
+        self.assertEqual(img.provenance['user'], '007')
+
     def test_Export_Import(self):
         from niprov.exceptions import UnknownFileError
         self.provenance.discover('testdata')

@@ -47,15 +47,6 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(text, ("This is a T1 image. It was recorded August 5, " 
             "2014. The participant's name is 05aug14test. It is 158KB in size. "))
 
-    def test_Approval(self):
-        import niprov
-        niprov.discover('testdata')
-        niprov.markForApproval([os.path.abspath('testdata/dicom/T1.dcm'),
-                                os.path.abspath('testdata/dicom/T2.dcm')])
-        imgs = niprov.markedForApproval()
-        niprov.approve(os.path.abspath('testdata/dicom/T1.dcm'))
-        imgs = niprov.markedForApproval()
-
 #    def test_Narrative_pipeline(self):
 #        import niprov
 #        niprov.discover('testdata')

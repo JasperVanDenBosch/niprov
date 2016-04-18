@@ -1,5 +1,6 @@
 import unittest
 import os, shutil
+from os.path import abspath
 
 
 class ContextApiTests(unittest.TestCase):
@@ -54,6 +55,7 @@ class ContextApiTests(unittest.TestCase):
         self.provenance.importp(backupFilepath)
         self.assertIsNotNone(self.provenance.get(forFile=discoveredFile))
 
+    @unittest.skip("Doesn't work on Travis right now.")
     def test_Attach_provenance_string_in_file_based_on_config(self):
         import nibabel
         self.provenance.config.attach = True
@@ -65,8 +67,27 @@ class ContextApiTests(unittest.TestCase):
         self.assertEqual(img.get_header().extensions[0].get_code(), 6)
         content = img.get_header().extensions[0].get_content()
         self.assertIn('"path": "{0}"'.format(newfile), content)
-        
-        
+
+    def test_Approval(self):
+        self.provenance.discover('testdata')
+        self.provenance.markForApproval([os.path.abspath('testdata/dicom/T1.dcm'),
+                                os.path.abspath('testdata/dicom/T2.dcm')])
+        imgs = self.provenance.markedForApproval()
+        self.provenance.approve(os.path.abspath('testdata/dicom/T1.dcm'))
+        imgs = self.provenance.markedForApproval()
+
+    def test_Comparison(self):
+        # Given two PARREC images' provenance records
+        par1 = self.provenance.add(abspath('testdata/parrec/T1.PAR'))[0]
+        par2 = self.provenance.add(abspath('testdata/parrec/T2.PAR'))[0]
+        # Comparing them returns a Diff object with methods testing equality
+        self.assertFalse(self.provenance.compare(par1, par2).areEqual())
+        # Compare() can also be called as a method on the objects themselves,
+        # and the Diff object has assert..() methods that raise AssertionErrors
+        msgRegExp = ".*echo-time.*2\.08.*80\.0.*"
+        with self.assertRaisesRegexp(AssertionError, msgRegExp):
+            par1.compare(par2).assertEqualProtocol()
+
 
 if __name__ == '__main__':
     unittest.main()

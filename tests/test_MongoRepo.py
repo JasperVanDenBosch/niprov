@@ -1,5 +1,6 @@
 import unittest
 from mock import Mock, patch, sentinel
+from datetime import timedelta
 
 
 class MongoRepoTests(unittest.TestCase):
@@ -11,6 +12,8 @@ class MongoRepoTests(unittest.TestCase):
         self.dependencies.getConfiguration.return_value = self.config
         self.dependencies.getFileFactory.return_value = self.factory
         self.db = Mock()
+        self.db.provenance.find_one.return_value = {}
+        self.db.provenance.find.return_value = {}
 
     def setupRepo(self):
         from niprov.mongo import MongoRepository
@@ -69,15 +72,17 @@ class MongoRepoTests(unittest.TestCase):
     def test_Add(self):
         self.setupRepo()
         img = Mock()
+        img.provenance = {'a':1, 'b':2}
         self.repo.add(img)
-        self.db.provenance.insert_one.assert_called_with(img.provenance)
+        self.db.provenance.insert_one.assert_called_with({'a':1, 'b':2})
 
     def test_update(self):
         self.setupRepo()
         img = Mock()
+        img.provenance = {'a':1, 'b':2}
         self.repo.update(img)
         self.db.provenance.update.assert_called_with(
-            {'location':img.location.toString()}, img.provenance)
+            {'location':img.location.toString()}, {'a':1, 'b':2})
 
     def test_all(self):
         self.factory.fromProvenance.side_effect = lambda p: 'img_'+p
@@ -122,6 +127,7 @@ class MongoRepoTests(unittest.TestCase):
 
     def test_latest(self):
         self.factory.fromProvenance.side_effect = lambda p: 'img_'+p
+        self.db.provenance.find.return_value = Mock()
         self.db.provenance.find.return_value.sort.return_value.limit.return_value = ['px','py']
         self.setupRepo()
         out = self.repo.latest()
@@ -180,5 +186,21 @@ class MongoRepoTests(unittest.TestCase):
         self.factory.fromProvenance.assert_any_call('p1')
         self.factory.fromProvenance.assert_any_call('p2')
         self.assertEqual(['img_p1', 'img_p2'], out)
+
+    def test_Converts_timedelta_to_float_when_serializing(self):
+        self.setupRepo()
+        img = Mock()
+        img.provenance = {'a':1, 'duration':timedelta(seconds=67.89)}
+        self.repo.add(img)
+        self.db.provenance.insert_one.assert_called_with(
+            {'a':1, 'duration':67.89})
+
+    def test_Converts_duration_to_timedelta_when_deserializing(self):
+        self.setupRepo()
+        self.db.provenance.find_one.return_value = {'a':3, 'duration':89.01}
+        out = self.repo.byLocation('/p/f1')
+        self.factory.fromProvenance.assert_called_with(
+            {'a':3, 'duration':timedelta(seconds=89.01)})
+        
 
 

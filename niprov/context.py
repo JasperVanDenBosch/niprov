@@ -9,9 +9,13 @@ class Context(object):
         self.config = Configuration()
         self.deps = Dependencies(self.config)
 
-    def add(self, filepath, transient=False):
+    def add(self, filepath, **kwargs):
         """See :py:mod:`niprov.config`  """
-        return niprov.adding.add(filepath, transient, dependencies=self.deps)
+        return niprov.adding.add(filepath, dependencies=self.deps, **kwargs)
+
+    def compare(self, file1, file2):
+        """See :py:mod:`niprov.comparing`  """
+        return niprov.comparing.compare(file1, file2, dependencies=self.deps)
 
     def discover(self, root):
         """See :py:mod:`niprov.discovery`  """

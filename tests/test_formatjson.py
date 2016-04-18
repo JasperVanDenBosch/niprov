@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 import unittest
 from mock import Mock
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 from tests.ditest import DependencyInjectionTestBase
 
@@ -32,6 +32,14 @@ class SerializerTests(DependencyInjectionTestBase):
             record['acquired'].isoformat())
         self.assertEqual(json.loads(out)['created'], 
             record['created'].isoformat())
+
+    def test_serialize_makes_timedelta_fields_a_float(self):
+        from niprov.formatjson import JsonFormat  
+        serializer = JsonFormat(self.dependencies)
+        record = {}
+        record['duration'] = timedelta(seconds=12.34)
+        out = serializer.serializeSingle(self.imageWithProvenance(record))
+        self.assertEqual(json.loads(out)['duration'], 12.34)
 
     def test_serialize_makes_args_kwargs_values_strings(self):
         from niprov.formatjson import JsonFormat  
@@ -69,6 +77,14 @@ class SerializerTests(DependencyInjectionTestBase):
         out = serializer.deserialize(json.dumps(record))
         self.assertEqual(out.provenance['acquired'], acquired)
         self.assertEqual(out.provenance['created'], created)
+
+    def test_deserialize_makes_timedelta_field_a_timedelta_object(self):
+        from niprov.formatjson import JsonFormat  
+        serializer = JsonFormat(self.dependencies)
+        record = {}
+        record['duration'] = 23.45
+        out = serializer.deserialize(json.dumps(record))
+        self.assertEqual(out.provenance['duration'], timedelta(seconds=23.45))
 
     def test_serializeList_makes_time_field_a_string(self):
         from niprov.formatjson import JsonFormat  

@@ -11,5 +11,6 @@ from niprov.config import Configuration
 from niprov.webapp import serve
 from niprov.exporting import export, get, print_, backup
 from niprov.importing import importp
+from niprov.comparing import compare
 
 

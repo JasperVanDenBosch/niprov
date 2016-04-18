@@ -6,6 +6,7 @@ provenance for neuroimaging data
 [![Build](https://travis-ci.org/ilogue/niprov.svg?branch=master)](https://travis-ci.org/ilogue/niprov)
 [![Docs](https://readthedocs.org/projects/niprov/badge/?version=latest)](http://niprov.readthedocs.org/)
 [![Coverage](https://img.shields.io/coveralls/ilogue/niprov.svg)](https://coveralls.io/r/ilogue/niprov)
+[![Code Quality](https://scrutinizer-ci.com/g/ilogue/niprov/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ilogue/niprov/?branch=master)
 
 [![Research software impact](http://depsy.org/api/package/pypi/niprov/badge.svg)](http://depsy.org/package/python/niprov)
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.46136.svg)](http://dx.doi.org/10.5281/zenodo.46136)

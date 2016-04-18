@@ -11,6 +11,8 @@ Overview of provenance attributes collected:
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-hostname`                       | yes         | yes         | yes     | yes   | yes | yes |
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
+| :ref:`field-user`                           | yes         | yes         | yes     | yes   | yes | yes |
++---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-location`                       | yes         | yes         | yes     | yes   | yes | yes |
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-added`                          | yes         | yes         | yes     | yes   | yes | yes |
@@ -97,6 +99,13 @@ hostname
 --------
 
 Hostname of the computer on which the file resides.
+
+.. _field-user:
+
+user
+----
+
+Name of the user that created the file and/or registered its provenance.
 
 .. _field-location:
 

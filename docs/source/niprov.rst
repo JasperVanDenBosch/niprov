@@ -57,6 +57,7 @@ Submodules
    niprov.renaming
    niprov.reporting
    niprov.repository
+   niprov.users
    niprov.views
    niprov.webapp
 

@@ -1,4 +1,17 @@
 <%inherit file="master.mako"/>
+<%def name="dictAsDefList(dictObject, level=1)">
+<dl class="dictfield">
+% for k, v in dictObject.items():
+    <dt>${k}</dt>
+% if isinstance(v, dict):
+    <dd class="x">${dictAsDefList(v)}</dd>
+% else:
+    <dd class="x">${v}</dd>
+% endif
+
+% endfor
+</dl>
+</%def>
 <%! import os %>
 <h1>${os.path.basename(image.provenance['path'])}</h1>
 
@@ -16,7 +29,13 @@
         fieldtype = 'general'
 %>
     <dt>${k}<a class="help" href="http://niprov.readthedocs.org/en/latest/provenance-fields.html#${k.lower()}">?</a>
-        </dt><dd class="${fieldtype}">${v}</dd>
+        </dt>
+% if isinstance(v, dict):
+    <dd class="${fieldtype}">${dictAsDefList(v)}</dd>
+% else:
+    <dd class="${fieldtype}">${v}</dd>
+% endif
+
 % endfor
 % if 'filesInSeries' in image.provenance:
     <dt>number of files</dt><dd>${len(image.provenance['filesInSeries'])}</dd>

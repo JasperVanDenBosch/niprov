@@ -1,5 +1,6 @@
 import niprov.adding
-provdict = {'mydict':{'a':1234567,'bbbbbbb':'Hello. I was wondering..'}}
+provdict = {'mydict':{'a':1234567,'bbbbbbb':'Hello. I was wondering..',
+            'innerdict':{'key1':88.77, 'key2':'bla'}}}
 (rawbold, s) = niprov.adding.add('testdata/parrec/T2.PAR', 
     provenance=provdict)
 

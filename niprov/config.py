@@ -48,6 +48,11 @@ class Configuration(object):
     add a header extension to nifti files created with the relevant provenance 
     data in json format."""
 
+    user = ''
+    """string: Name of the user creating provenance. If not provided, will
+    be determined based on OS information or as passed as an argument to the
+    provenance operation. See also :py:mod:`niprov.users`"""
+
     def __init__(self, configFilePath='~/niprov.cfg'):
         configFilePath = os.path.expanduser(configFilePath)
         if os.path.isfile(configFilePath):

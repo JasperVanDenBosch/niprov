@@ -1,4 +1,5 @@
-from datetime import datetime
+from __future__ import division
+from datetime import datetime, timedelta
 from niprov.basefile import BaseFile
 from niprov.libraries import Libraries
 
@@ -11,6 +12,15 @@ class FifFile(BaseFile):
 
     def inspect(self):
         provenance = super(FifFile, self).inspect()
+        #TODO try statement loop to check & inspect different fif filetypes
+        """ try:
+                img = self.libs.mne.io.Raw(self.path, allow_maxshield=True)
+                except ValueError:
+                    pass
+                else:
+                    inspect file
+                    Return
+        """
         img = self.libs.mne.io.Raw(self.path, allow_maxshield=True)
         sub = img.info['subject_info']
         if sub is not None:
@@ -20,6 +30,8 @@ class FifFile(BaseFile):
         provenance['acquired'] = datetime.fromtimestamp(acqTS)
         T = img.last_samp - img.first_samp + 1
         provenance['dimensions'] = [img.info['nchan'], T]
+        provenance['sampling-frequency'] = img.info['sfreq']
+        provenance['duration'] = timedelta(seconds=T/img.info['sfreq'])
         return provenance
 
     def attach(self, form='json'):

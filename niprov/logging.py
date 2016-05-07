@@ -6,7 +6,8 @@ import copy
 
 
 def log(new, transformation, parents, code=None, logtext=None, transient=False,
-        script=None, provenance=None, opts=None, dependencies=Dependencies()):
+        script=None, user=None, provenance=None, opts=None,
+        dependencies=Dependencies()):
     """
     Register a transformation that creates a new image (or several).
 
@@ -31,6 +32,7 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
             is only temporary and future checks should not expect it to be 
             physically present. Defaults to False, assuming that the file 
             remains.
+        user (string, optional): Name of the user logging provenance.
         provenance (dict, optional): Add the key-value pairs in this dictionary 
             to the provenance record for the new files.
         opts (Configuration): General settings for niprov. 
@@ -50,6 +52,7 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     filesys = dependencies.getFilesystem()
     opts = dependencies.reconfigureOrGetConfiguration(opts)
     location = dependencies.getLocationFactory()
+    users = dependencies.getUsers()
 
     if isinstance(new, basestring):
         new = [new]
@@ -71,26 +74,29 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     'echo-time',
     'flip-angle',
     'inversion-time',
+    'duration',
+    'subject-position',
+    'water-fat-shift',
     ]
     commonProvenance = provenance
     commonProvenance['parents'] = [location.completeString(p) for p in parents]
     commonProvenance['transformation'] = transformation
     commonProvenance['script'] = script
+    commonProvenance['user'] = users.determineUser(user)
     if code:
         commonProvenance['code'] = code
     if logtext:
         commonProvenance['logtext'] = logtext
-    if repository.knowsByLocation(commonProvenance['parents'][0]):
-        parentProvenance = repository.byLocation(
-            commonProvenance['parents'][0]).provenance
-        for field in inheritableFields:
-            if field in parentProvenance:
-                commonProvenance[field] = parentProvenance[field]
-    else:
-        listener.unknownFile(parents[0])
-        return
+    if not repository.knowsByLocation(commonProvenance['parents'][0]):
+        add(parents[0])
+        listener.addUnknownParent(parents[0])
+    parentProvenance = repository.byLocation(
+        commonProvenance['parents'][0]).provenance
+    for field in inheritableFields:
+        if field in parentProvenance:
+            commonProvenance[field] = parentProvenance[field]
 
-    #do things specific to each new file
+    # do things specific to each new file
     newImages = []
     for newfile in new:
         singleProvenance = copy.deepcopy(commonProvenance)
@@ -98,12 +104,9 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
             dependencies=dependencies)
         newImages.append(image)
 
-    #only return one image if only one file was created
+    # only return one image if only one file was created
     if len(new) == 1:
         return image
 
     return newImages
 
-
-
-    

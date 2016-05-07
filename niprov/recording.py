@@ -7,7 +7,7 @@ from capturing import OutputCapture
 
 
 def record(command, new=None, parents=None, transient=False, args=None, 
-    kwargs=None, opts=None, dependencies=Dependencies()):
+    kwargs=None, user=None, opts=None, dependencies=Dependencies()):
     """Execute a command and log it as provenance for the newly created file.
 
     Args:
@@ -88,6 +88,7 @@ def record(command, new=None, parents=None, transient=False, args=None,
 
     # defer the rest to log()
     return log(new, transformation, parents, code=code, transient=transient,
-        logtext=output, script=script, provenance=provenance, opts=opts)
+        logtext=output, script=script, user=user, provenance=provenance, 
+        opts=opts)
 
 

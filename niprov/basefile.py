@@ -1,4 +1,5 @@
 from niprov.dependencies import Dependencies
+import niprov.comparing
 
 
 class BaseFile(object):
@@ -33,7 +34,7 @@ class BaseFile(object):
         """
         pass
 
-    def getProvenance(self, form):
+    def getProvenance(self, form='dict'):
         return self.formats.create(form).serialize(self)
 
     def getSeriesId(self):
@@ -42,3 +43,9 @@ class BaseFile(object):
     @property
     def parents(self):
         return self.provenance.get('parents', [])
+
+    def compare(self, other):
+        return niprov.comparing.compare(self, other, self.dependencies)
+
+    def getProtocolFields(self):
+        return None

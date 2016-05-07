@@ -24,7 +24,9 @@ class DependencyInjectionTestBase(unittest.TestCase):
         self.mediumFactory.create.return_value = self.medium
         self.locationFactory = Mock()
         self.locationFactory.fromString.return_value = self.location
+        self.users = Mock()
         self.dependencies = Mock()
+        self.dependencies.getUsers.return_value = self.users
         self.dependencies.getLocationFactory.return_value = self.locationFactory
         self.dependencies.getListener.return_value = self.listener
         self.dependencies.getHasher.return_value = self.hasher

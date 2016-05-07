@@ -1,6 +1,7 @@
 import unittest
+import numpy
 from mock import Mock
-from datetime import datetime
+from datetime import datetime, timedelta
 from tests.test_basefile import BaseFileTests
 
 
@@ -33,12 +34,27 @@ class ParrecTests(BaseFileTests):
         self.assertEqual(out['epi-factor'], 1)
         self.assertEqual(out['magnetization-transfer-contrast'], False)
         self.assertEqual(out['diffusion'], False)
+        self.assertEqual(out['duration'], timedelta(seconds=65))
+        self.assertEqual(out['subject-position'], 'Head First Supine')
+        self.assertEqual(out['water-fat-shift'], 1.117)
         # per-image
         self.assertEqual(out['slice-thickness'], 10.0)
         self.assertEqual(out['slice-orientation'], 1)
         self.assertEqual(out['echo-time'], 2.0800000000000001)
         self.assertEqual(out['flip-angle'], 8.0)
         self.assertEqual(out['inversion-time'], 0.0)
+
+    def test_getProtocolFields(self):
+        protocol = self.file.getProtocolFields()
+        self.assertIn('repetition-time', protocol)
+        self.assertIn('echo-time', protocol)
+
+    def test_multiple_TRs(self):
+        img = self.libs.nibabel.load.return_value
+        img.header.general_info['repetition_time'] = numpy.array([130, 450])
+        self.libs.nibabel.load.return_value = img
+        out = self.file.inspect()
+        self.assertEqual(out['repetition-time'], [130, 450])
 
     def setupNibabel(self):
         import numpy

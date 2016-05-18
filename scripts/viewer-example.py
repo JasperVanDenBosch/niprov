@@ -1,6 +1,6 @@
 from niprov import Context
 provenance = Context()
-(img, s) = provenance.add('testdata/dicom/T1.dcm')
+(img, s) = provenance.add('testdata/nifti/qt1.nii.gz')
 
 import niprov.viewer
 

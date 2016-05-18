@@ -25,6 +25,11 @@ class Libraries(object):
             self.mnefun = mnefun
         except:
             self.mnefun = None
+        try:
+            import matplotlib.pyplot
+            self.pyplot = matplotlib.pyplot
+        except:
+            self.pyplot = None
 
 
     def hasDependency(self, libname):

@@ -72,9 +72,17 @@ class Dependencies(object):
         import niprov.formatjson
         return niprov.formatjson.JsonFormat(self)
 
+    def getPictureCache(self):
+        import niprov.pictures
+        return niprov.pictures.PictureCache(dependencies=self)
+
     def getPipelineFactory(self):
         import niprov.pipelinefactory
         return niprov.pipelinefactory.PipelineFactory(dependencies=self)
+
+    def getPolaroid(self):
+        import niprov.polaroid
+        return niprov.polaroid.Polaroid(dependencies=self)
 
     def getUsers(self):
         import niprov.users

@@ -6,8 +6,7 @@ import niprov.viewer
 
 niprov.viewer.view(img)
 
-# img.view()        # show in window and return
-# img.snapshot()    # save png to cwd
+
 
 
 

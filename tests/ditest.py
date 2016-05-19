@@ -25,7 +25,11 @@ class DependencyInjectionTestBase(unittest.TestCase):
         self.locationFactory = Mock()
         self.locationFactory.fromString.return_value = self.location
         self.users = Mock()
+        self.polaroid = Mock()
+        self.pictureCache = Mock()
         self.dependencies = Mock()
+        self.dependencies.getPolaroid.return_value = self.polaroid
+        self.dependencies.getPictureCache.return_value = self.pictureCache
         self.dependencies.getUsers.return_value = self.users
         self.dependencies.getLocationFactory.return_value = self.locationFactory
         self.dependencies.getListener.return_value = self.listener

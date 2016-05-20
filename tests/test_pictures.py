@@ -10,13 +10,18 @@ class PictureCacheTests(TestCase):
         pictures.serializeSingle(sentinel.img)
 
     def test_Provides_new_picture_file_handle(self):
+        # new()
         pass
 
     def test_Stored_picture_can_be_retrieved_as_filepath(self):
-        # store(fhandle) - > serialize() / getPictureFilepathFor()
+        # keep(fhandle) - > serialize() / getPictureFilepathFor()
         pass
 
     def test_Stored_picture_can_be_retrieved_as_bytes(self):
-        # store(fhandle) - > getPictureDataFor()
+        # keep(fhandle) - > getPictureDataFor()
+        pass
+
+    def test_Can_be_told_to_persist_picture_to_disk_now(self):
+        # savePictureToDiskFor()
         pass
 

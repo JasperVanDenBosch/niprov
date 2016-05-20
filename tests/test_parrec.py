@@ -56,12 +56,12 @@ class ParrecTests(BaseFileTests):
         out = self.file.inspect()
         self.assertEqual(out['repetition-time'], [130, 450])
 
-    def test_Tells_polaroid_to_save_snapshot_to_cache(self):
+    def test_Tells_camera_to_save_snapshot_to_cache(self):
         img = self.libs.nibabel.load.return_value
         data = sentinel.imagedata
         img.get_data.return_value = data
         out = self.file.inspect()
-        self.polaroid.saveSnapshot.assert_called_with(data,
+        self.camera.saveSnapshot.assert_called_with(data,
                                                         to=self.pictureCache)
 
     def setupNibabel(self):

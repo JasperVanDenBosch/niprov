@@ -80,9 +80,9 @@ class Dependencies(object):
         import niprov.pipelinefactory
         return niprov.pipelinefactory.PipelineFactory(dependencies=self)
 
-    def getPolaroid(self):
-        import niprov.polaroid
-        return niprov.polaroid.Polaroid(dependencies=self)
+    def getCamera(self):
+        import niprov.camera
+        return niprov.camera.Camera(dependencies=self)
 
     def getUsers(self):
         import niprov.users

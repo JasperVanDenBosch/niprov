@@ -7,7 +7,7 @@ class NiftiFile(BaseFile):
     def __init__(self, location, **kwargs):
         super(NiftiFile, self).__init__(location, **kwargs)
         self.libs = self.dependencies.getLibraries()
-        self.polaroid = self.dependencies.getPolaroid()
+        self.camera = self.dependencies.getCamera()
         self.pictureCache = self.dependencies.getPictureCache()
 
     def attach(self, form='json'):
@@ -29,5 +29,5 @@ class NiftiFile(BaseFile):
     def inspect(self):
         provenance = super(NiftiFile, self).inspect()
         img = self.libs.nibabel.load(self.path)
-        self.polaroid.saveSnapshot(img.get_data(), to=self.pictureCache)
+        self.camera.saveSnapshot(img.get_data(), to=self.pictureCache)
         return provenance

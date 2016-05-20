@@ -2,7 +2,7 @@ from niprov.dependencies import Dependencies
 import webbrowser
 
 
-class Polaroid(object):
+class Camera(object):
 
     def __init__(self, dependencies):
         pass

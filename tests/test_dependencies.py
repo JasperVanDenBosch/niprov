@@ -124,12 +124,12 @@ class DependenciesTests(unittest.TestCase):
         self.assertIsInstance(dependencies.getUsers(), 
             Users)
 
-    def test_provides_Polaroid(self):
+    def test_provides_Camera(self):
         from niprov.dependencies import Dependencies
-        from niprov.polaroid import Polaroid
+        from niprov.camera import Camera
         dependencies = Dependencies()
-        self.assertIsInstance(dependencies.getPolaroid(), 
-            Polaroid)
+        self.assertIsInstance(dependencies.getCamera(), 
+            Camera)
 
     def test_provides_PictureCache(self):
         from niprov.dependencies import Dependencies

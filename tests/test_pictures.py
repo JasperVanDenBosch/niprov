@@ -7,5 +7,5 @@ class PictureCacheTests(TestCase):
     def test_Serialize(self):
         from niprov.pictures import PictureCache
         pictures = PictureCache(sentinel.dependencies)
-        pictures.serialize(sentinel.img)
+        pictures.serializeSingle(sentinel.img)
 

@@ -1,10 +1,11 @@
+from niprov.format import Format
 
 
-class PictureCache(object):
+class PictureCache(Format):
 
     def __init__(self, dependencies):
         pass
 
-    def serialize(self, image):
+    def serializeSingle(self, image):
         pass
 

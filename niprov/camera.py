@@ -3,27 +3,33 @@ import webbrowser
 
 
 class Camera(object):
-    """
-        to (:class:`.PictureCache`): Service that provides a file-like 
-                handle to save the plotted picture to.
-    """
 
     def __init__(self, dependencies):
-        pass
+        self.film = dependencies.getPictureCache()
+        self.libs = dependencies.getLibraries()
 
     def saveSnapshot(self, data):
         """Plot an overview of the image and store it.
 
+        Uses :class:`.PictureCache` as service that provides a file-like 
+                handle to save the plotted picture to.
+        Calls takeSnapshot() to do the actual plotting.
+
         Args:
             data (numpy.ndarray): Array of 2, 3 or 4 dimensions with image data.
         """
-        pass
+        newPicture = self.film.new()
+        self.takeSnapshot(data, on=newPicture)
+        self.film.keep(newPicture)
 
-    def view(img, dependencies=Dependencies()):
-        libs = dependencies.getLibraries()
-        plt = libs.pyplot
-        nibabel = libs.nibabel
-        data = nibabel.load(img.path).get_data()
+    def takeSnapshot(data, on='shouldnotbehere.png'):
+        """Plot an overview of the image using matplotlib.pyplot.
+
+        Args:
+            data (numpy.ndarray): Array of 2, 3 or 4 dimensions with image data.
+            on (str or file-like object): Where to save figure to.
+        """
+        plt = self.libs.pyplot
 
         ## 3D
         ndims = len(data.shape)
@@ -41,6 +47,5 @@ class Camera(object):
 
         plt.tight_layout()
 
-        fname = 'myplot.png'
-        plt.savefig(fname)
-        webbrowser.open(fname)
+        plt.savefig(on)
+

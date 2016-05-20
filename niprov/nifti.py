@@ -1,6 +1,5 @@
 from datetime import datetime
 from niprov.basefile import BaseFile
-from niprov.libraries import Libraries
 
 
 class NiftiFile(BaseFile):

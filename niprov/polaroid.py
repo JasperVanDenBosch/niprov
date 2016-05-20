@@ -7,6 +7,16 @@ class Polaroid(object):
     def __init__(self, dependencies):
         pass
 
+    def saveSnapshot(self, data, to):
+        """Plot an overview of the image and store it.
+
+        Args:
+            data (numpy.ndarray): Array of 2, 3 or 4 dimensions with image data.
+            to (:class:`.PictureCache`): Service that provides a file-like 
+                handle to save the plotted picture to.
+        """
+        pass
+
     def view(img, dependencies=Dependencies()):
         libs = dependencies.getLibraries()
         plt = libs.pyplot

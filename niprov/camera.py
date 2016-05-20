@@ -1,5 +1,4 @@
 from niprov.dependencies import Dependencies
-import webbrowser
 
 
 class Camera(object):

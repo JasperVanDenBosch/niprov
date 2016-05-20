@@ -7,6 +7,11 @@ class ViewerMedium(object):
     """Uses the system picture viewer to display an picture file.
     """
 
+    def __init__(self, dependencies):
+        pass
+
     def export(self, formattedProvenance, form):
+        if formattedProvenance is None:
+            return
         webbrowser.open(formattedProvenance)
 

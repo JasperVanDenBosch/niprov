@@ -2,6 +2,7 @@ from niprov.dependencies import Dependencies
 from niprov.mediumstdout import StandardOutputMedium
 from niprov.mediumdirect import DirectMedium
 from niprov.mediumfile import FileMedium
+from niprov.mediumviewer import ViewerMedium
 
 
 class MediumFactory(object):
@@ -16,5 +17,7 @@ class MediumFactory(object):
             return DirectMedium()
         if mediumName == 'file':
             return FileMedium(self.dependencies)
+        if mediumName == 'viewer':
+            return ViewerMedium(self.dependencies)
         raise ValueError('Unknown medium: '+str(mediumName))
 

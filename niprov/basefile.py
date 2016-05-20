@@ -49,3 +49,10 @@ class BaseFile(object):
 
     def getProtocolFields(self):
         return None
+
+    def viewSnapshot(self):
+        pictures = self.dependencies.getPictureCache()
+        viewer = self.dependencies.getMediumFactory().create('viewer')
+        snapshot = pictures.serialize(self)
+        viewer.export(snapshot)
+

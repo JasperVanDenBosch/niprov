@@ -61,8 +61,7 @@ class ParrecTests(BaseFileTests):
         data = sentinel.imagedata
         img.get_data.return_value = data
         out = self.file.inspect()
-        self.camera.saveSnapshot.assert_called_with(data,
-                                                        to=self.pictureCache)
+        self.camera.saveSnapshot.assert_called_with(data)
 
     def setupNibabel(self):
         import numpy

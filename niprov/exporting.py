@@ -14,10 +14,13 @@ def export(medium, form, forFile=None, forSubject=None,
 
     Args:
         medium (str): The medium in which to publish the provenance. 
-            One of 'stdout' (print the provenance to the terminal), 'direct' 
-            (return object to caller), or 'file' (write to a text file).
+            One of:
+                'stdout'  (print the provenance to the terminal), 
+                'direct'  (return object to caller), 
+                'file'    (write to a text file),
+                'viewer'  (open in the system image viewer).
         form (str): The format in which to serialize the provenance. 
-            One of 'json','xml','narrated','simple','dict'.
+            One of 'json','xml','narrated','simple','dict','picture'.
         forFile (str): Select one file based on this path.
         forSubject (str): Select files regarding this subject.
         statistics (bool): Print overall statistics.
@@ -74,4 +77,12 @@ def backup(dependencies=Dependencies()):
     """Shortcut for export(medium='file', form='json') for all provenance.
     """
     return export(medium='file', form='json', dependencies=dependencies)
+
+def view(forFile=None, forSubject=None, statistics=False, pipeline=False, 
+    dependencies=Dependencies()):
+    """Shortcut for export(medium='viewer', form='picture').
+    """
+    return export(medium='viewer', form='picture', 
+        forFile=forFile, forSubject=forSubject, statistics=statistics, 
+        pipeline=pipeline, dependencies=dependencies)
 

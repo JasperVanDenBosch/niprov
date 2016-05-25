@@ -48,7 +48,6 @@ def add(filepath, transient=False, provenance=None,
     provenance['added'] = datetime.now()
     provenance['id'] = shortuuid.uuid()[:6]
 
-    filepath = os.path.abspath(filepath)
     img = file.locatedAt(filepath, provenance=provenance)
     if config.dryrun:
         status = 'dryrun'
@@ -64,8 +63,8 @@ def add(filepath, transient=False, provenance=None,
         status = 'series'
     else:
         if not transient:
-            if not filesys.fileExists(filepath):
-                raise IOError(errno.ENOENT, 'File not found', filepath)
+            if not filesys.fileExists(img.location.path):
+                raise IOError(errno.ENOENT, 'File not found', img.location.path)
             try:
                 img.inspect()
             except:

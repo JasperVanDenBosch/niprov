@@ -22,6 +22,13 @@ class ContextApiTests(unittest.TestCase):
         with open(path,'w') as tempfile:
             tempfile.write('0')
 
+    def test_Relative_paths(self):
+        self.provenance.discover('testdata')
+        newfile = 'temp/smoothed.test'
+        self.touch(newfile)
+        self.provenance.log(newfile, 'test', 'testdata/eeg/stub.cnt')
+        img = self.provenance.get(forFile=newfile)
+
     def test_Log(self):
         self.provenance.discover('testdata')
         newfile = 'temp/smoothed.test'

@@ -201,6 +201,11 @@ class MongoRepoTests(unittest.TestCase):
         out = self.repo.byLocation('/p/f1')
         self.factory.fromProvenance.assert_called_with(
             {'a':3, 'duration':timedelta(seconds=89.01)})
+
+    def test_If_no_record_returned_byLocation_raises_alarm(self):
+        self.setupRepo()
+        self.db.provenance.find_one.return_value = None
+        out = self.repo.byLocation('/p/f1')
         
 
 

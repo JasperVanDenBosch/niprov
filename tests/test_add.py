@@ -112,11 +112,6 @@ class AddTests(DependencyInjectionTestBase):
             (provenance, status) = self.add('p/afile.f')
             self.assertEqual(self.lastProvenance['id'],'abcdef')
 
-#    def test_Makes_paths_absolute(self):
-#        (provenance, status) = self.add('p/afile.f')
-#        self.assertEqual(self.lastPath,
-#            os.path.abspath('p/afile.f'))
-
     def test_If_file_is_known_return_stored_provenance(self):
         self.repo.knows.return_value = True
         (img, status) = self.add('p/afile.f')

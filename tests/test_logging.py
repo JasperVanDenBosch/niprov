@@ -145,5 +145,11 @@ class LoggingTests(DependencyInjectionTestBase):
         provenance = self.log('new', 'trans', parents)
         self.repo.knowsByLocation.assert_called_with(self.provenancesCreated[0]['parents'][0])
         self.repo.byLocation.assert_called_with(self.provenancesCreated[0]['parents'][0])
+
+    def test_If_parent_unknown_does_not_use_byLocation(self):
+        """In this case the parent provenance should be obtained from
+        what add() returns.
+        """
+        self.fail()
         
 

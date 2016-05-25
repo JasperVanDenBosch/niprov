@@ -8,6 +8,7 @@ class MongoRepository(object):
     def __init__(self, dependencies=Dependencies()):
         self.config = dependencies.getConfiguration()
         self.factory = dependencies.getFileFactory()
+        self.listener = dependencies.getListener()
         client = pymongo.MongoClient(self.config.database_url)
         self.db = client.get_default_database()
 
@@ -24,6 +25,9 @@ class MongoRepository(object):
             dict: Provenance for one image file.
         """
         record = self.db.provenance.find_one({'location':locationString})
+        if record is None:
+            self.listener.unknownFile(locationString)
+            return
         return self.inflate(record)
 
     def byLocations(self, listOfLocations):
@@ -59,6 +63,9 @@ class MongoRepository(object):
         """
         seriesUid = image.getSeriesId()
         record = self.db.provenance.find_one({'seriesuid':seriesUid})
+        if record is None:
+            self.listener.unknownFile('seriesuid: '+str(seriesUid))
+            return
         return self.inflate(record)
 
     def knowsSeries(self, image):
@@ -144,6 +151,9 @@ class MongoRepository(object):
 
     def byId(self, uid):
         record = self.db.provenance.find_one({'id':uid})
+        if record is None:
+            self.listener.unknownFile('id: '+str(uid))
+            return
         return self.inflate(record)
 
     def byParents(self, listOfParentLocations):

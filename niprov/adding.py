@@ -63,9 +63,8 @@ def add(filepath, transient=False, provenance=None,
         status = 'series'
     else:
         if not transient:
-            if not filesys.fileExists(img.location.toString()):
-                raise IOError(errno.ENOENT, 'File not found',
-                                                img.location.toString())
+            if not filesys.fileExists(img.location.path):
+                raise IOError(errno.ENOENT, 'File not found', img.location.path)
             try:
                 img.inspect()
             except:

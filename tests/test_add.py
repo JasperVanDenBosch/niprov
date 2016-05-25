@@ -91,8 +91,8 @@ class AddTests(DependencyInjectionTestBase):
 
     def test_If_file_doesnt_exists_tells_listener_and_doesnt_save_prov(self):
         self.filesys.fileExists.return_value = False
-        self.assertRaises(IOError, self.add, self.img.location.toString())
-        self.filesys.fileExists.assert_called_with(self.img.location.toString())
+        self.assertRaises(IOError, self.add, self.img.location.path)
+        self.filesys.fileExists.assert_called_with(self.img.location.path)
 
     def test_For_nonexisting_transient_file_behaves_normal(self):
         self.filesys.fileExists.return_value = False

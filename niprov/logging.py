@@ -78,8 +78,9 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     'subject-position',
     'water-fat-shift',
     ]
+    parents = [location.completeString(p) for p in parents]
     commonProvenance = provenance
-    commonProvenance['parents'] = [location.completeString(p) for p in parents]
+    commonProvenance['parents'] = parents
     commonProvenance['transformation'] = transformation
     commonProvenance['script'] = script
     commonProvenance['user'] = users.determineUser(user)
@@ -87,7 +88,7 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
         commonProvenance['code'] = code
     if logtext:
         commonProvenance['logtext'] = logtext
-    if not repository.knowsByLocation(commonProvenance['parents'][0]):
+    if not repository.knowsByLocation(parents[0]):
         (parent, status) = add(parents[0])
         listener.addUnknownParent(parents[0])
     else: 

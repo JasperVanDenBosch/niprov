@@ -22,9 +22,9 @@ class LoggingTests(DependencyInjectionTestBase):
             'echo-time':123,
             'flip-angle':892,
             'inversion-time':123}
+        self.locationFactory.completeString.side_effect = lambda p: p
         self.repo.byLocation.return_value = img
         self.provenancesAdded = []
-
         def wrapProv(location, transient=False, provenance=False, dependencies=None):
             self.provenancesAdded.append(provenance)
             self.newimg = Mock()
@@ -133,18 +133,16 @@ class LoggingTests(DependencyInjectionTestBase):
 
     def test_Add_parent_if_parent_unknown(self):
         self.repo.knowsByLocation.return_value = False
-        parent = '/p/f1'
-        parents = [parent]
-        provenance = self.log('new', 'trans', parents)
-        self.listener.addUnknownParent.assert_called_with(parent)
-        self.add.assert_any_call(parent)
-
-    def test_Finds_parent_provenance_using_completedString(self):
         self.locationFactory.completeString.side_effect = lambda p: 'l:'+p
-        parent = '/p/f1'
-        parents = [parent]
-        provenance = self.log('new', 'trans', parents)
-        self.repo.knowsByLocation.assert_called_with(self.provenancesAdded[0]['parents'][0])
+        provenance = self.log('new', 'trans', 'parentpath')
+        self.add.assert_any_call('l:parentpath')
+        self.listener.addUnknownParent.assert_called_with('l:parentpath')
+
+    def test_Uses_validated_location_for_parent_lookup(self):
+        self.locationFactory.completeString.side_effect = lambda p: 'l:'+p
+        provenance = self.log('new', 'trans', 'parentpath')
+        self.repo.knowsByLocation.assert_called_with('l:parentpath')
+        self.repo.byLocation.assert_called_with('l:parentpath')
 
     def test_If_parent_unknown_uses_add_return_value(self):
         """In this case the parent provenance should be obtained from

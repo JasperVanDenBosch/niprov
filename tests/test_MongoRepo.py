@@ -9,9 +9,12 @@ class MongoRepoTests(unittest.TestCase):
         self.dependencies = Mock()
         self.config = Mock()
         self.factory = Mock()
+        self.pictureCache = Mock()
+        self.dependencies.getPictureCache.return_value = self.pictureCache
         self.dependencies.getConfiguration.return_value = self.config
         self.dependencies.getFileFactory.return_value = self.factory
         self.db = Mock()
+        self.pictureCache.getBytesFor.return_value = None
         self.db.provenance.find_one.return_value = {}
         self.db.provenance.find.return_value = {}
 
@@ -201,6 +204,28 @@ class MongoRepoTests(unittest.TestCase):
         out = self.repo.byLocation('/p/f1')
         self.factory.fromProvenance.assert_called_with(
             {'a':3, 'duration':timedelta(seconds=89.01)})
-        
+
+    def test_Obtains_optional_snapshot_data_from_cache_when_serializing(self):
+        self.pictureCache.getBytesFor.return_value = sentinel.snapbytes
+        with patch('niprov.mongo.bson') as bson:
+            bson.Binary.return_value = sentinel.snapbson
+            self.setupRepo()
+            img = Mock()
+            img.provenance = {'a':1}
+            self.repo.add(img)
+            self.pictureCache.getBytesFor.assert_called_with(img)
+            bson.Binary.assert_called_with(sentinel.snapbytes)
+            self.db.provenance.insert_one.assert_called_with({'a':1, 
+                '_snapshot-data':sentinel.snapbson})
+
+    def test_If_no_snapshot_doesnt_add_data_field(self):
+        self.pictureCache.getBytesFor.return_value = None
+        with patch('niprov.mongo.bson') as bson:
+            self.setupRepo()
+            img = Mock()
+            img.provenance = {'a':1}
+            self.repo.add(img)
+            assert not bson.Binary.called
+            self.db.provenance.insert_one.assert_called_with({'a':1})
 
 

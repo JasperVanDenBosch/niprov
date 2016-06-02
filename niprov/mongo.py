@@ -1,4 +1,4 @@
-import pymongo, copy
+import pymongo, copy, bson
 from datetime import timedelta
 from niprov.dependencies import Dependencies
 
@@ -8,6 +8,7 @@ class MongoRepository(object):
     def __init__(self, dependencies=Dependencies()):
         self.config = dependencies.getConfiguration()
         self.factory = dependencies.getFileFactory()
+        self.pictures = dependencies.getPictureCache()
         client = pymongo.MongoClient(self.config.database_url)
         self.db = client.get_default_database()
 
@@ -155,6 +156,9 @@ class MongoRepository(object):
         record = copy.deepcopy(img.provenance)
         if 'duration' in record:
             record['duration'] = record['duration'].total_seconds()
+        snapshotData = self.pictures.getBytesFor(img)
+        if snapshotData:
+            record['_snapshot-data'] = bson.Binary(snapshotData)
         return record
 
     def inflate(self, record):

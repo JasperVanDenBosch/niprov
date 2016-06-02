@@ -228,4 +228,10 @@ class MongoRepoTests(unittest.TestCase):
             assert not bson.Binary.called
             self.db.provenance.insert_one.assert_called_with({'a':1})
 
+    def test_If_snapshotdata_hands_them_to_pictureCache_on_deserializing(self):
+        self.setupRepo()
+        self.db.provenance.find_one.return_value = {'a':3, '_snapshot-data':'y7yUyS'}
+        out = self.repo.byLocation('/p/f1')
+        self.pictureCache.keepBytesFor.assert_called_with('y7yUyS', img)
+
 

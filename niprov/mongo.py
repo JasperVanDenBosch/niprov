@@ -166,7 +166,7 @@ class MongoRepository(object):
             record['duration'] = timedelta(seconds=record['duration'])
         img = self.factory.fromProvenance(record)
         if '_snapshot-data' in record:
-            self.pictures.keepBytes(record['_snapshot-data'], for_=img)
+            self.pictures.keep(record['_snapshot-data'], for_=img)
         return img
 
 

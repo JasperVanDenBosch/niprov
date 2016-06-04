@@ -234,10 +234,10 @@ class MongoRepoTests(unittest.TestCase):
         self.setupRepo()
         self.db.provenance.find_one.return_value = {'a':3}
         out = self.repo.byLocation('/p/f1')
-        assert not self.pictureCache.keepBytes.called
+        assert not self.pictureCache.keep.called
         self.db.provenance.find_one.return_value = {'a':3, '_snapshot-data':'y7yUyS'}
         out = self.repo.byLocation('/p/f1')
-        self.pictureCache.keepBytes.assert_called_with('y7yUyS', for_=img)
+        self.pictureCache.keep.assert_called_with('y7yUyS', for_=img)
 
 
 

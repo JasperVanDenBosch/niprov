@@ -9,3 +9,18 @@ class PictureCache(Format):
     def serializeSingle(self, image):
         pass
 
+    def persistAnyCachedPicture(for_):
+        pass
+
+    def new():
+        pass
+
+    def keep(picture, for_):
+        pass
+
+    def getBytes(for_):
+        pass
+
+    def getFilepath(for_):
+        pass
+

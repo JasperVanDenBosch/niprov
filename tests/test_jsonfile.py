@@ -202,5 +202,5 @@ class JsonFileTest(DependencyInjectionTestBase):
         repo = JsonFile(self.dependencies)
         img = self.imageWithProvenance({'location':'1','foo':'baz'})
         repo.add(img)
-        self.pictureCache.persistAnyCachedPicture.assert_called_with(for_=img)
+        self.pictureCache.saveToDisk.assert_called_with(for_=img)
 

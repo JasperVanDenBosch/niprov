@@ -28,7 +28,7 @@ class JsonFile(object):
         current = self.all()
         current.append(image)
         self.serializeAndWrite(current)
-        self.pictureCache.persistAnyCachedPicture(for_=image)
+        self.pictureCache.saveToDisk(for_=image)
 
     def update(self, image):
         """Save changed provenance for this file..

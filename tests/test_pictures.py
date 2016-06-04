@@ -1,27 +1,61 @@
 from unittest import TestCase
 from mock import Mock, sentinel, patch
+import io, os
 
 
 class PictureCacheTests(TestCase):
 
+    def setUp(self):
+        import niprov.pictures
+        niprov.pictures._CACHE = {} # reset cache
+
     def test_Serialize(self):
         from niprov.pictures import PictureCache
         pictures = PictureCache(sentinel.dependencies)
-        pictures.serializeSingle(sentinel.img)
+        pictures.getFilepath = Mock()
+        fpath = pictures.serializeSingle(sentinel.img)
+        pictures.getFilepath.assert_called_with(for_=sentinel.img)
+        self.assertEqual(pictures.getFilepath(), fpath)
 
     def test_Provides_new_picture_file_handle(self):
-        # new()
-        pass
+        from niprov.pictures import PictureCache
+        pictures = PictureCache(sentinel.dependencies)
+        newPicture = pictures.new()
+        self.assertTrue(hasattr(newPicture, 'write'))
 
     def test_Stored_picture_can_be_retrieved_as_filepath(self):
-        # keep(fhandle) - > serialize() / getPictureFilepathFor()
-        pass
+        from niprov.pictures import PictureCache
+        myImg = Mock()
+        myImg.provenance = {'id':'007'}
+        pictures = PictureCache(sentinel.dependencies)
+        self.assertIsNone(pictures.getFilepath(for_=myImg))
+        pictures.keep(io.BytesIO('/x10/x05/x5f'), for_=myImg)
+        picfpath = os.path.expanduser('~/.niprov-snapshots/007.png')
+        self.assertEqual(picfpath, pictures.getFilepath(for_=myImg))
 
     def test_Stored_picture_can_be_retrieved_as_bytes(self):
-        # keep(fhandle) - > getPictureDataFor()
-        pass
+        from niprov.pictures import PictureCache
+        myImg = Mock()
+        myImg.provenance = {'id':'007'}
+        pictures = PictureCache(sentinel.dependencies)
+        newPicture = pictures.new()
+        newPicture.write('/x10/x05/x5f')
+        pictures.keep(newPicture, for_=myImg)
+        outBytes = pictures.getBytes(for_=myImg)
+        self.assertEqual('/x10/x05/x5f', outBytes)
 
     def test_Can_be_told_to_persist_picture_to_disk_now(self):
-        # savePictureToDiskFor()
-        pass
+        from niprov.pictures import PictureCache
+        myImg = Mock()
+        myImg.provenance = {'id':'007'}
+        pictures = PictureCache(sentinel.dependencies)
+        pictures.saveToDisk(for_=myImg) #shouldn't do anything
+        pictures.keep(io.BytesIO('/x10/x05/x5f'), for_=myImg)
+        pictures.saveToDisk(for_=myImg)
+        picfpath = os.path.expanduser('~/.niprov-snapshots/007.png')
+        self.assertTrue(os.path.isfile(picfpath))
+        with open(picfpath) as picFile:
+            self.assertEqual(picFile.read(), '/x10/x05/x5f')
+        
+    
 

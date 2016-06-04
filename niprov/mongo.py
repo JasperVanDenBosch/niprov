@@ -156,7 +156,7 @@ class MongoRepository(object):
         record = copy.deepcopy(img.provenance)
         if 'duration' in record:
             record['duration'] = record['duration'].total_seconds()
-        snapshotData = self.pictures.getBytesFor(img)
+        snapshotData = self.pictures.getBytes(for_=img)
         if snapshotData:
             record['_snapshot-data'] = bson.Binary(snapshotData)
         return record
@@ -164,6 +164,9 @@ class MongoRepository(object):
     def inflate(self, record):
         if 'duration' in record:
             record['duration'] = timedelta(seconds=record['duration'])
-        return self.factory.fromProvenance(record)
+        img = self.factory.fromProvenance(record)
+        if '_snapshot-data' in record:
+            self.pictures.keepBytes(record['_snapshot-data'], for_=img)
+        return img
 
 

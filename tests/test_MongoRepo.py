@@ -14,7 +14,7 @@ class MongoRepoTests(unittest.TestCase):
         self.dependencies.getConfiguration.return_value = self.config
         self.dependencies.getFileFactory.return_value = self.factory
         self.db = Mock()
-        self.pictureCache.getBytesFor.return_value = None
+        self.pictureCache.getBytes.return_value = None
         self.db.provenance.find_one.return_value = {}
         self.db.provenance.find.return_value = {}
 
@@ -206,20 +206,20 @@ class MongoRepoTests(unittest.TestCase):
             {'a':3, 'duration':timedelta(seconds=89.01)})
 
     def test_Obtains_optional_snapshot_data_from_cache_when_serializing(self):
-        self.pictureCache.getBytesFor.return_value = sentinel.snapbytes
+        self.pictureCache.getBytes.return_value = sentinel.snapbytes
         with patch('niprov.mongo.bson') as bson:
             bson.Binary.return_value = sentinel.snapbson
             self.setupRepo()
             img = Mock()
             img.provenance = {'a':1}
             self.repo.add(img)
-            self.pictureCache.getBytesFor.assert_called_with(img)
+            self.pictureCache.getBytes.assert_called_with(for_=img)
             bson.Binary.assert_called_with(sentinel.snapbytes)
             self.db.provenance.insert_one.assert_called_with({'a':1, 
                 '_snapshot-data':sentinel.snapbson})
 
     def test_If_no_snapshot_doesnt_add_data_field(self):
-        self.pictureCache.getBytesFor.return_value = None
+        self.pictureCache.getBytes.return_value = None
         with patch('niprov.mongo.bson') as bson:
             self.setupRepo()
             img = Mock()
@@ -229,9 +229,15 @@ class MongoRepoTests(unittest.TestCase):
             self.db.provenance.insert_one.assert_called_with({'a':1})
 
     def test_If_snapshotdata_hands_them_to_pictureCache_on_deserializing(self):
+        img = Mock()
+        self.factory.fromProvenance.return_value = img
         self.setupRepo()
+        self.db.provenance.find_one.return_value = {'a':3}
+        out = self.repo.byLocation('/p/f1')
+        assert not self.pictureCache.keepBytes.called
         self.db.provenance.find_one.return_value = {'a':3, '_snapshot-data':'y7yUyS'}
         out = self.repo.byLocation('/p/f1')
-        self.pictureCache.keepBytesFor.assert_called_with('y7yUyS', img)
+        self.pictureCache.keepBytes.assert_called_with('y7yUyS', for_=img)
+
 
 

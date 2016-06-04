@@ -197,3 +197,10 @@ class JsonFileTest(DependencyInjectionTestBase):
         out = repo.byParents(['x','y'])
         self.assertEqual([img2, img4], out)
 
+    def test_Will_tell_PictureCache_to_persist_known_Snapshot(self):
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        img = self.imageWithProvenance({'location':'1','foo':'baz'})
+        repo.add(img)
+        self.pictureCache.persistAnyCachedPicture.assert_called_with(for_=img)
+

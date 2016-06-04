@@ -1,4 +1,4 @@
-import socket
+import socket, os.path
 
 
 class Location(object):
@@ -8,10 +8,11 @@ class Location(object):
         if ':' in locationString:
             parts = locationString.split(':')
             self.hostname = parts[0]
-            self.path = parts[1]
+            path = parts[1]
         else:
             self.hostname = socket.gethostname()
-            self.path = locationString
+            path = locationString
+        self.path = os.path.abspath(path)
 
     def toDictionary(self):
         d = {}

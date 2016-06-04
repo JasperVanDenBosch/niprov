@@ -45,6 +45,5 @@ class PictureCache(Format):
 
         This is part of the :class:`.Format` interface. 
         """
-        print(image.provenance)
         return self.getFilepath(for_=image)
 

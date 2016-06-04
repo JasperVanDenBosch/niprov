@@ -78,8 +78,9 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     'subject-position',
     'water-fat-shift',
     ]
+    parents = [location.completeString(p) for p in parents]
     commonProvenance = provenance
-    commonProvenance['parents'] = [location.completeString(p) for p in parents]
+    commonProvenance['parents'] = parents
     commonProvenance['transformation'] = transformation
     commonProvenance['script'] = script
     commonProvenance['user'] = users.determineUser(user)
@@ -87,20 +88,20 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
         commonProvenance['code'] = code
     if logtext:
         commonProvenance['logtext'] = logtext
-    if not repository.knowsByLocation(commonProvenance['parents'][0]):
-        add(parents[0])
+    if not repository.knowsByLocation(parents[0]):
+        (parent, status) = add(parents[0])
         listener.addUnknownParent(parents[0])
-    parentProvenance = repository.byLocation(
-        commonProvenance['parents'][0]).provenance
+    else: 
+        parent = repository.byLocation(parents[0])
     for field in inheritableFields:
-        if field in parentProvenance:
-            commonProvenance[field] = parentProvenance[field]
+        if field in parent.provenance:
+            commonProvenance[field] = parent.provenance[field]
 
     # do things specific to each new file
     newImages = []
     for newfile in new:
         singleProvenance = copy.deepcopy(commonProvenance)
-        image = add(newfile, transient=transient, provenance=singleProvenance, 
+        (image, status) = add(newfile, transient=transient, provenance=singleProvenance, 
             dependencies=dependencies)
         newImages.append(image)
 

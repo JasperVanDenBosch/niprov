@@ -1,20 +1,15 @@
 import unittest
 from mock import Mock, patch, sentinel
 from datetime import timedelta
+from tests.ditest import DependencyInjectionTestBase
 
 
-class MongoRepoTests(unittest.TestCase):
+class MongoRepoTests(DependencyInjectionTestBase):
 
     def setUp(self):
-        self.dependencies = Mock()
-        self.config = Mock()
-        self.factory = Mock()
-        self.pictureCache = Mock()
-        self.dependencies.getPictureCache.return_value = self.pictureCache
-        self.dependencies.getConfiguration.return_value = self.config
-        self.dependencies.getFileFactory.return_value = self.factory
-        self.db = Mock()
+        super(MongoRepoTests, self).setUp()
         self.pictureCache.getBytes.return_value = None
+        self.db = Mock()
         self.db.provenance.find_one.return_value = {}
         self.db.provenance.find.return_value = {}
 
@@ -45,9 +40,9 @@ class MongoRepoTests(unittest.TestCase):
         p = '/p/f1'
         out = self.repo.byLocation(p)
         self.db.provenance.find_one.assert_called_with({'location':p})
-        self.factory.fromProvenance.assert_called_with(
+        self.fileFactory.fromProvenance.assert_called_with(
             self.db.provenance.find_one())
-        self.assertEqual(self.factory.fromProvenance(), out)
+        self.assertEqual(self.fileFactory.fromProvenance(), out)
 
     def test_getSeries(self):
         self.setupRepo()
@@ -55,9 +50,9 @@ class MongoRepoTests(unittest.TestCase):
         out = self.repo.getSeries(img)
         self.db.provenance.find_one.assert_called_with(
             {'seriesuid':img.getSeriesId()})
-        self.factory.fromProvenance.assert_called_with(
+        self.fileFactory.fromProvenance.assert_called_with(
             self.db.provenance.find_one())
-        self.assertEqual(self.factory.fromProvenance(), out)
+        self.assertEqual(self.fileFactory.fromProvenance(), out)
 
     def test_knowsSeries_returns_False_if_no_series_id(self):
         self.setupRepo()
@@ -88,35 +83,35 @@ class MongoRepoTests(unittest.TestCase):
             {'location':img.location.toString()}, {'a':1, 'b':2})
 
     def test_all(self):
-        self.factory.fromProvenance.side_effect = lambda p: 'img_'+p
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p
         self.db.provenance.find.return_value = ['p1', 'p2']
         self.setupRepo()
         out = self.repo.all()
         self.db.provenance.find.assert_called_with()
-        self.factory.fromProvenance.assert_any_call('p1')
-        self.factory.fromProvenance.assert_any_call('p2')
+        self.fileFactory.fromProvenance.assert_any_call('p1')
+        self.fileFactory.fromProvenance.assert_any_call('p2')
         self.assertEqual(['img_p1', 'img_p2'], out)
 
     def test_bySubject(self):
-        self.factory.fromProvenance.side_effect = lambda p: 'img_'+p
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p
         self.db.provenance.find.return_value = ['p1', 'p2']
         self.setupRepo()
         s = 'Brambo'
         out = self.repo.bySubject(s)
         self.db.provenance.find.assert_called_with({'subject':s})
-        self.factory.fromProvenance.assert_any_call('p1')
-        self.factory.fromProvenance.assert_any_call('p2')
+        self.fileFactory.fromProvenance.assert_any_call('p1')
+        self.fileFactory.fromProvenance.assert_any_call('p2')
         self.assertEqual(['img_p1', 'img_p2'], out)
 
     def test_byApproval(self):
-        self.factory.fromProvenance.side_effect = lambda p: 'img_'+p
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p
         self.db.provenance.find.return_value = ['p1', 'p2']
         self.setupRepo()
         a = 'AOk'
         out = self.repo.byApproval(a)
         self.db.provenance.find.assert_called_with({'approval':a})
-        self.factory.fromProvenance.assert_any_call('p1')
-        self.factory.fromProvenance.assert_any_call('p2')
+        self.fileFactory.fromProvenance.assert_any_call('p1')
+        self.fileFactory.fromProvenance.assert_any_call('p2')
         self.assertEqual(['img_p1', 'img_p2'], out)
 
     def test_updateApproval(self):
@@ -129,7 +124,7 @@ class MongoRepoTests(unittest.TestCase):
             {'location':p}, {'$set': {'approval': newStatus}})
 
     def test_latest(self):
-        self.factory.fromProvenance.side_effect = lambda p: 'img_'+p
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p
         self.db.provenance.find.return_value = Mock()
         self.db.provenance.find.return_value.sort.return_value.limit.return_value = ['px','py']
         self.setupRepo()
@@ -137,8 +132,8 @@ class MongoRepoTests(unittest.TestCase):
         self.db.provenance.find.assert_called_with()
         self.db.provenance.find().sort.assert_called_with('added', -1)
         self.db.provenance.find().sort().limit.assert_called_with(20)
-        self.factory.fromProvenance.assert_any_call('px')
-        self.factory.fromProvenance.assert_any_call('py')
+        self.fileFactory.fromProvenance.assert_any_call('px')
+        self.fileFactory.fromProvenance.assert_any_call('py')
         self.assertEqual(['img_px', 'img_py'], out)
 
     def test_statistics(self):
@@ -166,28 +161,28 @@ class MongoRepoTests(unittest.TestCase):
         ID = 'abc123'
         out = self.repo.byId(ID)
         self.db.provenance.find_one.assert_called_with({'id':ID})
-        self.factory.fromProvenance.assert_called_with(
+        self.fileFactory.fromProvenance.assert_called_with(
             self.db.provenance.find_one())
-        self.assertEqual(self.factory.fromProvenance(), out)
+        self.assertEqual(self.fileFactory.fromProvenance(), out)
 
     def test_byLocations(self):
-        self.factory.fromProvenance.side_effect = lambda p: 'img_'+p
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p
         self.db.provenance.find.return_value = ['p1', 'p2']
         self.setupRepo()
         out = self.repo.byLocations(['l1','l2'])
         self.db.provenance.find.assert_called_with({'location':{'$in':['l1','l2']}})
-        self.factory.fromProvenance.assert_any_call('p1')
-        self.factory.fromProvenance.assert_any_call('p2')
+        self.fileFactory.fromProvenance.assert_any_call('p1')
+        self.fileFactory.fromProvenance.assert_any_call('p2')
         self.assertEqual(['img_p1', 'img_p2'], out)
 
     def test_byParents(self):
-        self.factory.fromProvenance.side_effect = lambda p: 'img_'+p
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p
         self.db.provenance.find.return_value = ['p1', 'p2']
         self.setupRepo()
         out = self.repo.byParents(['x1','x2'])
         self.db.provenance.find.assert_called_with({'parents':{'$in':['x1','x2']}})
-        self.factory.fromProvenance.assert_any_call('p1')
-        self.factory.fromProvenance.assert_any_call('p2')
+        self.fileFactory.fromProvenance.assert_any_call('p1')
+        self.fileFactory.fromProvenance.assert_any_call('p2')
         self.assertEqual(['img_p1', 'img_p2'], out)
 
     def test_Converts_timedelta_to_float_when_serializing(self):
@@ -202,7 +197,7 @@ class MongoRepoTests(unittest.TestCase):
         self.setupRepo()
         self.db.provenance.find_one.return_value = {'a':3, 'duration':89.01}
         out = self.repo.byLocation('/p/f1')
-        self.factory.fromProvenance.assert_called_with(
+        self.fileFactory.fromProvenance.assert_called_with(
             {'a':3, 'duration':timedelta(seconds=89.01)})
 
     def test_Obtains_optional_snapshot_data_from_cache_when_serializing(self):
@@ -230,7 +225,7 @@ class MongoRepoTests(unittest.TestCase):
 
     def test_If_snapshotdata_hands_them_to_pictureCache_on_deserializing(self):
         img = Mock()
-        self.factory.fromProvenance.return_value = img
+        self.fileFactory.fromProvenance.return_value = img
         self.setupRepo()
         self.db.provenance.find_one.return_value = {'a':3}
         out = self.repo.byLocation('/p/f1')
@@ -239,5 +234,15 @@ class MongoRepoTests(unittest.TestCase):
         out = self.repo.byLocation('/p/f1')
         self.pictureCache.keep.assert_called_with('y7yUyS', for_=img)
 
-
+    def test_If_no_record_returned_byLocation_byId_getSeries_raise_alarm(self):
+        self.setupRepo()
+        self.db.provenance.find_one.return_value = None
+        out = self.repo.byLocation('nowhere')
+        self.listener.unknownFile.assert_called_with('nowhere')
+        out = self.repo.byId('xxxx')
+        self.listener.unknownFile.assert_called_with('id: xxxx')
+        img = Mock()
+        img.getSeriesId.return_value = '123abc'
+        out = self.repo.getSeries(img)
+        self.listener.unknownFile.assert_called_with('seriesuid: 123abc')
 

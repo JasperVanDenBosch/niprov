@@ -55,3 +55,16 @@ class LocationTests(DependencyInjectionTestBase):
         expected = 'file://HAL/p/n1.f'
         self.assertEqual(expected, loc.toUrl())
 
+    def test_Location_makes_relative_paths_absolute(self):
+        from niprov.location import Location
+        with patch('niprov.location.socket') as socket:
+            socket.gethostname.return_value = 'HAL'
+            with patch('niprov.location.os.path') as ospath:
+                ospath.abspath.return_value = '/absolute/path'
+                loc = Location('relative/path')
+                self.assertEqual('/absolute/path', loc.path)
+                self.assertEqual('HAL:/absolute/path', str(loc))
+                loc = Location('KITT:relative/path')
+                self.assertEqual('/absolute/path', loc.path)
+                self.assertEqual('KITT:/absolute/path', str(loc))
+

@@ -10,7 +10,7 @@ class ViewerMedium(object):
     def __init__(self, dependencies):
         pass
 
-    def export(self, formattedProvenance, form):
+    def export(self, formattedProvenance, form=None):
         if formattedProvenance is None:
             return
         webbrowser.open(formattedProvenance)

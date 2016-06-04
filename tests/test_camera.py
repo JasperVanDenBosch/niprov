@@ -13,7 +13,7 @@ class CameraTests(DependencyInjectionTestBase):
         camera.saveSnapshot(target, for_=sentinel.object)
         newPicture = self.pictureCache.new()
         camera.takeSnapshot.assert_called_with(target, on=newPicture)
-        self.pictureCache.keep.assert_called_with(newPicture, for_=sentinel.object)
+        self.pictureCache.keep.assert_called_with(newPicture, sentinel.object)
 
 
 

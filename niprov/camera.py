@@ -19,9 +19,9 @@ class Camera(object):
         """
         newPicture = self.film.new()
         self.takeSnapshot(data, on=newPicture)
-        self.film.keep(newPicture, for_=for_)
+        self.film.keep(newPicture, for_)
 
-    def takeSnapshot(data, on='shouldnotbehere.png'):
+    def takeSnapshot(self, data, on):
         """Plot an overview of the image using matplotlib.pyplot.
 
         Args:

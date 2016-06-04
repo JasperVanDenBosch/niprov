@@ -20,5 +20,11 @@ class ViewerMediumTests(DependencyInjectionTestBase):
             exporter.export(None, sentinel.format)
             assert not webbrowser.open.called
 
+    def test_Can_be_called_without_format(self):
+        from niprov.mediumviewer import ViewerMedium
+        exporter = ViewerMedium(sentinel.dependencies)
+        with patch('niprov.mediumviewer.webbrowser') as webbrowser:
+            exporter.export(None)
+
 
 

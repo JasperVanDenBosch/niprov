@@ -1,11 +1,14 @@
 from unittest import TestCase
 from mock import Mock, sentinel, patch
-import io, os
+import io, os, shutil
 
 
 class PictureCacheTests(TestCase):
 
     def setUp(self):
+        picdir = os.path.expanduser('~/.niprov-snapshots')
+        if os.path.isdir(picdir):
+            shutil.rmtree(picdir)
         import niprov.pictures
         niprov.pictures._CACHE = {} # reset cache
 
@@ -56,6 +59,17 @@ class PictureCacheTests(TestCase):
         self.assertTrue(os.path.isfile(picfpath))
         with open(picfpath) as picFile:
             self.assertEqual(picFile.read(), '/x10/x05/x5f')
+
+    def test_If_pic_is_not_in_cache_but_on_filesystem_provides_that(self):
+        import niprov.pictures
+        myImg = Mock()
+        myImg.provenance = {'id':'007'}
+        pictures = niprov.pictures.PictureCache(sentinel.dependencies)
+        pictures.keep(io.BytesIO('/x10/x05/x5f'), for_=myImg)
+        pictures.saveToDisk(for_=myImg)
+        niprov.pictures._CACHE = {} # reset cache
+        picfpath = os.path.expanduser('~/.niprov-snapshots/007.png')
+        self.assertEqual(picfpath, pictures.getFilepath(for_=myImg))
         
     
 

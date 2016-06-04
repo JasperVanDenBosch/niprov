@@ -30,18 +30,21 @@ class PictureCache(Format):
 
     def saveToDisk(self, for_):
         imgId = for_.provenance['id']
-        if not imgId in _CACHE:
-            return
         fpath = os.path.expanduser('~/.niprov-snapshots/{}.png'.format(imgId))
-        if not os.path.isfile(fpath):
+        if os.path.isfile(fpath):
+            return fpath
+        elif imgId in _CACHE:
             with open(fpath, 'w') as picfile:
                 picfile.write(_CACHE[imgId])
-        return fpath
+            return fpath
+        else:
+            return None
 
     def serializeSingle(self, image):
         """Provides file path to picture of image.
 
         This is part of the :class:`.Format` interface. 
         """
+        print(image.provenance)
         return self.getFilepath(for_=image)
 

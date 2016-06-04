@@ -28,5 +28,5 @@ class NiftiFile(BaseFile):
     def inspect(self):
         provenance = super(NiftiFile, self).inspect()
         img = self.libs.nibabel.load(self.path)
-        self.camera.saveSnapshot(img.get_data())
+        self.camera.saveSnapshot(img.get_data(), for_=self)
         return provenance

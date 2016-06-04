@@ -40,7 +40,7 @@ class ParrecFile(BaseFile):
         provenance['echo-time'] = img0info['echo_time']
         provenance['flip-angle'] = img0info['image_flip_angle']
         provenance['inversion-time'] = img0info['Inversion delay']
-        self.camera.saveSnapshot(img.get_data())
+        self.camera.saveSnapshot(img.get_data(), for_=self)
         return provenance
 
     def getProtocolFields(self):

@@ -53,6 +53,6 @@ class BaseFile(object):
     def viewSnapshot(self):
         pictures = self.dependencies.getPictureCache()
         viewer = self.dependencies.getMediumFactory().create('viewer')
-        snapshot = pictures.serialize(self)
+        snapshot = pictures.getFilepath(for_=self)
         viewer.export(snapshot)
 

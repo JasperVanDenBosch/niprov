@@ -86,9 +86,9 @@ class BaseFileTests(DependencyInjectionTestBase):
     def test_viewSnapshot_uses_ViewerMedium_and_PictureCache(self):
         viewer = Mock()
         self.mediumFactory.create.return_value = viewer
-        self.pictureCache.serialize.return_value = 'snapshot filepath'
+        self.pictureCache.getFilepath.return_value = 'snapshot filepath'
         img = self.constructor(self.path, dependencies=self.dependencies)
         img.viewSnapshot()
-        self.pictureCache.serialize.assert_called_with(img)
+        self.pictureCache.getFilepath.assert_called_with(for_=img)
         viewer.export.assert_called_with('snapshot filepath')
 

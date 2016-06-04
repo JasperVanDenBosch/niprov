@@ -7,7 +7,7 @@ class Camera(object):
         self.film = dependencies.getPictureCache()
         self.libs = dependencies.getLibraries()
 
-    def saveSnapshot(self, data):
+    def saveSnapshot(self, data, for_):
         """Plot an overview of the image and store it.
 
         Uses :class:`.PictureCache` as service that provides a file-like 
@@ -19,7 +19,7 @@ class Camera(object):
         """
         newPicture = self.film.new()
         self.takeSnapshot(data, on=newPicture)
-        self.film.keep(newPicture)
+        self.film.keep(newPicture, for_=for_)
 
     def takeSnapshot(data, on='shouldnotbehere.png'):
         """Plot an overview of the image using matplotlib.pyplot.

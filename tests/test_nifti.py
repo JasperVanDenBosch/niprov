@@ -38,5 +38,5 @@ class NiftiTests(BaseFileTests):
         data = sentinel.imagedata
         img.get_data.return_value = data
         out = self.file.inspect()
-        self.camera.saveSnapshot.assert_called_with(data)
+        self.camera.saveSnapshot.assert_called_with(data, for_=self.file)
 

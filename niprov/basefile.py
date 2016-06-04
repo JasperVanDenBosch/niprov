@@ -11,6 +11,7 @@ class BaseFile(object):
         self.hasher = dependencies.getHasher()
         self.location = dependencies.getLocationFactory().fromString(location)
         self.formats = dependencies.getFormatFactory()
+        self.pictures = dependencies.getPictureCache()
         if provenance:
             self.provenance = provenance
         else:
@@ -51,8 +52,10 @@ class BaseFile(object):
         return None
 
     def viewSnapshot(self):
-        pictures = self.dependencies.getPictureCache()
         viewer = self.dependencies.getMediumFactory().create('viewer')
-        snapshot = pictures.getFilepath(for_=self)
+        snapshot = self.pictures.getFilepath(for_=self)
         viewer.export(snapshot)
+
+    def getSnapshotFilepath(self):
+        return self.pictures.getFilepath(for_=self)
 

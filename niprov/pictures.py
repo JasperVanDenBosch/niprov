@@ -15,8 +15,11 @@ class PictureCache(Format):
 
     def keep(self, picture, for_):
         imgId = for_.provenance['id']
-        picture.seek(0)
-        bytes = picture.read()
+        if hasattr(picture, 'read'):
+            picture.seek(0)
+            bytes = picture.read()
+        else:
+            bytes = str(picture)
         _CACHE[imgId] = bytes
 
     def getBytes(self, for_):

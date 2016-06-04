@@ -1,6 +1,6 @@
 from unittest import TestCase
 from mock import Mock, sentinel, patch
-import io, os, shutil
+import io, os, shutil, bson
 
 
 class PictureCacheTests(TestCase):
@@ -70,6 +70,14 @@ class PictureCacheTests(TestCase):
         niprov.pictures._CACHE = {} # reset cache
         picfpath = os.path.expanduser('~/.niprov-snapshots/007.png')
         self.assertEqual(picfpath, pictures.getFilepath(for_=myImg))
+
+    def test_Keep_accepts_bsonBinary(self):
+        from niprov.pictures import PictureCache
+        myImg = Mock()
+        myImg.provenance = {'id':'007'}
+        pictures = PictureCache(sentinel.dependencies)
+        pictures.keep(bson.Binary('/x10/x05/x5f'), for_=myImg)
+        self.assertEqual('/x10/x05/x5f', pictures.getBytes(for_=myImg))
         
     
 

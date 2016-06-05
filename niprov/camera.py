@@ -34,7 +34,7 @@ class Camera(object):
         ndims = len(data.shape)
         sliceOrder = [1, 0, 2]
 
-        fig, axs = plt.subplots(nrows=1, ncols=ndims)
+        fig, axs = plt.subplots(nrows=1, ncols=ndims, figsize=(8, 3), dpi=100)
 
         for d in range(ndims):
             slicing = [slice(None)]*ndims

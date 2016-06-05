@@ -19,7 +19,7 @@
     <img class="linkicon" src="${request.static_url('niprov:static/pipeline-link.svg')}" alt="pipeline"/></a>
 
 % if image.getSnapshotFilepath():
-    <img src="${request.static_url(image.getSnapshotFilepath())}" alt="snapshot"/>
+    <img class="snapshot" src="${request.static_url(image.getSnapshotFilepath())}" alt="snapshot"/>
 % endif
 
 

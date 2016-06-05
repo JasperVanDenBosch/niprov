@@ -47,5 +47,14 @@ class FileMediumTests(DependencyInjectionTestBase):
             'provenance_hammertime.prv')
 
 
+    def test_For_PictureCache_format_simply_provides_filename(self):
+        from niprov.mediumfile import FileMedium
+        from niprov.pictures import PictureCache
+        medium = FileMedium(self.dependencies)
+        fmt = PictureCache(Mock())
+        out = medium.export('provstr', fmt)
+        self.listener.exportedToFile.assert_called_with('provstr')
+        self.assertEqual(out, 'provstr')
+
 
 

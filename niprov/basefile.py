@@ -11,6 +11,7 @@ class BaseFile(object):
         self.hasher = dependencies.getHasher()
         self.location = dependencies.getLocationFactory().fromString(location)
         self.formats = dependencies.getFormatFactory()
+        self.pictures = dependencies.getPictureCache()
         if provenance:
             self.provenance = provenance
         else:
@@ -49,3 +50,12 @@ class BaseFile(object):
 
     def getProtocolFields(self):
         return None
+
+    def viewSnapshot(self):
+        viewer = self.dependencies.getMediumFactory().create('viewer')
+        snapshot = self.pictures.getFilepath(for_=self)
+        viewer.export(snapshot)
+
+    def getSnapshotFilepath(self):
+        return self.pictures.getFilepath(for_=self)
+

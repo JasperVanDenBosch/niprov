@@ -1,5 +1,5 @@
 from pyramid.config import Configurator
-import waitress
+import waitress, os
 from niprov.dependencies import Dependencies
 
 
@@ -17,6 +17,8 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
     config.include('pyramid_mako')
     config.add_static_view('static', 'static', cache_max_age=10)
+    config.add_static_view('snapshots', 
+        os.path.expanduser('~/.niprov-snapshots'), cache_max_age=10)
     config.add_route('home', '/')
     config.add_route('latest', '/latest')
     config.add_route('stats', '/stats')

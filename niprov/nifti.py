@@ -1,6 +1,5 @@
 from datetime import datetime
 from niprov.basefile import BaseFile
-from niprov.libraries import Libraries
 
 
 class NiftiFile(BaseFile):
@@ -8,6 +7,7 @@ class NiftiFile(BaseFile):
     def __init__(self, location, **kwargs):
         super(NiftiFile, self).__init__(location, **kwargs)
         self.libs = self.dependencies.getLibraries()
+        self.camera = self.dependencies.getCamera()
 
     def attach(self, form='json'):
         """
@@ -24,3 +24,9 @@ class NiftiFile(BaseFile):
         hdr = img.get_header()
         hdr.extensions.append(ext)
         img.to_filename(self.path)
+
+    def inspect(self):
+        provenance = super(NiftiFile, self).inspect()
+        img = self.libs.nibabel.load(self.path)
+        self.camera.saveSnapshot(img.get_data(), for_=self)
+        return provenance

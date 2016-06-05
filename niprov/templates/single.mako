@@ -18,9 +18,16 @@
 <a href="${request.route_url('pipeline',id=image.provenance.get('id'))}">view pipeline
     <img class="linkicon" src="${request.static_url('niprov:static/pipeline-link.svg')}" alt="pipeline"/></a>
 
+% if image.getSnapshotFilepath():
+    <img class="snapshot" src="${request.static_url(image.getSnapshotFilepath())}" alt="snapshot"/>
+% endif
+
+
 <dl class="details">
 % for k, v in image.provenance.items():
 <%
+    if k[0] == '_':
+        continue # Ignore 'private' fields starting with underscore
     if k in ['added', 'acquired', 'created']:
         fieldtype = 'datetime'
     elif k in ['size']:

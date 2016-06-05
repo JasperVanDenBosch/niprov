@@ -1,5 +1,5 @@
 import unittest
-from mock import Mock
+from mock import Mock, sentinel
 from datetime import datetime
 from tests.test_basefile import BaseFileTests
 
@@ -32,4 +32,11 @@ class NiftiTests(BaseFileTests):
         self.hdr.extensions.append.assert_called_with(('extension','comment', 
             'serial prov'))
         self.img.to_filename.assert_called_with(self.file.path)
+
+    def test_Tells_camera_to_save_snapshot_to_cache(self):
+        img = self.libs.nibabel.load.return_value
+        data = sentinel.imagedata
+        img.get_data.return_value = data
+        out = self.file.inspect()
+        self.camera.saveSnapshot.assert_called_with(data, for_=self.file)
 

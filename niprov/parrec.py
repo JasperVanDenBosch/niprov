@@ -9,6 +9,7 @@ class ParrecFile(BaseFile):
     def __init__(self, location, **kwargs):
         super(ParrecFile, self).__init__(location, **kwargs)
         self.libs = self.dependencies.getLibraries()
+        self.camera = self.dependencies.getCamera()
 
     def inspect(self):
         provenance = super(ParrecFile, self).inspect()
@@ -39,6 +40,7 @@ class ParrecFile(BaseFile):
         provenance['echo-time'] = img0info['echo_time']
         provenance['flip-angle'] = img0info['image_flip_angle']
         provenance['inversion-time'] = img0info['Inversion delay']
+        self.camera.saveSnapshot(img.get_data(), for_=self)
         return provenance
 
     def getProtocolFields(self):

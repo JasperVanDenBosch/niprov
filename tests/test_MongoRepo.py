@@ -8,6 +8,7 @@ class MongoRepoTests(DependencyInjectionTestBase):
 
     def setUp(self):
         super(MongoRepoTests, self).setUp()
+        self.pictureCache.getBytes.return_value = None
         self.db = Mock()
         self.db.provenance.find_one.return_value = {}
         self.db.provenance.find.return_value = {}
@@ -199,6 +200,40 @@ class MongoRepoTests(DependencyInjectionTestBase):
         self.fileFactory.fromProvenance.assert_called_with(
             {'a':3, 'duration':timedelta(seconds=89.01)})
 
+    def test_Obtains_optional_snapshot_data_from_cache_when_serializing(self):
+        self.pictureCache.getBytes.return_value = sentinel.snapbytes
+        with patch('niprov.mongo.bson') as bson:
+            bson.Binary.return_value = sentinel.snapbson
+            self.setupRepo()
+            img = Mock()
+            img.provenance = {'a':1}
+            self.repo.add(img)
+            self.pictureCache.getBytes.assert_called_with(for_=img)
+            bson.Binary.assert_called_with(sentinel.snapbytes)
+            self.db.provenance.insert_one.assert_called_with({'a':1, 
+                '_snapshot-data':sentinel.snapbson})
+
+    def test_If_no_snapshot_doesnt_add_data_field(self):
+        self.pictureCache.getBytes.return_value = None
+        with patch('niprov.mongo.bson') as bson:
+            self.setupRepo()
+            img = Mock()
+            img.provenance = {'a':1}
+            self.repo.add(img)
+            assert not bson.Binary.called
+            self.db.provenance.insert_one.assert_called_with({'a':1})
+
+    def test_If_snapshotdata_hands_them_to_pictureCache_on_deserializing(self):
+        img = Mock()
+        self.fileFactory.fromProvenance.return_value = img
+        self.setupRepo()
+        self.db.provenance.find_one.return_value = {'a':3}
+        out = self.repo.byLocation('/p/f1')
+        assert not self.pictureCache.keep.called
+        self.db.provenance.find_one.return_value = {'a':3, '_snapshot-data':'y7yUyS'}
+        out = self.repo.byLocation('/p/f1')
+        self.pictureCache.keep.assert_called_with('y7yUyS', for_=img)
+
     def test_If_no_record_returned_byLocation_byId_getSeries_raise_alarm(self):
         self.setupRepo()
         self.db.provenance.find_one.return_value = None
@@ -210,6 +245,4 @@ class MongoRepoTests(DependencyInjectionTestBase):
         img.getSeriesId.return_value = '123abc'
         out = self.repo.getSeries(img)
         self.listener.unknownFile.assert_called_with('seriesuid: 123abc')
-        
-
 

@@ -43,6 +43,12 @@ class FormatFactoryTests(DependencyInjectionTestBase):
         factory = FormatFactory()
         self.assertIsInstance(factory.create('object'), ObjectFormat)
 
+    def test_Provides_picture(self):
+        from niprov.formatfactory import FormatFactory
+        from niprov.pictures import PictureCache
+        factory = FormatFactory()
+        self.assertIsInstance(factory.create('picture'), PictureCache)
+
     def test_Raises_exception_on_unknown_name(self):
         from niprov.formatfactory import FormatFactory
         factory = FormatFactory()

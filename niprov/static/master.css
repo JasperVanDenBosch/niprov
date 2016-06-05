@@ -13,3 +13,4 @@ h1 {font-style: normal; font-weight: normal; margin: 23px;}
 p#header>a {text-decoration: none; margin: 10px;}
 p#header>a:hover {text-decoration: underline;}
 p#intro {margin:40px;}
+img.snapshot {display: block;}

@@ -31,6 +31,12 @@ class MediumFactoryTests(DependencyInjectionTestBase):
         with self.assertRaisesRegexp(ValueError, 'Unknown medium: poetry'):
            factory.create('poetry')
 
+    def test_Provides_Viewer(self):
+        from niprov.mediumfactory import MediumFactory
+        from niprov.mediumviewer import ViewerMedium
+        factory = MediumFactory()
+        self.assertIsInstance(factory.create('viewer'), ViewerMedium)
+
 
 
 

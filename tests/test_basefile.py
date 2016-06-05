@@ -83,3 +83,17 @@ class BaseFileTests(DependencyInjectionTestBase):
         self.format.serialize.assert_called_with(img)
         self.assertEqual(self.format.serialize(), out)
 
+    def test_viewSnapshot_uses_ViewerMedium_and_PictureCache(self):
+        viewer = Mock()
+        self.mediumFactory.create.return_value = viewer
+        self.pictureCache.getFilepath.return_value = 'snapshot filepath'
+        img = self.constructor(self.path, dependencies=self.dependencies)
+        img.viewSnapshot()
+        self.pictureCache.getFilepath.assert_called_with(for_=img)
+        viewer.export.assert_called_with('snapshot filepath')
+
+    def test_getSnapshotFilepath(self):
+        self.pictureCache.getFilepath.return_value = 'snapshot filepath'
+        img = self.constructor(self.path, dependencies=self.dependencies)
+        self.assertEqual(img.getSnapshotFilepath(), 'snapshot filepath')
+

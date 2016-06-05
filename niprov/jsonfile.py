@@ -11,6 +11,7 @@ class JsonFile(object):
         self.filesys = dependencies.getFilesystem()
         self.json = dependencies.getSerializer()
         self.factory = dependencies.getFileFactory()
+        self.pictureCache = dependencies.getPictureCache()
         url = dependencies.getConfiguration().database_url
         self.datafile = os.path.expanduser(url)
 
@@ -27,6 +28,7 @@ class JsonFile(object):
         current = self.all()
         current.append(image)
         self.serializeAndWrite(current)
+        self.pictureCache.saveToDisk(for_=image)
 
     def update(self, image):
         """Save changed provenance for this file..

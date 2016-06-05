@@ -5,6 +5,7 @@ from niprov.formatnarrated import NarratedFormat
 from niprov.formatsimple import SimpleFormat
 from niprov.formatdict import DictFormat
 from niprov.formatobject import ObjectFormat
+from niprov.pictures import PictureCache
 
 
 class FormatFactory(object):
@@ -25,4 +26,6 @@ class FormatFactory(object):
             return DictFormat()
         if formatName == 'object':
             return ObjectFormat()
+        if formatName == 'picture':
+            return PictureCache(self.dependencies)
         raise ValueError('Unknown format: '+str(formatName))

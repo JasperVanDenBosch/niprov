@@ -18,12 +18,14 @@ class MongoTests(unittest.TestCase):
         client = MongoClient(self.fullURL)
         client.get_default_database().provenance.drop()
 
+    @unittest.skipIf("TRAVIS" in os.environ, "Skipping this test on Travis CI.")
     def test_Something(self):
         self.provenance.discover('testdata')
         testfpath = os.path.abspath('testdata/parrec/T1.PAR')
         img = self.provenance.get(forFile=testfpath)
         self.assertEqual(img.provenance['subject'], '05aug14test')
 
+    @unittest.skipIf("TRAVIS" in os.environ, "Skipping this test on Travis CI.")
     def test_Stats(self):
         self.provenance.discover('testdata')
         repository = self.provenance.deps.getRepository()

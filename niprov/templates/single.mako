@@ -26,6 +26,8 @@
 <dl class="details">
 % for k, v in image.provenance.items():
 <%
+    if k[0] == '_':
+        continue # Ignore 'private' fields starting with underscore
     if k in ['added', 'acquired', 'created']:
         fieldtype = 'datetime'
     elif k in ['size']:

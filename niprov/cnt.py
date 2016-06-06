@@ -27,6 +27,7 @@ class NeuroscanFile(BaseFile):
         acqstring = (header.date+' '+header.time).translate(None, '\x00')
         dtformat = '%d/%m/%y %H:%M:%S'
         provenance['acquired'] = datetime.strptime(acqstring, dtformat)
+        provenance['modality'] = 'EEG'
         return provenance
 
     def _fread(self, fhandle, size, dtype):

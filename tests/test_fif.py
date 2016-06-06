@@ -39,6 +39,13 @@ class FifTests(BaseFileTests):
         self.libs.mne.io.write_info.assert_called_with(self.file.path, 
             self.img.info)
 
+    def test_Determines_modality(self):
+        out = self.file.inspect()
+        self.assertEqual(out['modality'], 'MEG')
+
+    def test_Preserves_modality_if_inherited(self):
+        pass # Doesn't have to preserve
+
     def setupMne(self):
         TS = 1422522595.76096
         self.acquired = datetime.fromtimestamp(TS)

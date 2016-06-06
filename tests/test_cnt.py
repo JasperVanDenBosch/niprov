@@ -21,6 +21,13 @@ class CNTTests(BaseFileTests):
         self.assertEqual(out['sampling-frequency'], 1000)
         self.assertEqual(out['duration'], timedelta(seconds=2080/1000.))
 
+    def test_Determines_modality(self):
+        out = self.file.inspect()
+        self.assertEqual(out['modality'], 'EEG')
+
+    def test_Preserves_modality_if_inherited(self):
+        pass # Doesn't have to preserve
+
 
 class MockFile(object):
 

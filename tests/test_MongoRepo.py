@@ -246,3 +246,4 @@ class MongoRepoTests(DependencyInjectionTestBase):
         out = self.repo.getSeries(img)
         self.listener.unknownFile.assert_called_with('seriesuid: 123abc')
 
+

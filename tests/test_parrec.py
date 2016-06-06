@@ -63,6 +63,20 @@ class ParrecTests(BaseFileTests):
         out = self.file.inspect()
         self.camera.saveSnapshot.assert_called_with(data, for_=self.file)
 
+    def test_Determines_modality(self):
+        out = self.file.inspect()
+        self.assertEqual(out['modality'], 'MRI')
+
+    def test_Determines_modality_for_diffusion(self):
+        img = self.libs.nibabel.load.return_value
+        img.header.general_info['diffusion'] = 1
+        self.libs.nibabel.load.return_value = img
+        out = self.file.inspect()
+        self.assertEqual(out['modality'], 'DWI')
+
+    def test_Preserves_modality_if_inherited(self):
+        pass # Doesn't have to preserve
+
     def setupNibabel(self):
         import numpy
         img = Mock()

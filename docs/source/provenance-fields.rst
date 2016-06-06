@@ -25,6 +25,8 @@ Overview of provenance attributes collected:
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-transient`                      | yes         | yes         | yes     | yes   | yes | yes |
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
+| :ref:`field-modality`                       | yes         | inherited   | yes     | yes   | yes | yes |
++---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-acquired`                       |             | inherited   | yes     | yes   | yes | yes |
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-duration`                       |             | inherited   | yes     | yes   | yes | yes |
@@ -148,6 +150,13 @@ transient
 ---------
 
 Whether the file is deemed temporary.
+
+.. _field-modality:
+
+modality
+--------
+
+Type of data; MRI, DWI, MEG, EEG or other.
 
 .. _field-acquired:
 

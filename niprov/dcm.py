@@ -48,6 +48,7 @@ class DicomFile(BaseFile):
             acqtime = datetime.fromtimestamp(float(img.SeriesTime)).time()
             combined = datetime.combine(acqdate, acqtime)
             self.provenance['acquired'] = combined.replace(microsecond=0)
+        self.provenance['modality'] = 'MRI'
         return self.provenance
 
 

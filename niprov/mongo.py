@@ -60,7 +60,8 @@ class MongoRepository(object):
             image (:class:`.DicomFile`): File that is part of a series.
 
         Returns:
-            :class:`.DicomFile`: Image object that caries provenance for the series.
+            :class:`.DicomFile`: Image object that caries provenance for 
+                         the series.
         """
         seriesUid = image.getSeriesId()
         record = self.db.provenance.find_one({'seriesuid':seriesUid})
@@ -160,6 +161,11 @@ class MongoRepository(object):
     def byParents(self, listOfParentLocations):
         records = self.db.provenance.find({'parents':{
             '$in':listOfParentLocations}})
+        return [self.inflate(record) for record in records]
+
+    def inquire(self, query):
+        field = query.getFields()[0]
+        records = self.db.provenance.find({field.name:field.value})
         return [self.inflate(record) for record in records]
 
     def deflate(self, img):

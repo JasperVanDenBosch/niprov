@@ -189,5 +189,14 @@ class JsonFile(object):
         return [f for f in self.all() if set(listOfParentLocations).intersection(
             f.provenance.get('parents',[]))]
 
+    def inquire(self, query):
+        field = query.getFields()[0]
+        matches = self.all()
+        for image in self.all():
+            if 'approval' in image.provenance:
+                if image.provenance['approval'] == approvalStatus:
+                    matches.append(image)
+        return matches
+
        
 

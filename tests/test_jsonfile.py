@@ -204,3 +204,21 @@ class JsonFileTest(DependencyInjectionTestBase):
         repo.add(img)
         self.pictureCache.saveToDisk.assert_called_with(for_=img)
 
+    def test_Query(self):
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['l']
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        img1 = self.imageWithProvenance({'a':'b'})
+        img2 = self.imageWithProvenance({'color':'red','a':'d'})
+        img3 = self.imageWithProvenance({'color':'blue','a':'f'})
+        img4 = self.imageWithProvenance({'color':'red','a':'d'})
+        repo.all = Mock()
+        repo.all.return_value = [img1, img2, img3, img4]
+        q = Mock()
+        field1 = Mock()
+        field1.name = 'color'
+        field1.value = 'red'
+        q.getFields.return_value = [field1]
+        out = repo.inquire(q)
+        self.assertEqual([img2, img4], out)
+

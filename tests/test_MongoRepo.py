@@ -230,7 +230,8 @@ class MongoRepoTests(DependencyInjectionTestBase):
         self.db.provenance.find_one.return_value = {'a':3}
         out = self.repo.byLocation('/p/f1')
         assert not self.pictureCache.keep.called
-        self.db.provenance.find_one.return_value = {'a':3, '_snapshot-data':'y7yUyS'}
+        self.db.provenance.find_one.return_value = {'a':3, 
+                                                    '_snapshot-data':'y7yUyS'}
         out = self.repo.byLocation('/p/f1')
         self.pictureCache.keep.assert_called_with('y7yUyS', for_=img)
 
@@ -245,5 +246,17 @@ class MongoRepoTests(DependencyInjectionTestBase):
         img.getSeriesId.return_value = '123abc'
         out = self.repo.getSeries(img)
         self.listener.unknownFile.assert_called_with('seriesuid: 123abc')
+
+    def test_Query(self):
+        self.db.provenance.find.return_value = ['record1']
+        self.setupRepo()
+        q = Mock()
+        field1 = Mock()
+        field1.name = 'color'
+        field1.value = 'red'
+        q.getFields.return_value = [field1]
+        out = self.repo.inquire(q)
+        self.db.provenance.find.assert_called_with({'color':'red'})
+        self.fileFactory.fromProvenance.assert_called_with('record1')
 
 

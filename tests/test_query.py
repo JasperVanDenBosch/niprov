@@ -36,4 +36,10 @@ class QueryTest(DependencyInjectionTestBase):
         self.repo.inquire.assert_called_with(q)
         self.assertEqual(out, self.repo.inquire())
 
+    def test_Len_on_query(self):
+        from niprov.querying import Query
+        self.repo.inquire.return_value = [sentinel.r1, sentinel.r2]
+        q = Query(self.dependencies)
+        self.assertEqual(len(q), 2)
+
 

@@ -10,6 +10,9 @@ class Query(object):
     def __iter__(self):
         return self.repository.inquire(self).__iter__()
 
+    def __len__(self):
+        return len(self.repository.inquire(self))
+
     def getFields(self):
         return self.fields
 

@@ -191,12 +191,10 @@ class JsonFile(object):
 
     def inquire(self, query):
         field = query.getFields()[0]
-        matches = self.all()
+        matches = []
         for image in self.all():
-            if 'approval' in image.provenance:
-                if image.provenance['approval'] == approvalStatus:
+            if field.name in image.provenance:
+                if image.provenance[field.name] == field.value:
                     matches.append(image)
         return matches
-
-       
 

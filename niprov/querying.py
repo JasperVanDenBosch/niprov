@@ -3,8 +3,12 @@ QueryField = namedtuple('QueryField', ['name', 'value'])
 
 class Query(object):
 
-    def __init__(self):
+    def __init__(self, dependencies):
         self.fields = []
+        self.repository = dependencies.getRepository()
+
+    def __iter__(self):
+        return self.repository.inquire(self).__iter__()
 
     def getFields(self):
         return self.fields

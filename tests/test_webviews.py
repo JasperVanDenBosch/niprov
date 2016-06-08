@@ -52,6 +52,27 @@ class ViewTests(DependencyInjectionTestBase):
         self.assertEqual(self.pipelineFactory.forFile(), out['pipeline'])
         self.assertEqual(out['sid'], '1a2b3c')
 
+    def test_by_project(self):
+        import niprov.views
+        self.request.matchdict = {'project':'failcow'}
+        out = niprov.views.project(self.request)
+        self.query.byProject.assert_called_with('failcow')
+        self.assertEqual(self.query.byProject(), out['images'])
+
+    def test_by_user(self):
+        import niprov.views
+        self.request.matchdict = {'user':'failcow'}
+        out = niprov.views.user(self.request)
+        self.query.byUser.assert_called_with('failcow')
+        self.assertEqual(self.query.byUser(), out['images'])
+
+    def test_by_modality(self):
+        import niprov.views
+        self.request.matchdict = {'modality':'failcow'}
+        out = niprov.views.modality(self.request)
+        self.query.byModality.assert_called_with('failcow')
+        self.assertEqual(self.query.byModality(), out['images'])
+
 
 
 

@@ -42,3 +42,22 @@ def pipeline(request):
     pipeline = request.dependencies.getPipelineFactory()
     return {'pipeline':pipeline.forFile(files.byId(sid)), 'sid':sid}
 
+@view_config(route_name='project', renderer='templates/list.mako')
+def project(request):
+    project = request.matchdict['project']
+    query = request.dependencies.getQuery()
+    return {'images':query.byProject(project)}
+
+@view_config(route_name='user', renderer='templates/list.mako')
+def user(request):
+    user = request.matchdict['user']
+    query = request.dependencies.getQuery()
+    return {'images':query.byUser(user)}
+
+@view_config(route_name='modality', renderer='templates/list.mako')
+def modality(request):
+    modality = request.matchdict['modality']
+    query = request.dependencies.getQuery()
+    return {'images':query.byModality(modality)}
+
+

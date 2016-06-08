@@ -28,7 +28,9 @@ class DependencyInjectionTestBase(unittest.TestCase):
         self.camera = Mock()
         self.libs = Mock()
         self.pictureCache = Mock()
+        self.query = Mock()
         self.dependencies = Mock()
+        self.dependencies.getQuery.return_value = self.query
         self.dependencies.getLibraries.return_value = self.libs
         self.dependencies.getCamera.return_value = self.camera
         self.dependencies.getPictureCache.return_value = self.pictureCache

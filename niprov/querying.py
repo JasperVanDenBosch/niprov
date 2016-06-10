@@ -6,12 +6,17 @@ class Query(object):
     def __init__(self, dependencies):
         self.fields = []
         self.repository = dependencies.getRepository()
+        self.cachedResults = None
 
     def __iter__(self):
-        return self.repository.inquire(self).__iter__()
+        if self.cachedResults is None:
+            self.cachedResults = self.repository.inquire(self)
+        return self.cachedResults.__iter__()
 
     def __len__(self):
-        return len(self.repository.inquire(self))
+        if self.cachedResults is None:
+            self.cachedResults = self.repository.inquire(self)
+        return len(self.cachedResults)
 
     def getFields(self):
         return self.fields

@@ -39,3 +39,16 @@ class FormatTests(DependencyInjectionTestBase):
         exp.serializePipeline.assert_called_with(pipe)
         self.assertEqual(out, exp.serializePipeline())
 
+    def test_If_created_with_iterable_calls_serializeList(self):
+        from niprov.format import Format
+        exp = Format()
+        exp.serializeList = Mock()
+        exp.serializeSingle = Mock()
+        class MockQuery(object):
+            def __iter__(self):
+                pass
+        query = MockQuery()
+        out = exp.serialize(query)
+        exp.serializeList.assert_called_with(query)
+        self.assertEqual(out, exp.serializeList())
+

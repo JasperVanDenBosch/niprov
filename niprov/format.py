@@ -18,10 +18,10 @@ class Format(object):
         """
         if isinstance(provenance, Pipeline):
             return self.serializePipeline(provenance)
-        elif isinstance(provenance, list):
-            return self.serializeList(provenance)
         elif isinstance(provenance, dict):
             return self.serializeStatistics(provenance)
+        elif hasattr(provenance, '__iter__'):
+            return self.serializeList(provenance)
         else:
             return self.serializeSingle(provenance)
 

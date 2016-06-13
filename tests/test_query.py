@@ -58,6 +58,7 @@ class QueryTest(DependencyInjectionTestBase):
         self.assertEqual(self.repo.inquire.call_count, 1)
 
     def test_byLocation(self):
+        self.locationFactory.completeString.side_effect = lambda s: s
         from niprov.querying import Query
         result = Query(self.dependencies).byLocation('abc')
         self.repo.byLocation.assert_called_with('abc')
@@ -80,6 +81,12 @@ class QueryTest(DependencyInjectionTestBase):
         result = Query(self.dependencies).all()
         self.repo.all.assert_called_with()
         self.assertEqual(result, self.repo.all())
+
+    def test_Completes_locationString_byLocation(self):
+        from niprov.querying import Query
+        result = Query(self.dependencies).byLocation('abc')
+        self.locationFactory.completeString.assert_any_call('abc')
+        self.repo.byLocation.assert_called_with(self.locationFactory.completeString())
 
 
 

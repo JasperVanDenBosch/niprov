@@ -21,6 +21,10 @@ class Context(object):
         """See :py:mod:`niprov.discovery`  """
         return niprov.discovery.discover(root, dependencies=self.deps)
 
+    def get(self):
+        """See :py:mod:`niprov.querying`  """
+        return self.deps.getQuery()
+
     def inspect(self, location):
         """See :py:mod:`niprov.inspection`  """
         return niprov.inspection.inspect(location, dependencies=self.deps)
@@ -56,10 +60,6 @@ class Context(object):
     def export(self, *args, **kwargs):
         """See :py:mod:`niprov.exporting`  """
         return niprov.exporting.export(*args, dependencies=self.deps, **kwargs)
-
-    def get(self, *args, **kwargs):
-        """See :py:mod:`niprov.exporting`  """
-        return niprov.exporting.get(*args, dependencies=self.deps, **kwargs)
 
     def print_(self, *args, **kwargs):
         """See :py:mod:`niprov.exporting`  """

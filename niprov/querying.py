@@ -6,6 +6,7 @@ class Query(object):
     def __init__(self, dependencies):
         self.fields = []
         self.repository = dependencies.getRepository()
+        self.location = dependencies.getLocationFactory()
         self.cachedResults = None
 
     def __iter__(self):
@@ -22,6 +23,7 @@ class Query(object):
         return self.fields
 
     def byLocation(self, val):
+        val = self.location.completeString(val)
         return self.repository.byLocation(val)
 
     def all(self):

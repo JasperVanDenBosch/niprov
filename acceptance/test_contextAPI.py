@@ -27,7 +27,7 @@ class ContextApiTests(unittest.TestCase):
         newfile = 'temp/smoothed.test'
         self.touch(newfile)
         self.provenance.log(newfile, 'test', 'testdata/eeg/stub.cnt')
-        img = self.provenance.get(forFile=newfile)
+        img = self.provenance.get().byLocation(newfile)
 
     def test_Log(self):
         self.provenance.discover('testdata')
@@ -36,7 +36,7 @@ class ContextApiTests(unittest.TestCase):
         parent = os.path.abspath('testdata/eeg/stub.cnt')
         self.provenance.log(newfile, 'test', parent)
         testfpath = os.path.abspath(newfile)
-        img = self.provenance.get(forFile=testfpath)
+        img = self.provenance.get().byLocation(testfpath)
         self.assertEqual(img.provenance['subject'], 'Jane Doe')
         self.assertEqual(img.provenance['size'], os.path.getsize(newfile))
 
@@ -47,20 +47,20 @@ class ContextApiTests(unittest.TestCase):
         parent = os.path.abspath('testdata/eeg/stub.cnt')
         self.provenance.record('echo hallo', newfile, parent, user='007')
         testfpath = os.path.abspath(newfile)
-        img = self.provenance.get(forFile=testfpath)
+        img = self.provenance.get().byLocation(testfpath)
         self.assertEqual(img.provenance['user'], '007')
 
     def test_Export_Import(self):
         from niprov.exceptions import UnknownFileError
         self.provenance.discover('testdata')
         discoveredFile = os.path.abspath('testdata/eeg/stub.cnt')
-        self.assertIsNotNone(self.provenance.get(forFile=discoveredFile))
+        self.assertIsNotNone(self.provenance.get().byLocation(discoveredFile))
         backupFilepath = self.provenance.backup()
         os.remove(self.dbpath) # get rid of existing data.
-        with self.assertRaises(UnknownFileError):
-            self.provenance.get(forFile=discoveredFile)
+        with self.assertRaises(IndexError):
+            self.provenance.get().byLocation(discoveredFile)
         self.provenance.importp(backupFilepath)
-        self.assertIsNotNone(self.provenance.get(forFile=discoveredFile))
+        self.assertIsNotNone(self.provenance.get().byLocation(discoveredFile))
 
     @unittest.skip("Doesn't work on Travis right now.")
     def test_Attach_provenance_string_in_file_based_on_config(self):

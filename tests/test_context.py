@@ -1,10 +1,18 @@
 import unittest
-import mock
 from mock import Mock
+from tests.ditest import DependencyInjectionTestBase
 
 
-class ContextTests(unittest.TestCase):
+class ContextTests(DependencyInjectionTestBase):
 
     def setUp(self):
-        pass
+        super(ContextTests, self).setUp()
+        from niprov import Context
+        self.context = Context()
+        self.context.deps = self.dependencies
+
+    def test_get(self):
+        self.assertEqual(self.context.get(), self.query)
+
+
 

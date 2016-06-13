@@ -9,7 +9,7 @@ from niprov.approval import (markForApproval, markedForApproval, approve,
 from niprov.context import Context
 from niprov.config import Configuration
 from niprov.webapp import serve
-from niprov.exporting import export, get, print_, backup
+from niprov.exporting import export, print_, backup, view
 from niprov.importing import importp
 from niprov.comparing import compare
 

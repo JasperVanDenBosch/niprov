@@ -21,6 +21,18 @@ class Query(object):
     def getFields(self):
         return self.fields
 
+    def byLocation(self, val):
+        return self.repository.byLocation(val)
+
+    def all(self):
+        return self.repository.all()
+
+    def latest(self):
+        return self.repository.latest()
+
+    def statistics(self):
+        return self.repository.statistics()
+
     def byModality(self, val):
         self.fields.append(QueryField('modality', val))
         return self
@@ -31,4 +43,8 @@ class Query(object):
 
     def byUser(self, val):
         self.fields.append(QueryField('user', val))
+        return self
+
+    def bySubject(self, val):
+        self.fields.append(QueryField('subject', val))
         return self

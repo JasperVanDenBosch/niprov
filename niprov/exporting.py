@@ -3,8 +3,7 @@
 from niprov.dependencies import Dependencies
 
 
-def export(medium, form, forFile=None, forSubject=None, 
-        statistics=False, pipeline=False, dependencies=Dependencies()):
+def export(provenance, medium, form, pipeline=False, dependencies=Dependencies()):
     """Publish or simply return provenance for selected files.
 
     To get provenance on one specific file, pass its path as the 'forFile' 
@@ -13,6 +12,7 @@ def export(medium, form, forFile=None, forSubject=None,
     most recently registered files is reported.
 
     Args:
+        provenance: Niprov BaseFile object or list of such.
         medium (str): The medium in which to publish the provenance. 
             One of:
                 'stdout'  (print the provenance to the terminal), 
@@ -21,68 +21,39 @@ def export(medium, form, forFile=None, forSubject=None,
                 'viewer'  (open in the system image viewer).
         form (str): The format in which to serialize the provenance. 
             One of 'json','xml','narrated','simple','dict','picture'.
-        forFile (str): Select one file based on this path.
-        forSubject (str): Select files regarding this subject.
-        statistics (bool): Print overall statistics.
 
     Returns:
         Depends on medium selected. 
     """
     formatFactory = dependencies.getFormatFactory()
     mediumFactory = dependencies.getMediumFactory()
-    repository = dependencies.getRepository()
-    listener = dependencies.getListener()
-    location = dependencies.getLocationFactory()
     makePipeline = dependencies.getPipelineFactory()
 
     form = formatFactory.create(form)
     medium = mediumFactory.create(medium)
     
-    if statistics:
-        provenance = repository.statistics()
-    elif forFile:
-        forFile = location.completeString(forFile)
-        if not repository.knowsByLocation(forFile):
-            listener.unknownFile(forFile)
-            return
-        provenance = repository.byLocation(forFile)
-        if pipeline:
-            provenance = makePipeline.forFile(provenance)
-    elif forSubject:
-        provenance = repository.bySubject(forSubject)
-    else:
-        provenance = repository.latest()
+    if pipeline:
+        provenance = makePipeline.forFile(provenance)
 
     formattedProvenance = form.serialize(provenance)
     return medium.export(formattedProvenance, form)
 
-
-def get(forFile=None, forSubject=None, statistics=False, pipeline=False, 
-    dependencies=Dependencies()):
-    """Shortcut for export(medium='direct', form='object').
-    """
-    return export(medium='direct', form='object', 
-        forFile=forFile, forSubject=forSubject, statistics=statistics, 
-        pipeline=pipeline, dependencies=dependencies)
-
-def print_(forFile=None, forSubject=None, statistics=False, pipeline=False, 
-    dependencies=Dependencies()):
+def print_(provenance, pipeline=False, dependencies=Dependencies()):
     """Shortcut for export(medium='stdout', form='simple').
     """
-    return export(medium='stdout', form='simple', 
-        forFile=forFile, forSubject=forSubject, statistics=statistics, 
-        pipeline=pipeline, dependencies=dependencies)
+    return export(provenance, medium='stdout', form='simple',
+                  pipeline=pipeline, dependencies=dependencies)
 
 def backup(dependencies=Dependencies()):
     """Shortcut for export(medium='file', form='json') for all provenance.
     """
-    return export(medium='file', form='json', dependencies=dependencies)
+    provenance = dependencies.getQuery().all()
+    return export(provenance, medium='file', form='json', 
+                  dependencies=dependencies)
 
-def view(forFile=None, forSubject=None, statistics=False, pipeline=False, 
-    dependencies=Dependencies()):
+def view(provenance, pipeline=False, dependencies=Dependencies()):
     """Shortcut for export(medium='viewer', form='picture').
     """
-    return export(medium='viewer', form='picture', 
-        forFile=forFile, forSubject=forSubject, statistics=statistics, 
+    return export(provenance, medium='viewer', form='picture', 
         pipeline=pipeline, dependencies=dependencies)
 

@@ -28,6 +28,13 @@ class QueryTest(DependencyInjectionTestBase):
         self.assertEqual('user', q.getFields()[0].name)
         self.assertEqual('dumbledore', q.getFields()[0].value)
 
+    def test_bySubject(self):
+        from niprov.querying import Query
+        q = Query(self.dependencies).bySubject('potter, h')
+        self.assertEqual(1, len(q.getFields()))
+        self.assertEqual('subject', q.getFields()[0].name)
+        self.assertEqual('potter, h', q.getFields()[0].value)
+
     def test_Iter_returns_repository_inquire_results(self):
         from niprov.querying import Query
         self.repo.inquire.return_value = [sentinel.r1, sentinel.r2]
@@ -49,5 +56,30 @@ class QueryTest(DependencyInjectionTestBase):
         len(q)
         list(q)
         self.assertEqual(self.repo.inquire.call_count, 1)
+
+    def test_byLocation(self):
+        from niprov.querying import Query
+        result = Query(self.dependencies).byLocation('abc')
+        self.repo.byLocation.assert_called_with('abc')
+        self.assertEqual(result, self.repo.byLocation('abc'))
+
+    def test_Statistics(self):
+        from niprov.querying import Query
+        result = Query(self.dependencies).statistics()
+        self.repo.statistics.assert_called_with()
+        self.assertEqual(result, self.repo.statistics())
+
+    def test_Latest(self):
+        from niprov.querying import Query
+        result = Query(self.dependencies).latest()
+        self.repo.latest.assert_called_with()
+        self.assertEqual(result, self.repo.latest())
+
+    def test_All(self):
+        from niprov.querying import Query
+        result = Query(self.dependencies).all()
+        self.repo.all.assert_called_with()
+        self.assertEqual(result, self.repo.all())
+
 
 

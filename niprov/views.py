@@ -11,11 +11,7 @@ def latest(request):
     repository = request.dependencies.getRepository()
     return {'images':repository.latest()}
 
-@view_config(route_name='subject', renderer='templates/list.mako')
-def subject(request):
-    subj = request.matchdict['subject']
-    repository = request.dependencies.getRepository()
-    return {'images':repository.bySubject(subj)}
+
 
 @view_config(route_name='short', renderer='templates/single.mako')
 def short(request):
@@ -41,6 +37,12 @@ def pipeline(request):
     files = request.dependencies.getRepository()
     pipeline = request.dependencies.getPipelineFactory()
     return {'pipeline':pipeline.forFile(files.byId(sid)), 'sid':sid}
+
+@view_config(route_name='subject', renderer='templates/list.mako')
+def subject(request):
+    subj = request.matchdict['subject']
+    query = request.dependencies.getQuery()
+    return {'images':query.bySubject(subj)}
 
 @view_config(route_name='project', renderer='templates/list.mako')
 def project(request):

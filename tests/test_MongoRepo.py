@@ -92,17 +92,6 @@ class MongoRepoTests(DependencyInjectionTestBase):
         self.fileFactory.fromProvenance.assert_any_call('p2')
         self.assertEqual(['img_p1', 'img_p2'], out)
 
-    def test_byApproval(self):
-        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p
-        self.db.provenance.find.return_value = ['p1', 'p2']
-        self.setupRepo()
-        a = 'AOk'
-        out = self.repo.byApproval(a)
-        self.db.provenance.find.assert_called_with({'approval':a})
-        self.fileFactory.fromProvenance.assert_any_call('p1')
-        self.fileFactory.fromProvenance.assert_any_call('p2')
-        self.assertEqual(['img_p1', 'img_p2'], out)
-
     def test_updateApproval(self):
         self.setupRepo()
         img = Mock()

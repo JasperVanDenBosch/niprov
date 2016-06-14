@@ -118,19 +118,6 @@ class JsonFile(object):
     def byLocations(self, listOfLocations):
         return [f for f in self.all() if f.location.toString() in listOfLocations]
 
-    def bySubject(self, subject):
-        """Get the provenance for all files of a given participant. 
-
-        Args:
-            subject (str): The name or other ID string.
-
-        Returns:
-            list: List of provenance for known files imaging this subject.
-        """
-        all = self.all()
-        imagesWithSubject = [f for f in all if 'subject' in f.provenance]
-        return [f for f in imagesWithSubject if f.provenance['subject']==subject]
-
     def getSeries(self, image):
         """Get the object that carries provenance for the series that the image 
         passed is in. 
@@ -150,14 +137,6 @@ class JsonFile(object):
                 return image
         else:
             raise IndexError('No provenance record for that series.')
-
-    def byApproval(self, approvalStatus):
-        matches = []
-        for image in self.all():
-            if 'approval' in image.provenance:
-                if image.provenance['approval'] == approvalStatus:
-                    matches.append(image)
-        return matches
 
     def updateApproval(self, fpath, approvalStatus):
         img = self.byLocation(fpath)

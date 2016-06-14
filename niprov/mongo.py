@@ -115,10 +115,6 @@ class MongoRepository(object):
         records = self.db.provenance.find()
         return [self.inflate(record) for record in records]
 
-    def byApproval(self, approvalStatus):
-        records = self.db.provenance.find({'approval':approvalStatus})
-        return [self.inflate(record) for record in records]
-
     def latest(self):
         records = self.db.provenance.find().sort('added', -1).limit(20)
         return [self.inflate(record) for record in records]

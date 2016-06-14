@@ -84,28 +84,6 @@ class JsonFileTest(DependencyInjectionTestBase):
         repo.update.side_effect = assertion
         repo.updateApproval('/p/f1','excellent!')
 
-    def test_bySubject(self):
-        from niprov.jsonfile import JsonFile
-        repo = JsonFile(self.dependencies)
-        img1 = self.imageWithProvenance({'subject':'john','a':'b'})
-        img2 = self.imageWithProvenance({'subject':'tim','a':'d'})
-        img3 = self.imageWithProvenance({'subject':'john','a':'f'})
-        repo.all = Mock()
-        repo.all.return_value = [img1, img2, img3]
-        out = repo.bySubject('john')
-        self.assertEqual([img1, img3], out)
-
-    def test_byApproval(self):
-        from niprov.jsonfile import JsonFile
-        repo = JsonFile(self.dependencies)
-        img1 = self.imageWithProvenance({'approval':'y','a':'b'})
-        img2 = self.imageWithProvenance({'approval':'x','a':'d'})
-        img3 = self.imageWithProvenance({'approval':'x','a':'f'})
-        repo.all = Mock()
-        repo.all.return_value = [img1, img2, img3]
-        out = repo.byApproval('x')
-        self.assertEqual([img2, img3], out)
-
     def test_latest(self):
         from niprov.jsonfile import JsonFile
         repo = JsonFile(self.dependencies)
@@ -158,16 +136,6 @@ class JsonFileTest(DependencyInjectionTestBase):
         repo.all.return_value = [img1, img2, img3]
         out = repo.byId('2')
         self.assertEqual(img2, out)
-
-    def test_bySubject_doesnt_balk_if_no_subject_field(self):
-        from niprov.jsonfile import JsonFile
-        repo = JsonFile(self.dependencies)
-        img1 = self.imageWithProvenance({'a':'b'})
-        img2 = self.imageWithProvenance({'subject':'tim','a':'d'})
-        img3 = self.imageWithProvenance({'subject':'john','a':'f'})
-        repo.all = Mock()
-        repo.all.return_value = [img1, img2, img3]
-        out = repo.bySubject('john')
 
     def test_byLocations(self):
         self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['a']

@@ -50,3 +50,7 @@ class Query(object):
     def bySubject(self, val):
         self.fields.append(QueryField('subject', val))
         return self
+
+    def byApproval(self, val):
+        self.fields.append(QueryField('approval', val))
+        return self

@@ -23,9 +23,9 @@ def markForApproval(files, reset=False, dependencies=Dependencies()):
 def markedForApproval(dependencies=Dependencies()):
     """List files marked for approval by a human.
     """
-    repository = dependencies.getRepository() 
+    query = dependencies.getQuery() 
     listener = dependencies.getListener() 
-    markedFiles = repository.byApproval('pending')
+    markedFiles = query.byApproval('pending')
     listener.filesMarkedForApproval(markedFiles)
     return markedFiles
 

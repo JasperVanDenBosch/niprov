@@ -35,6 +35,13 @@ class QueryTest(DependencyInjectionTestBase):
         self.assertEqual('subject', q.getFields()[0].name)
         self.assertEqual('potter, h', q.getFields()[0].value)
 
+    def test_byApproval(self):
+        from niprov.querying import Query
+        q = Query(self.dependencies).byApproval('ceterum censeo')
+        self.assertEqual(1, len(q.getFields()))
+        self.assertEqual('approval', q.getFields()[0].name)
+        self.assertEqual('ceterum censeo', q.getFields()[0].value)
+
     def test_Iter_returns_repository_inquire_results(self):
         from niprov.querying import Query
         self.repo.inquire.return_value = [sentinel.r1, sentinel.r2]

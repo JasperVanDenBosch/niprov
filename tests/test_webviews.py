@@ -36,13 +36,6 @@ class ViewTests(DependencyInjectionTestBase):
         out = niprov.views.stats(self.request)
         self.assertEqual(self.repo.statistics(), out['stats'])
 
-    def test_by_subject(self):
-        import niprov.views
-        self.request.matchdict = {'subject':'janedoe'}
-        out = niprov.views.subject(self.request)
-        self.repo.bySubject.assert_called_with('janedoe')
-        self.assertEqual(self.repo.bySubject(), out['images'])
-
     def test_pipeline_by_id(self):
         import niprov.views
         self.request.matchdict = {'id':'1a2b3c'}
@@ -51,6 +44,34 @@ class ViewTests(DependencyInjectionTestBase):
         self.pipelineFactory.forFile.assert_called_with(self.repo.byId())
         self.assertEqual(self.pipelineFactory.forFile(), out['pipeline'])
         self.assertEqual(out['sid'], '1a2b3c')
+
+    def test_by_project(self):
+        import niprov.views
+        self.request.matchdict = {'project':'failcow'}
+        out = niprov.views.project(self.request)
+        self.query.byProject.assert_called_with('failcow')
+        self.assertEqual(self.query.byProject(), out['images'])
+
+    def test_by_user(self):
+        import niprov.views
+        self.request.matchdict = {'user':'failcow'}
+        out = niprov.views.user(self.request)
+        self.query.byUser.assert_called_with('failcow')
+        self.assertEqual(self.query.byUser(), out['images'])
+
+    def test_by_modality(self):
+        import niprov.views
+        self.request.matchdict = {'modality':'failcow'}
+        out = niprov.views.modality(self.request)
+        self.query.byModality.assert_called_with('failcow')
+        self.assertEqual(self.query.byModality(), out['images'])
+
+    def test_by_subject(self):
+        import niprov.views
+        self.request.matchdict = {'subject':'janedoe'}
+        out = niprov.views.subject(self.request)
+        self.query.bySubject.assert_called_with('janedoe')
+        self.assertEqual(self.query.bySubject(), out['images'])
 
 
 

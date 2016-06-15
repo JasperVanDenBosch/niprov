@@ -13,6 +13,10 @@ class Dependencies(object):
             self.config = newConfiguration
         return self.config
 
+    def getCamera(self):
+        import niprov.camera
+        return niprov.camera.Camera(dependencies=self)
+
     def getClock(self):
         import niprov.clock
         return niprov.clock.Clock()
@@ -80,9 +84,9 @@ class Dependencies(object):
         import niprov.pipelinefactory
         return niprov.pipelinefactory.PipelineFactory(dependencies=self)
 
-    def getCamera(self):
-        import niprov.camera
-        return niprov.camera.Camera(dependencies=self)
+    def getQuery(self):
+        import niprov.querying
+        return niprov.querying.Query(dependencies=self)
 
     def getUsers(self):
         import niprov.users

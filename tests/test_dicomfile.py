@@ -62,6 +62,13 @@ class DicomTests(BaseFileTests):
         self.file.addFile(Mock())
         assert not self.listener.fileError.called
 
+    def test_Determines_modality(self):
+        out = self.file.inspect()
+        self.assertEqual(out['modality'], 'MRI')
+
+    def test_Preserves_modality_if_inherited(self):
+        pass # Doesn't have to preserve
+
     def setupPydicom(self):
         self.img = Mock()
         self.img.AcquisitionDateTime = '20140805121914.59000'

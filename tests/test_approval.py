@@ -22,8 +22,8 @@ class ApprovalTests(DependencyInjectionTestBase):
     def test_markedForApproval_lists_files_marked(self):
         import niprov
         markedFiles = niprov.markedForApproval(dependencies=self.dependencies)
-        self.repo.byApproval.assert_called_with('pending')
-        self.assertEqual(self.repo.byApproval(), markedFiles)
+        self.query.byApproval.assert_called_with('pending')
+        self.assertEqual(self.query.byApproval(), markedFiles)
 
     def test_markedForApproval_tells_listener_about_files(self):
         import niprov

@@ -97,3 +97,13 @@ class BaseFileTests(DependencyInjectionTestBase):
         img = self.constructor(self.path, dependencies=self.dependencies)
         self.assertEqual(img.getSnapshotFilepath(), 'snapshot filepath')
 
+    def test_Determines_modality(self):
+        img = self.constructor(self.path, dependencies=self.dependencies)
+        img.inspect()
+        self.assertEqual(img.provenance['modality'], 'other')
+
+    def test_Preserves_modality_if_inherited(self):
+        img = self.constructor(self.path, dependencies=self.dependencies,
+                                provenance={'modality':'magic'})
+        img.inspect()
+        self.assertEqual(img.provenance['modality'], 'magic')

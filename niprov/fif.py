@@ -32,6 +32,7 @@ class FifFile(BaseFile):
         provenance['dimensions'] = [img.info['nchan'], T]
         provenance['sampling-frequency'] = img.info['sfreq']
         provenance['duration'] = timedelta(seconds=T/img.info['sfreq'])
+        provenance['modality'] = 'MEG'
         return provenance
 
     def attach(self, form='json'):

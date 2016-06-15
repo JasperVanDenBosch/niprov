@@ -138,3 +138,9 @@ class DependenciesTests(unittest.TestCase):
         self.assertIsInstance(dependencies.getPictureCache(), 
             PictureCache)
 
+    def test_provides_Query(self):
+        from niprov.dependencies import Dependencies
+        from niprov.querying import Query
+        dependencies = Dependencies()
+        self.assertIsInstance(dependencies.getQuery(), Query)
+

@@ -11,11 +11,7 @@ def latest(request):
     repository = request.dependencies.getRepository()
     return {'images':repository.latest()}
 
-@view_config(route_name='subject', renderer='templates/list.mako')
-def subject(request):
-    subj = request.matchdict['subject']
-    repository = request.dependencies.getRepository()
-    return {'images':repository.bySubject(subj)}
+
 
 @view_config(route_name='short', renderer='templates/single.mako')
 def short(request):
@@ -41,4 +37,29 @@ def pipeline(request):
     files = request.dependencies.getRepository()
     pipeline = request.dependencies.getPipelineFactory()
     return {'pipeline':pipeline.forFile(files.byId(sid)), 'sid':sid}
+
+@view_config(route_name='subject', renderer='templates/list.mako')
+def subject(request):
+    subj = request.matchdict['subject']
+    query = request.dependencies.getQuery()
+    return {'images':query.bySubject(subj)}
+
+@view_config(route_name='project', renderer='templates/list.mako')
+def project(request):
+    project = request.matchdict['project']
+    query = request.dependencies.getQuery()
+    return {'images':query.byProject(project)}
+
+@view_config(route_name='user', renderer='templates/list.mako')
+def user(request):
+    user = request.matchdict['user']
+    query = request.dependencies.getQuery()
+    return {'images':query.byUser(user)}
+
+@view_config(route_name='modality', renderer='templates/list.mako')
+def modality(request):
+    modality = request.matchdict['modality']
+    query = request.dependencies.getQuery()
+    return {'images':query.byModality(modality)}
+
 

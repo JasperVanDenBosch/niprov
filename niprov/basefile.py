@@ -23,6 +23,8 @@ class BaseFile(object):
         self.provenance['size'] = self.filesystem.getsize(self.path)
         self.provenance['created'] = self.filesystem.getctime(self.path)
         self.provenance['hash'] = self.hasher.digest(self.path)
+        if not 'modality' in self.provenance:
+            self.provenance['modality'] = 'other'
         return self.provenance
 
     def attach(self, form='json'):

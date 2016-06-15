@@ -60,7 +60,8 @@ class MongoRepository(object):
             image (:class:`.DicomFile`): File that is part of a series.
 
         Returns:
-            :class:`.DicomFile`: Image object that caries provenance for the series.
+            :class:`.DicomFile`: Image object that caries provenance for 
+                         the series.
         """
         seriesUid = image.getSeriesId()
         record = self.db.provenance.find_one({'seriesuid':seriesUid})
@@ -114,24 +115,6 @@ class MongoRepository(object):
         records = self.db.provenance.find()
         return [self.inflate(record) for record in records]
 
-
-    def bySubject(self, subject):
-        """Get the provenance for all files of a given participant. 
-
-        Args:
-            subject (str): The name or other ID string.
-
-        Returns:
-            list: List of provenance for known files imaging this subject.
-        """
-        records = self.db.provenance.find({'subject':subject})
-        return [self.inflate(record) for record in records]
-
-    def byApproval(self, approvalStatus):
-        records = self.db.provenance.find({'approval':approvalStatus})
-        return [self.inflate(record) for record in records]
-
-
     def latest(self):
         records = self.db.provenance.find().sort('added', -1).limit(20)
         return [self.inflate(record) for record in records]
@@ -160,6 +143,11 @@ class MongoRepository(object):
     def byParents(self, listOfParentLocations):
         records = self.db.provenance.find({'parents':{
             '$in':listOfParentLocations}})
+        return [self.inflate(record) for record in records]
+
+    def inquire(self, query):
+        field = query.getFields()[0]
+        records = self.db.provenance.find({field.name:field.value})
         return [self.inflate(record) for record in records]
 
     def deflate(self, img):

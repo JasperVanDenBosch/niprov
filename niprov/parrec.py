@@ -40,6 +40,10 @@ class ParrecFile(BaseFile):
         provenance['echo-time'] = img0info['echo_time']
         provenance['flip-angle'] = img0info['image_flip_angle']
         provenance['inversion-time'] = img0info['Inversion delay']
+        if provenance['diffusion']:
+            provenance['modality'] = 'DWI'
+        else:
+            provenance['modality'] = 'MRI'
         self.camera.saveSnapshot(img.get_data(), for_=self)
         return provenance
 

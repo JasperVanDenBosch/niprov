@@ -92,28 +92,6 @@ class MongoRepoTests(DependencyInjectionTestBase):
         self.fileFactory.fromProvenance.assert_any_call('p2')
         self.assertEqual(['img_p1', 'img_p2'], out)
 
-    def test_bySubject(self):
-        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p
-        self.db.provenance.find.return_value = ['p1', 'p2']
-        self.setupRepo()
-        s = 'Brambo'
-        out = self.repo.bySubject(s)
-        self.db.provenance.find.assert_called_with({'subject':s})
-        self.fileFactory.fromProvenance.assert_any_call('p1')
-        self.fileFactory.fromProvenance.assert_any_call('p2')
-        self.assertEqual(['img_p1', 'img_p2'], out)
-
-    def test_byApproval(self):
-        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p
-        self.db.provenance.find.return_value = ['p1', 'p2']
-        self.setupRepo()
-        a = 'AOk'
-        out = self.repo.byApproval(a)
-        self.db.provenance.find.assert_called_with({'approval':a})
-        self.fileFactory.fromProvenance.assert_any_call('p1')
-        self.fileFactory.fromProvenance.assert_any_call('p2')
-        self.assertEqual(['img_p1', 'img_p2'], out)
-
     def test_updateApproval(self):
         self.setupRepo()
         img = Mock()
@@ -230,7 +208,8 @@ class MongoRepoTests(DependencyInjectionTestBase):
         self.db.provenance.find_one.return_value = {'a':3}
         out = self.repo.byLocation('/p/f1')
         assert not self.pictureCache.keep.called
-        self.db.provenance.find_one.return_value = {'a':3, '_snapshot-data':'y7yUyS'}
+        self.db.provenance.find_one.return_value = {'a':3, 
+                                                    '_snapshot-data':'y7yUyS'}
         out = self.repo.byLocation('/p/f1')
         self.pictureCache.keep.assert_called_with('y7yUyS', for_=img)
 
@@ -245,4 +224,17 @@ class MongoRepoTests(DependencyInjectionTestBase):
         img.getSeriesId.return_value = '123abc'
         out = self.repo.getSeries(img)
         self.listener.unknownFile.assert_called_with('seriesuid: 123abc')
+
+    def test_Query(self):
+        self.db.provenance.find.return_value = ['record1']
+        self.setupRepo()
+        q = Mock()
+        field1 = Mock()
+        field1.name = 'color'
+        field1.value = 'red'
+        q.getFields.return_value = [field1]
+        out = self.repo.inquire(q)
+        self.db.provenance.find.assert_called_with({'color':'red'})
+        self.fileFactory.fromProvenance.assert_called_with('record1')
+
 

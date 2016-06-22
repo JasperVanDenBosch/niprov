@@ -95,6 +95,18 @@ class ContextApiTests(unittest.TestCase):
         with self.assertRaisesRegexp(AssertionError, msgRegExp):
             par1.compare(par2).assertEqualProtocol()
 
+    def test_Search(self):
+        x1, s = self.provenance.add('x1', transient=True,
+            provenance={'transformation':'needle and thread'})
+        x2, s = self.provenance.add('x2/needle.y', transient=True, 
+            provenance={'transformation':'needle and thread'})
+        x3, s = self.provenance.add('x3', transient=True, 
+            provenance={'transformation':'hammer and tongs'})
+        results = self.provenance.search('needle')
+        self.assertEqual(len(results), 2)
+        self.assertEqual(x2.provenance['id'], results[0].provenance['id'])
+        self.assertEqual(x1.provenance['id'], results[1].provenance['id'])
+
 
 if __name__ == '__main__':
     unittest.main()

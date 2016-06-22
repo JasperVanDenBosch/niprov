@@ -57,6 +57,9 @@ class Context(object):
         """See :py:mod:`niprov.recording`  """
         return niprov.recording.record(*args, dependencies=self.deps, **kwargs)
 
+    def search(self, searchString):
+        return []
+
     def export(self, *args, **kwargs):
         """See :py:mod:`niprov.exporting`  """
         return niprov.exporting.export(*args, dependencies=self.deps, **kwargs)

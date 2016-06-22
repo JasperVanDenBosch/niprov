@@ -9,6 +9,7 @@ Submodules
    niprov.adding
    niprov.approval
    niprov.basefile
+   niprov.camera
    niprov.capturing
    niprov.clock
    niprov.cnt
@@ -47,16 +48,20 @@ Submodules
    niprov.mediumfactory
    niprov.mediumfile
    niprov.mediumstdout
+   niprov.mediumviewer
    niprov.mnefunsupport
    niprov.mongo
    niprov.nifti
    niprov.parrec
+   niprov.pictures
    niprov.pipeline
    niprov.pipelinefactory
+   niprov.querying
    niprov.recording
    niprov.renaming
    niprov.reporting
    niprov.repository
+   niprov.searching
    niprov.users
    niprov.views
    niprov.webapp

@@ -90,6 +90,11 @@ importp = subparsers.add_parser('import',
 importp.add_argument('file',
     help='Path to json file with provenance backup.')
 
+search = subparsers.add_parser('search',
+    help='Search for files by text.')
+search.add_argument('text',
+    help="Words to look for in the files' provenance.")
+
 args = parser.parse_args()
 if args.command == 'discover':
     niprov.discover(args.root)
@@ -113,6 +118,9 @@ elif args.command == 'export':
         provenance = query.latest()
     niprov.export(provenance, medium=args.medium, form=args.format, 
                   pipeline=args.pipeline)
+elif args.command == 'search':
+    results = niprov.search(args.text)
+    niprov.print_(results)
 elif args.command == 'backup':
     niprov.backup()
 elif args.command == 'version':
@@ -128,3 +136,4 @@ elif args.command == 'serve':
     niprov.serve()
 elif args.command == 'import':
     niprov.importp(args.file)
+

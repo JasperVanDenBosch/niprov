@@ -12,5 +12,6 @@ from niprov.webapp import serve
 from niprov.exporting import export, print_, backup, view
 from niprov.importing import importp
 from niprov.comparing import compare
+from niprov.searching import search
 
 

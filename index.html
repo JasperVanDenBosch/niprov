@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>niprov by ilogue</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">niprov</h1>
+      <h2 class="project-tagline">provenance for neuroimaging data</h2>
+      <a href="https://github.com/ilogue/niprov" class="btn">View on GitHub</a>
+      <a href="https://github.com/ilogue/niprov/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/ilogue/niprov/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="niprov" class="anchor" href="#niprov" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>niprov</h1>
+
+<p>provenance for neuroimaging data</p>
+
+<p><a href="http://badge.fury.io/py/niprov"><img src="https://badge.fury.io/py/niprov.svg" alt="PyPI version"></a>
+<a href="https://travis-ci.org/ilogue/niprov"><img src="https://travis-ci.org/ilogue/niprov.svg?branch=master" alt="Build"></a>
+<a href="http://niprov.readthedocs.org/"><img src="https://readthedocs.org/projects/niprov/badge/?version=latest" alt="Docs"></a>
+<a href="https://coveralls.io/r/ilogue/niprov"><img src="https://img.shields.io/coveralls/ilogue/niprov.svg" alt="Coverage"></a>
+<a href="https://scrutinizer-ci.com/g/ilogue/niprov/?branch=master"><img src="https://scrutinizer-ci.com/g/ilogue/niprov/badges/quality-score.png?b=master" alt="Code Quality"></a></p>
+
+<p><a href="http://depsy.org/package/python/niprov"><img src="http://depsy.org/api/package/pypi/niprov/badge.svg" alt="Research software impact"></a>
+<a href="http://dx.doi.org/10.5281/zenodo.46136"><img src="https://zenodo.org/badge/doi/10.5281/zenodo.46136.svg" alt="DOI"></a>
+<a href="https://twitter.com/niprovenance"><img src="https://img.shields.io/twitter/follow/niprovenance.svg?style=social" alt="Twitter"></a></p>
+
+<p>See the <a href="http://niprov.readthedocs.org/">full online documentation</a> (or <a href="https://media.readthedocs.org/pdf/niprov/latest/niprov.pdf">pdf</a>) and <a href="https://pypi.python.org/pypi/niprov">PyPi package</a> and follow <a href="https://twitter.com/niprovenance">niprov on twitter</a>!</p>
+
+<p>To inspect image files, install <code>nibabel</code>,<code>mne</code> and/or <code>pydicom</code>.</p>
+
+<p>A list with all provenance attributes collected can be found <a href="http://niprov.readthedocs.org/en/latest/provenance-fields.html">here</a>.</p>
+
+<h2>
+<a id="commandline-usage" class="anchor" href="#commandline-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Commandline Usage</h2>
+
+<p><em>Look for image files below the current directory, inspect them and store the obtained provenance metadata:</em></p>
+
+<div class="highlight highlight-source-shell"><pre>provenance discover <span class="pl-c1">.</span></pre></div>
+
+<p><em>Run a transformation command and log it as provenance for the new file:</em></p>
+
+<div class="highlight highlight-source-shell"><pre>provenance record mcflirt -in t1flip_all_orig -out t1all_reg -refvol 0</pre></div>
+
+<p><em>Alternatively, log the provenance after running the command:</em></p>
+
+<div class="highlight highlight-source-shell"><pre>provenance log <span class="pl-s"><span class="pl-pds">'</span>motion correction<span class="pl-pds">'</span></span> --new fmri-3dmc.nii --parent fmri.nii </pre></div>
+
+<p><em>Publish provenance of known files for subject 'John Doe' as an html file:</em></p>
+
+<div class="highlight highlight-source-shell"><pre>provenance report --subject <span class="pl-s"><span class="pl-pds">"</span>John Doe<span class="pl-pds">"</span></span> --html</pre></div>
+
+<h2>
+<a id="python-api" class="anchor" href="#python-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Python API</h2>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">import</span> niprov
+niprov.discover(<span class="pl-s"><span class="pl-pds">'</span>.<span class="pl-pds">'</span></span>)
+analysispackage.correctmotion(<span class="pl-v">input</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>JD-fmri.nii<span class="pl-pds">'</span></span>, <span class="pl-v">output</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>JD-fmri-3dmc.nii<span class="pl-pds">'</span></span>)
+niprov.log(<span class="pl-s"><span class="pl-pds">'</span>JD-fmri.nii<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>motion correction<span class="pl-pds">'</span></span>, [<span class="pl-s"><span class="pl-pds">'</span>JD-fmri-3dmc.nii<span class="pl-pds">'</span></span>])
+niprov.record(<span class="pl-s"><span class="pl-pds">'</span>mcflirt -in t1flip_all_orig -out t1all_reg -refvol 0<span class="pl-pds">'</span></span>)
+files <span class="pl-k">=</span> niprov.report(<span class="pl-v">forSubject</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>John Doe<span class="pl-pds">'</span></span>)</pre></div>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/ilogue/niprov">niprov</a> is maintained by <a href="https://github.com/ilogue">ilogue</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>

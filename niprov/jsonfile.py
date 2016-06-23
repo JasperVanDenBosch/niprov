@@ -189,6 +189,7 @@ class JsonFile(object):
                         score += image.provenance[field].count(word)
             if score > 0:
                 matches.append((image, score))
-        return [i for i, s in sorted(matches, key=itemgetter(1), reverse=True)]
+        sortedResults = sorted(matches, key=itemgetter(1), reverse=True)
+        return [i for i, s in sortedResults[:20]]
         
 

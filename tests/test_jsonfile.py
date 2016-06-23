@@ -250,3 +250,15 @@ class JsonFileTest(DependencyInjectionTestBase):
         out = repo.search('red green')
         self.assertEqual([i2, i1, i3], out)
 
+    def test_Search_returns_max_20_results(self):
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['l']
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        recs = []
+        for i in range(35):
+            recs.append(self.imageWithProvenance({'transformation':'red'}))
+        repo.all = Mock()
+        repo.all.return_value = recs
+        out = repo.search('red')
+        self.assertEqual(20, len(out))
+

@@ -178,9 +178,15 @@ class JsonFile(object):
         return matches
 
     def search(self, text):
+        fields = ['location','user','subject','project','protocol',
+                  'transformation','technique','modality']
         matches = []
         for image in self.all():
-            score = image.provenance['color'].count(text)
+            score = 0
+            for word in text.split():
+                for field in fields:
+                    if field in image.provenance:
+                        score += image.provenance[field].count(word)
             if score > 0:
                 matches.append((image, score))
         return [i for i, s in sorted(matches, key=itemgetter(1), reverse=True)]

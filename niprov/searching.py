@@ -13,4 +13,4 @@ def search(text, dependencies=Dependencies()):
     Returns:
         list: List of BaseFile objects
     """
-    return []
+    return dependencies.getRepository().search(text)

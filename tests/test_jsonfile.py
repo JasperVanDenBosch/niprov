@@ -190,3 +190,27 @@ class JsonFileTest(DependencyInjectionTestBase):
         out = repo.inquire(q)
         self.assertEqual([img2, img4], out)
 
+    def test_Search_only_returns_objects_which_have_needle(self):
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['l']
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        img1 = self.imageWithProvenance({'color':'green blue'})
+        img2 = self.imageWithProvenance({'color':'yellow red'})
+        repo.all = Mock()
+        repo.all.return_value = [img1, img2]
+        out = repo.search('red')
+        self.assertEqual([img2], out)
+
+    def test_Search_sorts_results_by_number_of_matches(self):
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['l']
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        img1 = self.imageWithProvenance({'color':'red bluered'})
+        img2 = self.imageWithProvenance({'color':'red and green'})
+        img3 = self.imageWithProvenance({'color':'red pruple red red'})
+        img4 = self.imageWithProvenance({'color':'nuthin'})
+        repo.all = Mock()
+        repo.all.return_value = [img1, img2, img3, img4]
+        out = repo.search('red')
+        self.assertEqual([img3, img1, img2], out)
+

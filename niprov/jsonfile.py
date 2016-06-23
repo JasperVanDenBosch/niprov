@@ -177,3 +177,12 @@ class JsonFile(object):
                     matches.append(image)
         return matches
 
+    def search(self, text):
+        matches = []
+        for image in self.all():
+            score = image.provenance['color'].count(text)
+            if score > 0:
+                matches.append((image, score))
+        return [i for i, s in sorted(matches, key=itemgetter(1), reverse=True)]
+        
+

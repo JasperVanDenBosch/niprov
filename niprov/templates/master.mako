@@ -24,6 +24,11 @@
             <a href="http://niprov.readthedocs.org/en/latest/">documentation</a>
         </p>
 
+        <form>
+            <input type="text" placeholder="Search..." required>
+            <input type="button" value="Search">
+        </form>
+
         ${self.body()}
 
   </body>

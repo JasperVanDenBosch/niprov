@@ -190,3 +190,75 @@ class JsonFileTest(DependencyInjectionTestBase):
         out = repo.inquire(q)
         self.assertEqual([img2, img4], out)
 
+    def test_Search_only_returns_objects_which_have_needle(self):
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['l']
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        img1 = self.imageWithProvenance({'transformation':'green blue'})
+        img2 = self.imageWithProvenance({'transformation':'yellow red'})
+        repo.all = Mock()
+        repo.all.return_value = [img1, img2]
+        out = repo.search('red')
+        self.assertEqual([img2], out)
+
+    def test_Search_sorts_results_by_number_of_matches(self):
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['l']
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        img1 = self.imageWithProvenance({'transformation':'red bluered'})
+        img2 = self.imageWithProvenance({'transformation':'red and green'})
+        img3 = self.imageWithProvenance({'transformation':'red pruple red red'})
+        img4 = self.imageWithProvenance({'transformation':'nuthin'})
+        repo.all = Mock()
+        repo.all.return_value = [img1, img2, img3, img4]
+        out = repo.search('red')
+        self.assertEqual([img3, img1, img2], out)
+
+    def test_Search_looks_through_multiple_fields(self):
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['l']
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        i1 = self.imageWithProvenance({'color':'red'})
+        i2 = self.imageWithProvenance({'location':'redis'})
+        i3 = self.imageWithProvenance({'user':'reddit'})
+        i4 = self.imageWithProvenance({'subject':'red bastard'})
+        i5 = self.imageWithProvenance({'protocol':'reddish'})
+        i6 = self.imageWithProvenance({'transformation':'zoomed red'})
+        i7 = self.imageWithProvenance({'technique':'redshift'})
+        i8 = self.imageWithProvenance({'modality':'red'})
+        repo.all = Mock()
+        repo.all.return_value = [i1,i2,i3,i4,i5,i6,i7,i8]
+        out = repo.search('red')
+        self.assertNotIn(i1, out)
+        self.assertIn(i2, out)
+        self.assertIn(i3, out)
+        self.assertIn(i4, out)
+        self.assertIn(i5, out)
+        self.assertIn(i6, out)
+        self.assertIn(i7, out)
+        self.assertIn(i8, out)
+
+    def test_Search_distinguishes_words_as_OR_search(self):
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['l']
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        i1 = self.imageWithProvenance({'transformation':'blue red red'})       #2
+        i2 = self.imageWithProvenance({'transformation':'red blue green red'}) #3
+        i3 = self.imageWithProvenance({'transformation':'green blue'})         #1
+        repo.all = Mock()
+        repo.all.return_value = [i1,i2,i3]
+        out = repo.search('red green')
+        self.assertEqual([i2, i1, i3], out)
+
+    def test_Search_returns_max_20_results(self):
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['l']
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        recs = []
+        for i in range(35):
+            recs.append(self.imageWithProvenance({'transformation':'red'}))
+        repo.all = Mock()
+        repo.all.return_value = recs
+        out = repo.search('red')
+        self.assertEqual(20, len(out))
+

@@ -73,6 +73,21 @@ class ViewTests(DependencyInjectionTestBase):
         self.query.bySubject.assert_called_with('janedoe')
         self.assertEqual(self.query.bySubject(), out['images'])
 
+    def test_search_provides_searchstring_to_template(self):
+        import niprov.views
+        self.request.GET = {'text':'hello world'}
+        out = niprov.views.search(self.request)
+        self.assertEqual('hello world', out['searchtext'])
+
+    def test_search_provides_search_results_to_template(self):
+        import niprov.views
+        self.request.GET = {'text':'hello world'}
+        with patch('niprov.views.searching') as searching:
+            out = niprov.views.search(self.request)
+            searching.search.assert_called_with('hello world',
+                                                self.request.dependencies)
+            self.assertEqual(searching.search(), out['images'])
+
 
 
 

@@ -12,10 +12,11 @@ class MongoRepoTests(DependencyInjectionTestBase):
         self.db = Mock()
         self.db.provenance.find_one.return_value = {}
         self.db.provenance.find.return_value = {}
+        self.pymongo = None
 
     def setupRepo(self):
         from niprov.mongo import MongoRepository
-        with patch('niprov.mongo.pymongo') as pymongo:
+        with patch('niprov.mongo.pymongo') as self.pymongo:
             self.repo = MongoRepository(dependencies=self.dependencies)
         self.repo.db = self.db
 
@@ -236,5 +237,21 @@ class MongoRepoTests(DependencyInjectionTestBase):
         out = self.repo.inquire(q)
         self.db.provenance.find.assert_called_with({'color':'red'})
         self.fileFactory.fromProvenance.assert_called_with('record1')
+
+    def test_Ensures_text_index_for_search(self):
+        self.setupRepo()
+        self.repo.search('')
+        searchfields = ['location','user','subject','project','protocol',
+                  'transformation','technique','modality']
+        indexspec = [(field, 'text') for field in searchfields]
+        self.db.provenance.create_index.assert_called_with(indexspec)
+
+    def test_Search(self):
+        self.db.provenance.find.return_value = ['r1','r2']
+        self.setupRepo()
+        self.repo.search('xyz')
+        self.db.provenance.find.assert_called_with({'$text':{'$search': 'xyz'}})
+        self.fileFactory.fromProvenance.assert_any_call('r1')
+        self.fileFactory.fromProvenance.assert_any_call('r2')
 
 

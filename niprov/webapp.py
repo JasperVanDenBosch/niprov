@@ -29,6 +29,7 @@ def main(global_config, **settings):
     config.add_route('subject', '/subject/{subject}')
     config.add_route('project', '/project/{project}')
     config.add_route('user', '/user/{user}')
+    config.add_route('search', '/search')
     config.add_request_method(lambda r: Dependencies(), 
         'dependencies', reify=True)
     config.scan()

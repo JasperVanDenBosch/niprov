@@ -1,5 +1,6 @@
 from pyramid.view import view_config
 import os
+import niprov.searching as searching
 
 
 @view_config(route_name='home', renderer='templates/home.mako')
@@ -10,8 +11,6 @@ def home(request):
 def latest(request):
     repository = request.dependencies.getRepository()
     return {'images':repository.latest()}
-
-
 
 @view_config(route_name='short', renderer='templates/single.mako')
 def short(request):
@@ -61,5 +60,11 @@ def modality(request):
     modality = request.matchdict['modality']
     query = request.dependencies.getQuery()
     return {'images':query.byModality(modality)}
+
+@view_config(route_name='search', renderer='templates/list.mako')
+def search(request):
+    text = request.GET['text']
+    results = searching.search(text, request.dependencies)
+    return {'images':results, 'searchtext':text}
 
 

@@ -150,6 +150,13 @@ class MongoRepository(object):
         records = self.db.provenance.find({field.name:field.value})
         return [self.inflate(record) for record in records]
 
+    def search(self, text):
+        searchfields = ['location','user','subject','project','protocol',
+                  'transformation','technique','modality']
+        indexspec = [(field, pymongo.TEXT) for field in searchfields]
+        self.db.provenance.create_index(indexspec)
+        return []
+
     def deflate(self, img):
         record = copy.deepcopy(img.provenance)
         if 'duration' in record:
@@ -166,5 +173,4 @@ class MongoRepository(object):
         if '_snapshot-data' in record:
             self.pictures.keep(record['_snapshot-data'], for_=img)
         return img
-
 

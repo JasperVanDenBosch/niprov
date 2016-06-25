@@ -17,8 +17,9 @@
 
   <body>
         <p id="header">
-            <img id="logo" src="${request.static_url('niprov:static/niprov.svg')}"/>
-            <a href="${request.route_url('home')}">home</a>
+            <a href="${request.route_url('home')}">
+                <img id="logo" src="${request.static_url('niprov:static/niprov.svg')}"/>
+            </a>
             <a href="${request.route_url('latest')}">latest</a>
             <a href="${request.route_url('stats')}">statistics</a>
             <a href="http://niprov.readthedocs.org/en/latest/">documentation</a>

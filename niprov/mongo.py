@@ -155,7 +155,8 @@ class MongoRepository(object):
                   'transformation','technique','modality']
         indexspec = [(field, pymongo.TEXT) for field in searchfields]
         self.db.provenance.create_index(indexspec)
-        return []
+        records = self.db.provenance.find({'$text':{'$search': text}})
+        return [self.inflate(record) for record in records]
 
     def deflate(self, img):
         record = copy.deepcopy(img.provenance)

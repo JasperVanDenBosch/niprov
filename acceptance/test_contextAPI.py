@@ -107,6 +107,13 @@ class ContextApiTests(unittest.TestCase):
         self.assertEqual(x2.provenance['id'], results[0].provenance['id'])
         self.assertEqual(x1.provenance['id'], results[1].provenance['id'])
 
+    def test_GetModalities(self):
+        self.provenance.discover('testdata')
+        modalities = self.provenance.get().allModalities()
+        self.assertIn('MRI', modalities)
+        self.assertIn('DWI', modalities)
+        self.assertIn('EEG', modalities)
+
 
 if __name__ == '__main__':
     unittest.main()

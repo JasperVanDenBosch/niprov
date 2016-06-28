@@ -88,6 +88,31 @@ class ViewTests(DependencyInjectionTestBase):
                                                 self.request.dependencies)
             self.assertEqual(searching.search(), out['images'])
 
+    def test_modalities(self):
+        import niprov.views
+        out = niprov.views.modalities(self.request)
+        self.query.allModalities.assert_called_with()
+        self.assertEqual('modalities', out['categoryPlural'])
+        self.assertEqual('modality', out['category'])
+        self.assertEqual(self.query.allModalities(), out['items'])
+
+    def test_projects(self):
+        import niprov.views
+        out = niprov.views.projects(self.request)
+        self.query.allProjects.assert_called_with()
+        self.assertEqual('projects', out['categoryPlural'])
+        self.assertEqual('project', out['category'])
+        self.assertEqual(self.query.allProjects(), out['items'])
+
+    def test_users(self):
+        import niprov.views
+        out = niprov.views.users(self.request)
+        self.query.allUsers.assert_called_with()
+        self.assertEqual('users', out['categoryPlural'])
+        self.assertEqual('user', out['category'])
+        self.assertEqual(self.query.allUsers(), out['items'])
+
+
 
 
 

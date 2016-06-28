@@ -1,5 +1,5 @@
 from collections import namedtuple
-QueryField = namedtuple('QueryField', ['name', 'value'])
+QueryField = namedtuple('QueryField', ['name', 'value', 'all'])
 
 class Query(object):
 
@@ -19,6 +19,17 @@ class Query(object):
             self.cachedResults = self.repository.inquire(self)
         return len(self.cachedResults)
 
+    def __contains__(self, key):
+        if self.cachedResults is None:
+            self.cachedResults = self.repository.inquire(self)
+        return key in self.cachedResults
+
+    def _fieldHasValue(self, field, value):
+        return QueryField(field, value=value, all=False)
+
+    def _fieldAllValues(self, field):
+        return QueryField(field, value=None, all=True)
+
     def getFields(self):
         return self.fields
 
@@ -36,21 +47,33 @@ class Query(object):
         return self.repository.statistics()
 
     def byModality(self, val):
-        self.fields.append(QueryField('modality', val))
+        self.fields.append(self._fieldHasValue('modality', val))
         return self
 
     def byProject(self, val):
-        self.fields.append(QueryField('project', val))
+        self.fields.append(self._fieldHasValue('project', val))
         return self
 
     def byUser(self, val):
-        self.fields.append(QueryField('user', val))
+        self.fields.append(self._fieldHasValue('user', val))
         return self
 
     def bySubject(self, val):
-        self.fields.append(QueryField('subject', val))
+        self.fields.append(self._fieldHasValue('subject', val))
         return self
 
     def byApproval(self, val):
-        self.fields.append(QueryField('approval', val))
+        self.fields.append(self._fieldHasValue('approval', val))
+        return self
+
+    def allModalities(self):
+        self.fields.append(self._fieldAllValues('modality'))
+        return self
+
+    def allProjects(self):
+        self.fields.append(self._fieldAllValues('project'))
+        return self
+
+    def allUsers(self):
+        self.fields.append(self._fieldAllValues('user'))
         return self

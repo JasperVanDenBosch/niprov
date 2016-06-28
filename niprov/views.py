@@ -67,4 +67,22 @@ def search(request):
     results = searching.search(text, request.dependencies)
     return {'images':results, 'searchtext':text}
 
+@view_config(route_name='modalities', renderer='templates/category.mako')
+def modalities(request):
+    query = request.dependencies.getQuery()
+    return {'category':'modality', 'categoryPlural':'modalities', 
+            'items':query.allModalities()}
+
+@view_config(route_name='projects', renderer='templates/category.mako')
+def projects(request):
+    query = request.dependencies.getQuery()
+    return {'category':'project', 'categoryPlural':'projects', 
+            'items':query.allProjects()}
+
+@view_config(route_name='users', renderer='templates/category.mako')
+def users(request):
+    query = request.dependencies.getQuery()
+    return {'category':'user', 'categoryPlural':'users', 
+            'items':query.allUsers()}
+
 

@@ -172,7 +172,7 @@ class JsonFileTest(DependencyInjectionTestBase):
         repo.add(img)
         self.pictureCache.saveToDisk.assert_called_with(for_=img)
 
-    def test_Query(self):
+    def test_Query_with_value_field(self):
         self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['l']
         from niprov.jsonfile import JsonFile
         repo = JsonFile(self.dependencies)
@@ -186,6 +186,7 @@ class JsonFileTest(DependencyInjectionTestBase):
         field1 = Mock()
         field1.name = 'color'
         field1.value = 'red'
+        field1.all = False
         q.getFields.return_value = [field1]
         out = repo.inquire(q)
         self.assertEqual([img2, img4], out)
@@ -261,4 +262,26 @@ class JsonFileTest(DependencyInjectionTestBase):
         repo.all.return_value = recs
         out = repo.search('red')
         self.assertEqual(20, len(out))
+
+    def test_Query_with_ALL_field(self):
+        self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p['l']
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        img1 = self.imageWithProvenance({'a':'b'})
+        img2 = self.imageWithProvenance({'color':'red','a':'d'})
+        img3 = self.imageWithProvenance({'color':'blue','a':'f'})
+        img4 = self.imageWithProvenance({'color':'green','a':'d'})
+        img5 = self.imageWithProvenance({'color':'blue','a':'g'})
+        repo.all = Mock()
+        repo.all.return_value = [img1, img2, img3, img4, img5]
+        q = Mock()
+        field1 = Mock()
+        field1.name = 'color'
+        field1.all = True
+        q.getFields.return_value = [field1]
+        out = repo.inquire(q)
+        self.assertIn('red', out)
+        self.assertIn('green', out)
+        self.assertIn('blue', out)
+        self.assertEqual(3, len(out))
 

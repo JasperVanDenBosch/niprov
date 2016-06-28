@@ -233,6 +233,7 @@ class MongoRepoTests(DependencyInjectionTestBase):
         field1 = Mock()
         field1.name = 'color'
         field1.value = 'red'
+        field1.all = False
         q.getFields.return_value = [field1]
         out = self.repo.inquire(q)
         self.db.provenance.find.assert_called_with({'color':'red'})
@@ -251,6 +252,19 @@ class MongoRepoTests(DependencyInjectionTestBase):
         self.setupRepo()
         self.repo.search('xyz')
         self.db.provenance.find.assert_called_with({'$text':{'$search': 'xyz'}})
+        self.fileFactory.fromProvenance.assert_any_call('r1')
+        self.fileFactory.fromProvenance.assert_any_call('r2')
+
+    def test_Query_for_ALL_field(self):
+        self.db.provenance.distinct.return_value = ['r1','r2']
+        self.setupRepo()
+        q = Mock()
+        field1 = Mock()
+        field1.name = 'color'
+        field1.all = True
+        q.getFields.return_value = [field1]
+        out = self.repo.inquire(q)
+        self.db.provenance.distinct.assert_called_with('color')
         self.fileFactory.fromProvenance.assert_any_call('r1')
         self.fileFactory.fromProvenance.assert_any_call('r2')
 

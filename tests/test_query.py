@@ -56,12 +56,19 @@ class QueryTest(DependencyInjectionTestBase):
         q = Query(self.dependencies)
         self.assertEqual(len(q), 2)
 
-    def test_Len_or_Iter_only_runs_inquire_once(self):
+    def test_In_on_query(self):
+        from niprov.querying import Query
+        self.repo.inquire.return_value = [sentinel.r1, sentinel.r2]
+        q = Query(self.dependencies).bySubject('abc')
+        self.assertTrue(sentinel.r2 in q)
+
+    def test_Len_or_Iter_or_in_only_runs_inquire_once(self):
         from niprov.querying import Query
         self.repo.inquire.return_value = [sentinel.r1, sentinel.r2]
         q = Query(self.dependencies)
         len(q)
         list(q)
+        sentinel.r2 in q
         self.assertEqual(self.repo.inquire.call_count, 1)
 
     def test_byLocation(self):
@@ -94,6 +101,24 @@ class QueryTest(DependencyInjectionTestBase):
         result = Query(self.dependencies).byLocation('abc')
         self.locationFactory.completeString.assert_any_call('abc')
         self.repo.byLocation.assert_called_with(self.locationFactory.completeString())
+
+    def test_allModalities(self):
+        from niprov.querying import Query
+        q = Query(self.dependencies).allModalities()
+        self.assertEqual('modality', q.getFields()[0].name)
+        self.assertTrue(q.getFields()[0].all)
+
+    def test_allUsers(self):
+        from niprov.querying import Query
+        q = Query(self.dependencies).allUsers()
+        self.assertEqual('user', q.getFields()[0].name)
+        self.assertTrue(q.getFields()[0].all)
+
+    def test_allProjects(self):
+        from niprov.querying import Query
+        q = Query(self.dependencies).allProjects()
+        self.assertEqual('project', q.getFields()[0].name)
+        self.assertTrue(q.getFields()[0].all)
 
 
 

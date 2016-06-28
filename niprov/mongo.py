@@ -147,7 +147,10 @@ class MongoRepository(object):
 
     def inquire(self, query):
         field = query.getFields()[0]
-        records = self.db.provenance.find({field.name:field.value})
+        if field.all:
+            records = self.db.provenance.distinct(field.name)
+        else:
+            records = self.db.provenance.find({field.name:field.value})
         return [self.inflate(record) for record in records]
 
     def search(self, text):

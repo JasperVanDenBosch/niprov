@@ -113,7 +113,7 @@ class ContextApiTests(unittest.TestCase):
         self.assertIn('MRI', modalities)
         self.assertIn('DWI', modalities)
         self.assertIn('EEG', modalities)
-
+ 
 
 if __name__ == '__main__':
     unittest.main()

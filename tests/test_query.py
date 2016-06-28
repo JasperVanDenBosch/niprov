@@ -95,5 +95,11 @@ class QueryTest(DependencyInjectionTestBase):
         self.locationFactory.completeString.assert_any_call('abc')
         self.repo.byLocation.assert_called_with(self.locationFactory.completeString())
 
+    def test_Completes_locationString_byLocation(self):
+        from niprov.querying import Query
+        q = Query(self.dependencies).allModalities()
+        self.assertEqual('modality', q.getFields()[0].name)
+        self.assertTrue(q.getFields()[0].all)
+
 
 

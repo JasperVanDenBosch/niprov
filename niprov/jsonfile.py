@@ -173,8 +173,12 @@ class JsonFile(object):
         matches = []
         for image in self.all():
             if field.name in image.provenance:
-                if image.provenance[field.name] == field.value:
-                    matches.append(image)
+                if field.all:
+                    if not image.provenance[field.name] in matches:
+                        matches.append(image.provenance[field.name])
+                else:
+                    if image.provenance[field.name] == field.value:
+                        matches.append(image)
         return matches
 
     def search(self, text):

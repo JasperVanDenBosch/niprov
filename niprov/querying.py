@@ -69,3 +69,11 @@ class Query(object):
     def allModalities(self):
         self.fields.append(self._fieldAllValues('modality'))
         return self
+
+    def allProjects(self):
+        self.fields.append(self._fieldAllValues('project'))
+        return self
+
+    def allUsers(self):
+        self.fields.append(self._fieldAllValues('user'))
+        return self

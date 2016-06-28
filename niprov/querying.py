@@ -19,6 +19,11 @@ class Query(object):
             self.cachedResults = self.repository.inquire(self)
         return len(self.cachedResults)
 
+    def __contains__(self, key):
+        if self.cachedResults is None:
+            self.cachedResults = self.repository.inquire(self)
+        return key in self.cachedResults
+
     def _fieldHasValue(self, field, value):
         return QueryField(field, value=value, all=False)
 

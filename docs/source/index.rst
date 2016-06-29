@@ -59,6 +59,7 @@ Contents:
    code-examples
    configuration
    provenance-fields
+   mongo-setup
    niprov
 
 

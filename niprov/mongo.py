@@ -149,9 +149,10 @@ class MongoRepository(object):
         field = query.getFields()[0]
         if field.all:
             records = self.db.provenance.distinct(field.name)
+            return records
         else:
             records = self.db.provenance.find({field.name:field.value})
-        return [self.inflate(record) for record in records]
+            return [self.inflate(record) for record in records]
 
     def search(self, text):
         searchfields = ['location','user','subject','project','protocol',

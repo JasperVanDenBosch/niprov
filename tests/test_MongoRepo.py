@@ -266,7 +266,5 @@ class MongoRepoTests(DependencyInjectionTestBase):
         q.getFields.return_value = [field1]
         out = self.repo.inquire(q)
         self.db.provenance.distinct.assert_called_with('color')
-        self.fileFactory.fromProvenance.assert_any_call('r1')
-        self.fileFactory.fromProvenance.assert_any_call('r2')
-
+        assert not self.fileFactory.fromProvenance.called
 

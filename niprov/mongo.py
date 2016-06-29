@@ -157,7 +157,7 @@ class MongoRepository(object):
         searchfields = ['location','user','subject','project','protocol',
                   'transformation','technique','modality']
         indexspec = [(field, pymongo.TEXT) for field in searchfields]
-        self.db.provenance.create_index(indexspec)
+        self.db.provenance.create_index(indexspec, name='textsearch')
         records = self.db.provenance.find({'$text':{'$search': text}})
         return [self.inflate(record) for record in records]
 

@@ -113,6 +113,21 @@ class ContextApiTests(unittest.TestCase):
         self.assertIn('MRI', modalities)
         self.assertIn('DWI', modalities)
         self.assertIn('EEG', modalities)
+
+    @unittest.skipIf("TRAVIS" in os.environ, "Work in progress.")
+    def test_Version_history(self):
+        self.provenance.add('f', transient=True, provenance={'a':1})
+        img = self.provenance.get().byLocation('f')
+        self.assertEqual(1, img.provenance['a'])
+        self.provenance.add('f', transient=True, provenance={'a':2})
+        img = self.provenance.get().byLocation('f')
+        self.assertEqual(2, img.provenance['a'])
+        self.assertEqual(1, img.versions[-1]['a'])
+        self.provenance.add('f', transient=True, provenance={'a':3})
+        img = self.provenance.get().byLocation('f')
+        self.assertEqual(3, img.provenance['a'])
+        self.assertEqual(2, img.versions[-1]['a'])
+        self.assertEqual(1, img.versions[-2]['a'])
  
 
 if __name__ == '__main__':

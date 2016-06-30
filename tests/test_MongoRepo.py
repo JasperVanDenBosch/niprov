@@ -245,7 +245,8 @@ class MongoRepoTests(DependencyInjectionTestBase):
         searchfields = ['location','user','subject','project','protocol',
                   'transformation','technique','modality']
         indexspec = [(field, 'text') for field in searchfields]
-        self.db.provenance.create_index.assert_called_with(indexspec)
+        self.db.provenance.create_index.assert_called_with(indexspec, 
+                                                           name='textsearch')
 
     def test_Search(self):
         self.db.provenance.find.return_value = ['r1','r2']
@@ -265,7 +266,5 @@ class MongoRepoTests(DependencyInjectionTestBase):
         q.getFields.return_value = [field1]
         out = self.repo.inquire(q)
         self.db.provenance.distinct.assert_called_with('color')
-        self.fileFactory.fromProvenance.assert_any_call('r1')
-        self.fileFactory.fromProvenance.assert_any_call('r2')
-
+        assert not self.fileFactory.fromProvenance.called
 

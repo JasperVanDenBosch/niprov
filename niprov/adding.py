@@ -50,33 +50,37 @@ def add(filepath, transient=False, provenance=None,
 
     img = file.locatedAt(filepath, provenance=provenance)
     if config.dryrun:
-        status = 'dryrun'
-    elif repository.knows(img):
-        listener.knownFile(img.path)
-        img = repository.byLocation(img.location.toString())
-        status = 'known'
-    elif repository.knowsSeries(img):
-        series = repository.getSeries(img)
-        series.addFile(img)
-        repository.update(series)
-        listener.fileFoundInSeries(img, series)
-        status = 'series'
-    else:
-        if not transient:
-            if not filesys.fileExists(img.location.path):
-                raise IOError(errno.ENOENT, 'File not found', img.location.path)
-            try:
-                img.inspect()
-            except:
-                listener.fileError(img.path)
-                status = 'failed'
-                return (img, status)
-            if config.attach:
-                img.attach(config.attach_format)
+        return img
+
+    if not transient:
+        if not filesys.fileExists(img.location.path):
+            raise IOError(errno.ENOENT, 'File not found', img.location.path)
+        try:
+            img.inspect()
+        except:
+            img.status = 'failed'
+            listener.fileError(img.path)
+            return img
+        if config.attach:
+            img.attach(config.attach_format)
+
+    previousVersion = repository.byLocation(img.location.toString())
+    series = repository.getSeries(img)
+    if previousVersion:
+        img.keepVersionsFromPrevious(previousVersion)
+    elif series:
+        if series.hasFile(img):
+            img.keepVersionsFromPrevious(series)
+        else:
+            img = series.mergeWith(img)
+
+    if not previousVersion and not series:
         repository.add(img)
-        listener.fileFound(img)
-        status = 'new'
-    return (img, status)
+    else:
+        repository.update(img)
+
+    listener.fileAdded(img)
+    return img
 
 
 

@@ -9,8 +9,7 @@ class AddTests(DependencyInjectionTestBase):
     def setUp(self):
         super(AddTests, self).setUp()
         self.config.dryrun = False
-        self.repo.knows.return_value = False
-        self.repo.knowsSeries.return_value = False
+        self.repo.byLocation.return_value = None
         self.img = Mock()
         self.lastProvenance = None
         def locAt(loc, provenance):
@@ -30,66 +29,44 @@ class AddTests(DependencyInjectionTestBase):
         c = call(*args, **kwargs)
         assert c not in m.call_args_list, "Unexpectedly found call: "+str(c)
 
-    def test_Returns_provenance_and_status(self):
+    def test_Returns_provenance_and_informs_listener(self):
         new = '/p/f2'
-        (image, status) = self.add(new)
+        image = self.add(new)
+        self.listener.fileAdded.assert_called_with(self.img)
         self.assertEqual(image, self.img)
-        self.assertEqual(status, 'new')
 
     def test_Sets_transient_flag_if_provided(self):
-        (provenance, status) = self.add('/p/f1', transient=True)
+        image = self.add('/p/f1', transient=True)
         self.assertEqual(self.lastProvenance['transient'],True)
 
     def test_Creates_ImageFile_object_with_factory(self):
-        (image, status) = self.add('p/afile.f')
+        image = self.add('p/afile.f')
         self.assertIs(self.img, image)
 
     def test_Calls_inspect(self):
-        (provenance, status) = self.add('p/afile.f')
+        image = self.add('p/afile.f')
         self.img.inspect.assert_called_with()
-
-    def test_Hands_provenance_to_repository(self):
-        (provenance, status) = self.add('p/afile.f')
-        self.repo.add.assert_any_call(self.img)
-
-    def test_If_discovers_file_that_is_known_ignore_it(self):
-        self.repo.knows.return_value = True
-        (provenance, status) = self.add('p/afile.f')
-        assert not self.repo.add.called
-        self.listener.knownFile.assert_called_with(self.img.path)
-        self.assertEqual(status, 'known')
-
-    def test_If_repo_doesnt_know_file_but_knows_series_update_series(self):
-        self.repo.knows.return_value = False
-        self.repo.knowsSeries.return_value = True
-        series = Mock()
-        self.repo.getSeries.return_value = series
-        (provenance, status) = self.add('p/afile.f')
-        series.addFile.assert_called_with(self.img)
-        self.repo.update.assert_called_with(series)
-        self.listener.fileFoundInSeries.assert_called_with(self.img, series)
-        self.assertEqual(status, 'series')
 
     def test_If_inspect_raises_exceptions_tells_listener_and_doesnt_save(self):
         self.img.inspect.side_effect = IOError
-        (provenance, status) = self.add('p/afile.f')
-        self.assertNotCalledWith(self.repo.add, self.img)
+        image = self.add('p/afile.f')
+        assert not self.repo.add.called
+        assert not self.repo.update.called
         self.listener.fileError.assert_called_with(self.img.path)
-        self.assertEqual(status, 'failed')
+        self.assertEqual(self.img.status, 'failed')
 
     def test_If_dryrun_doesnt_talk_to_repo_and_status_is_test(self):
         self.config.dryrun = True
-        (provenance, status) = self.add('p/afile.f')
+        image = self.add('p/afile.f')
         assert not self.repo.add.called
         assert not self.repo.update.called
         assert not self.img.inspect.called
-        self.assertEqual(status, 'dryrun')
 
     def test_accepts_optional_provenance(self):
-        (provenance, status) = self.add('p/afile.f', provenance={'fob':'bez'})
+        image = self.add('p/afile.f', provenance={'fob':'bez'})
         self.assertEqual(self.lastProvenance['fob'],'bez')
 
-    def test_If_file_doesnt_exists_tells_listener_and_doesnt_save_prov(self):
+    def test_If_file_doesnt_exists_raises_error(self):
         self.filesys.fileExists.return_value = False
         self.assertRaises(IOError, self.add, self.img.location.path)
         self.filesys.fileExists.assert_called_with(self.img.location.path)
@@ -103,20 +80,14 @@ class AddTests(DependencyInjectionTestBase):
         assert not self.img.inspect.called
 
     def test_Adds_timestamp(self):
-        (provenance, status) = self.add('p/afile.f')
+        image = self.add('p/afile.f')
         self.assertEqual(self.lastProvenance['added'],self.datetime.now())
 
     def test_Adds_uid(self):
         with patch('niprov.adding.shortuuid') as shortuuid:
             shortuuid.uuid.return_value = 'abcdefghijklmn'
-            (provenance, status) = self.add('p/afile.f')
+            image = self.add('p/afile.f')
             self.assertEqual(self.lastProvenance['id'],'abcdef')
-
-    def test_If_file_is_known_return_stored_provenance(self):
-        self.repo.knows.return_value = True
-        (img, status) = self.add('p/afile.f')
-        self.repo.byLocation.assert_called_with(self.img.location.toString())
-        self.assertEqual(img, self.repo.byLocation())
 
     def test_If_config_attach_set_calls_attach_on_file(self):
         self.config.attach = False
@@ -129,4 +100,46 @@ class AddTests(DependencyInjectionTestBase):
         self.add('p/afile.f')
         self.img.attach.assert_called_with('abracadabra')
 
+    def test_If_file_unknown_adds_it(self):                             # A
+        self.repo.byLocation.return_value = None
+        self.repo.getSeries.return_value = None
+        image = self.add('p/afile.f')
+        self.repo.add.assert_any_call(self.img)
+
+    def test_If_file_is_version_but_not_series(self):                    # B
+        previousVersion = Mock()
+        self.repo.byLocation.return_value = previousVersion
+        self.repo.getSeries.return_value = None
+        img = self.add('p/afile.f')
+        self.img.keepVersionsFromPrevious.assert_called_with(previousVersion)
+        self.repo.update.assert_any_call(self.img)
+
+    def test_If_file_is_version_and_series(self):                        # C
+        previousVersion = Mock()
+        series = Mock()
+        self.repo.byLocation.return_value = previousVersion
+        self.repo.getSeries.return_value = series
+        image = self.add('p/afile.f')
+        self.img.keepVersionsFromPrevious.assert_called_with(previousVersion)
+        self.repo.update.assert_any_call(self.img)
+
+    def test_If_file_not_version_but_series_and_not_in_there_yet(self):   # D1
+        series = Mock()
+        series.hasFile.return_value = False
+        series.mergeWith.return_value = series
+        self.repo.byLocation.return_value = None
+        self.repo.getSeries.return_value = series
+        image = self.add('p/afile.f')
+        series.mergeWith.assert_called_with(self.img)
+        self.repo.update.assert_any_call(series)
+
+    def test_If_file_not_version_but_series_has_file(self):               # D2
+        series = Mock()
+        series.hasFile.return_value = True
+        self.repo.byLocation.return_value = None
+        self.repo.getSeries.return_value = series
+        image = self.add('p/afile.f')
+        assert not series.addFile.called
+        self.img.keepVersionsFromPrevious.assert_called_with(series)
+        self.repo.update.assert_any_call(self.img)
 

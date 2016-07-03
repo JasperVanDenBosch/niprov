@@ -130,6 +130,13 @@ class MongoRepoTests(DependencyInjectionTestBase):
             self.db.provenance.find_one())
         self.assertEqual(self.fileFactory.fromProvenance(), out)
 
+    def test_If_db_returns_None_should_return_None_for_byId_byLocation(self):
+        self.setupRepo()
+        self.db.provenance.find_one.return_value = None
+        out = self.repo.byId('abc123')
+        assert not self.fileFactory.fromProvenance.called
+        self.assertEqual(None, out)
+
     def test_byLocations(self):
         self.fileFactory.fromProvenance.side_effect = lambda p: 'img_'+p
         self.db.provenance.find.return_value = ['p1', 'p2']
@@ -199,18 +206,6 @@ class MongoRepoTests(DependencyInjectionTestBase):
                                                     '_snapshot-data':'y7yUyS'}
         out = self.repo.byLocation('/p/f1')
         self.pictureCache.keep.assert_called_with('y7yUyS', for_=img)
-
-    def test_If_no_record_returned_byLocation_byId_getSeries_raise_alarm(self):
-        self.setupRepo()
-        self.db.provenance.find_one.return_value = None
-        out = self.repo.byLocation('nowhere')
-        self.listener.unknownFile.assert_called_with('nowhere')
-        out = self.repo.byId('xxxx')
-        self.listener.unknownFile.assert_called_with('id: xxxx')
-        img = Mock()
-        img.getSeriesId.return_value = '123abc'
-        out = self.repo.getSeries(img)
-        self.listener.unknownFile.assert_called_with('seriesuid: 123abc')
 
     def test_Query(self):
         self.db.provenance.find.return_value = ['record1']

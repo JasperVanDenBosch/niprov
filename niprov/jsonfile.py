@@ -69,8 +69,6 @@ class JsonFile(object):
         for image in self.all():
             if image.location.toString() == locationString:
                 return image
-        else:
-            raise IndexError('No file with that path known.')
 
     def byLocations(self, listOfLocations):
         return [f for f in self.all() if f.location.toString() in listOfLocations]
@@ -92,8 +90,6 @@ class JsonFile(object):
             if 'seriesuid' in image.provenance and (
                 image.provenance['seriesuid'] == seriesId):
                 return image
-        else:
-            raise IndexError('No provenance record for that series.')
 
     def updateApproval(self, fpath, approvalStatus):
         img = self.byLocation(fpath)
@@ -118,8 +114,6 @@ class JsonFile(object):
         for image in self.all():
             if image.provenance['id'] == uid:
                 return image
-        else:
-            raise IndexError('No file with that path known.')
 
     def byParents(self, listOfParentLocations):
         return [f for f in self.all() if set(listOfParentLocations).intersection(

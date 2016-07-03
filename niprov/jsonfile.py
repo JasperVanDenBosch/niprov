@@ -54,46 +54,6 @@ class JsonFile(object):
             return []
         return self.json.deserializeList(jsonstr)
 
-    def knowsByLocation(self, locationString):
-        """Whether the file at this path has provenance associated with it.
-
-        Returns:
-            bool: True if provenance is available for that path.
-        """
-        try:
-            self.byLocation(locationString)
-        except IndexError:
-            return False
-        return True
-
-    def knows(self, image):
-        """Whether this file has provenance associated with it.
-
-        Returns:
-            bool: True if provenance is available for this image.
-        """
-        try:
-            self.byLocation(image.path)
-        except IndexError:
-            return False
-        return True
-
-    def knowsSeries(self, image):
-        """Whether the series that this file is part of has provenance 
-        associated with it.
-
-        Args:
-            image (:class:`.BaseFile`): File for which the series is sought.
-
-        Returns:
-            bool: True if provenance is available for this series.
-        """
-        try:
-            self.getSeries(image)
-        except IndexError:
-            return False
-        return True
-
     def byLocation(self, locationString):
         """Get the provenance for a file at the given location. 
 

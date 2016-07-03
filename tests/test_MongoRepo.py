@@ -27,15 +27,6 @@ class MongoRepoTests(DependencyInjectionTestBase):
         pymongo.MongoClient.assert_called_with(self.config.database_url)
         self.assertEqual(pymongo.MongoClient().get_default_database(), repo.db)
 
-    def test_knowsByLocation(self):
-        self.setupRepo()
-        p = '/p/f1'
-        self.db.provenance.find_one.return_value = None
-        self.assertFalse(self.repo.knowsByLocation(p))
-        self.db.provenance.find_one.assert_called_with({'location':p})
-        self.db.provenance.find_one.return_value = 1
-        self.assertTrue(self.repo.knowsByLocation(p))
-
     def test_byLocation_returns_img_from_record_with_path(self):
         self.setupRepo()
         p = '/p/f1'
@@ -55,12 +46,6 @@ class MongoRepoTests(DependencyInjectionTestBase):
             self.db.provenance.find_one())
         self.assertEqual(self.fileFactory.fromProvenance(), out)
 
-    def test_knowsSeries_returns_False_if_no_series_id(self):
-        self.setupRepo()
-        img = Mock()
-        img.getSeriesId.return_value = None
-        self.assertFalse(self.repo.knowsSeries(img))
-
     def test_getSeries_returns_None_right_away_if_no_series_id(self):
         self.setupRepo()
         img = Mock()
@@ -68,13 +53,6 @@ class MongoRepoTests(DependencyInjectionTestBase):
         out = self.repo.getSeries(img)
         assert not self.db.provenance.find_one.called
         self.assertEqual(None, out)
-
-    def test_knowsSeries(self):
-        self.setupRepo()
-        img = Mock()
-        self.assertTrue(self.repo.knowsSeries(img))
-        self.db.provenance.find_one.return_value = None
-        self.assertFalse(self.repo.knowsSeries(img))
 
     def test_Add(self):
         self.setupRepo()

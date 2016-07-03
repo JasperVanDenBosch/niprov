@@ -35,23 +35,6 @@ class MongoRepository(object):
         records = self.db.provenance.find({'location':{'$in':listOfLocations}})
         return [self.inflate(record) for record in records]
 
-    def knowsByLocation(self, locationString):
-        """Whether the file at this location has provenance associated with it.
-
-        Returns:
-            bool: True if provenance is available for that path.
-        """
-        return self.db.provenance.find_one(
-            {'location':locationString}) is not None
-
-    def knows(self, image):
-        """Whether this file has provenance associated with it.
-
-        Returns:
-            bool: True if provenance is available for this image.
-        """
-        return self.knowsByLocation(image.location.toString())
-
     def getSeries(self, image):
         """Get the object that carries provenance for the series that the image 
         passed is in. 
@@ -71,21 +54,6 @@ class MongoRepository(object):
             self.listener.unknownFile('seriesuid: '+str(seriesUid))
             return
         return self.inflate(record)
-
-    def knowsSeries(self, image):
-        """Whether this file is part of a series for which provenance 
-        is available.
-
-        Args:
-            image (:class:`.BaseFile`): File for which the series is sought.
-
-        Returns:
-            bool: True if provenance is available for this series.
-        """
-        seriesUid = image.getSeriesId()
-        if seriesUid is None:
-            return False
-        return self.db.provenance.find_one({'seriesuid':seriesUid}) is not None
 
     def add(self, image):
         """Add the provenance for one file to storage.

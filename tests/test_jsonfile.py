@@ -43,14 +43,6 @@ class JsonFileTest(DependencyInjectionTestBase):
         self.filesys.write.assert_called_with(repo.datafile, 
             self.serializer.serializeList())
 
-    def test_knowsByLocation(self):
-        from niprov.jsonfile import JsonFile
-        repo = JsonFile(self.dependencies)
-        repo.byLocation = Mock()
-        self.assertTrue(repo.knowsByLocation(''))
-        repo.byLocation.side_effect = IndexError
-        self.assertFalse(repo.knowsByLocation(''))
-
     def test_byLocation(self):
         from niprov.jsonfile import JsonFile
         repo = JsonFile(self.dependencies)

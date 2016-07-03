@@ -53,16 +53,6 @@ class JsonFileTest(DependencyInjectionTestBase):
         out = repo.byLocation('2')
         self.assertEqual(img2, out)
 
-    def test_byLocation_works_for_file_in_series(self):
-        from niprov.jsonfile import JsonFile
-        repo = JsonFile(self.dependencies)
-        img1 = self.imageWithProvenance({'location':'1','path':'a'})
-        img3 = self.imageWithProvenance({'location':'3','filesInSeries':['boo','bah']})
-        repo.all = Mock()
-        repo.all.return_value = [img1, img3]
-        out = repo.byLocation('boo')
-        self.assertEqual(img3, out)
-
     def test_updateApproval(self):
         from niprov.jsonfile import JsonFile
         repo = JsonFile(self.dependencies)

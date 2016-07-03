@@ -69,9 +69,6 @@ class JsonFile(object):
         for image in self.all():
             if image.location.toString() == locationString:
                 return image
-            elif 'filesInSeries' in image.provenance and (
-                locationString in image.provenance['filesInSeries']):
-                return image
         else:
             raise IndexError('No file with that path known.')
 

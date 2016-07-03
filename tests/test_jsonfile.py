@@ -285,3 +285,25 @@ class JsonFileTest(DependencyInjectionTestBase):
         self.assertIn('blue', out)
         self.assertEqual(3, len(out))
 
+    def test_getSeries(self):
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        img = Mock()
+        img.getSeriesId.return_value = '2'
+        img1 = self.imageWithProvenance({'seriesuid':'1','path':'a'})
+        img2 = self.imageWithProvenance({'seriesuid':'2','path':'b'})
+        repo.all = Mock()
+        repo.all.return_value = [img1, img2]
+        out = repo.getSeries(img)
+        self.assertEqual(img2, out)
+
+    def test_getSeries_returns_None_right_away_if_no_series_id(self):
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        img = Mock()
+        img.getSeriesId.return_value = None
+        repo.all = Mock()
+        out = repo.getSeries(img)
+        assert not repo.all.called, "Should not be called if no series id"
+        self.assertEqual(None, out)
+

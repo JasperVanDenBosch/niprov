@@ -61,6 +61,14 @@ class MongoRepoTests(DependencyInjectionTestBase):
         img.getSeriesId.return_value = None
         self.assertFalse(self.repo.knowsSeries(img))
 
+    def test_getSeries_returns_None_right_away_if_no_series_id(self):
+        self.setupRepo()
+        img = Mock()
+        img.getSeriesId.return_value = None
+        out = self.repo.getSeries(img)
+        assert not self.db.provenance.find_one.called
+        self.assertEqual(None, out)
+
     def test_knowsSeries(self):
         self.setupRepo()
         img = Mock()

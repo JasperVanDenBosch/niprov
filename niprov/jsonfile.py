@@ -128,9 +128,9 @@ class JsonFile(object):
         Returns:
             :class:`.DicomFile`: Image object that caries provenance for the series.
         """
-        if image.getSeriesId() is None:
-            raise IndexError('Image has no series id.')
         seriesId = image.getSeriesId()
+        if seriesId is None:
+            return None
         for image in self.all():
             if 'seriesuid' in image.provenance and (
                 image.provenance['seriesuid'] == seriesId):

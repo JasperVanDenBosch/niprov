@@ -64,6 +64,8 @@ class MongoRepository(object):
                          the series.
         """
         seriesUid = image.getSeriesId()
+        if seriesUid is None:
+            return None
         record = self.db.provenance.find_one({'seriesuid':seriesUid})
         if record is None:
             self.listener.unknownFile('seriesuid: '+str(seriesUid))

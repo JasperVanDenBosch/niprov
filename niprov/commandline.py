@@ -37,13 +37,6 @@ class Commandline(object):
         self.log('info', template.format(', '.join(new), transform, 
             ', '.join(parents)))
 
-    def unknownFile(self, fpath):
-        if self.config.dryrun:
-            level = 'info'
-        else:
-            level = 'error'
-        self.log(level, 'Unknown file: '+fpath, UnknownFileError)
-
     def knownFile(self, fpath):
         self.log('info', 'File already known: '+fpath)
 

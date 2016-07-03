@@ -1,6 +1,7 @@
 from pyramid.view import view_config
 import os
 import niprov.searching as searching
+from pyramid.httpexceptions import HTTPNotFound
 
 
 @view_config(route_name='home', renderer='templates/home.mako')
@@ -16,14 +17,20 @@ def latest(request):
 def short(request):
     sid = request.matchdict['id']
     repository = request.dependencies.getRepository()
-    return {'image':repository.byId(sid)}
+    image = repository.byId(sid)
+    if not image:
+        raise HTTPNotFound
+    return {'image': image}
 
 @view_config(route_name='location', renderer='templates/single.mako')
 def location(request):
     path = os.sep + os.path.join(*request.matchdict['path'])
     loc = request.matchdict['host'] + ':' + path
     repository = request.dependencies.getRepository()
-    return {'image':repository.byLocation(loc)}
+    image = repository.byLocation(loc)
+    if not image:
+        raise HTTPNotFound
+    return {'image': image}
 
 @view_config(route_name='stats', renderer='templates/stats.mako')
 def stats(request):
@@ -35,7 +42,10 @@ def pipeline(request):
     sid = request.matchdict['id']
     files = request.dependencies.getRepository()
     pipeline = request.dependencies.getPipelineFactory()
-    return {'pipeline':pipeline.forFile(files.byId(sid)), 'sid':sid}
+    targetFile = files.byId(sid)
+    if not targetFile:
+        raise HTTPNotFound
+    return {'pipeline':pipeline.forFile(targetFile), 'sid':sid}
 
 @view_config(route_name='subject', renderer='templates/list.mako')
 def subject(request):

@@ -34,8 +34,9 @@ class DicomTests(BaseFileTests):
         self.assertEqual(self.file.getSeriesId(), self.img.SeriesInstanceUID)
         self.assertIn(self.file.path, self.file.provenance['filesInSeries'])
         newFile = Mock()
-        self.file.addFile(newFile)
+        out = self.file.addFile(newFile)
         self.assertIn(newFile.path, self.file.provenance['filesInSeries'])
+        self.assertEqual(self.file, out)
 
     def test_Gets_dimensions(self):
         out = self.file.inspect()

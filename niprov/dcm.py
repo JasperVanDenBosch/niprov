@@ -72,6 +72,7 @@ class DicomFile(BaseFile):
         """
         self.provenance['filesInSeries'].append(img.path)
         self._updateNfilesDependentFields()
+        return self
 
     def _updateNfilesDependentFields(self):
         if (not self.provenance['multiframeDicom']) and 'dimensions' in self.provenance:

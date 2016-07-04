@@ -57,8 +57,7 @@ class ContextApiTests(unittest.TestCase):
         self.assertIsNotNone(self.provenance.get().byLocation(discoveredFile))
         backupFilepath = self.provenance.backup()
         os.remove(self.dbpath) # get rid of existing data.
-        with self.assertRaises(IndexError):
-            self.provenance.get().byLocation(discoveredFile)
+        self.assertIsNone(self.provenance.get().byLocation(discoveredFile))
         self.provenance.importp(backupFilepath)
         self.assertIsNotNone(self.provenance.get().byLocation(discoveredFile))
 

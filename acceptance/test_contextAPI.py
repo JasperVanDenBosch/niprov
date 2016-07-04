@@ -76,10 +76,10 @@ class ContextApiTests(unittest.TestCase):
 
     def test_Approval(self):
         self.provenance.discover('testdata')
-        self.provenance.markForApproval([os.path.abspath('testdata/dicom/T1.dcm'),
-                                os.path.abspath('testdata/dicom/T2.dcm')])
+        self.provenance.markForApproval(['testdata/parrec/T1.PAR',
+                                'testdata/parrec/T2.PAR'])
         imgs = self.provenance.markedForApproval()
-        self.provenance.approve(os.path.abspath('testdata/dicom/T1.dcm'))
+        self.provenance.approve('testdata/parrec/T1.PAR')
         imgs = self.provenance.markedForApproval()
 
     def test_Comparison(self):

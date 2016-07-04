@@ -1,7 +1,7 @@
 import unittest
 import numpy
 from mock import Mock, sentinel
-from datetime import datetime, timedelta
+from datetime import datetime
 from tests.test_basefile import BaseFileTests
 
 
@@ -34,7 +34,7 @@ class ParrecTests(BaseFileTests):
         self.assertEqual(out['epi-factor'], 1)
         self.assertEqual(out['magnetization-transfer-contrast'], False)
         self.assertEqual(out['diffusion'], False)
-        self.assertEqual(out['duration'], timedelta(seconds=65))
+        self.assertEqual(out['duration'], 65)
         self.assertEqual(out['subject-position'], 'Head First Supine')
         self.assertEqual(out['water-fat-shift'], 1.117)
         # per-image

@@ -1,6 +1,6 @@
 import unittest
 from mock import Mock
-from datetime import datetime, timedelta
+from datetime import datetime
 from tests.test_basefile import BaseFileTests
 
 
@@ -19,7 +19,7 @@ class CNTTests(BaseFileTests):
         self.assertEqual(out['dimensions'], [32, 2080])
         self.assertEqual(out['acquired'], datetime(2015,3,9,13,7,3))
         self.assertEqual(out['sampling-frequency'], 1000)
-        self.assertEqual(out['duration'], timedelta(seconds=2080/1000.))
+        self.assertEqual(out['duration'], 2080/1000.)
 
     def test_Determines_modality(self):
         out = self.file.inspect()

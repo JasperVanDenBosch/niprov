@@ -1,4 +1,4 @@
-from datetime import datetime, time, timedelta
+from datetime import datetime
 from niprov.basefile import BaseFile
 from niprov.libraries import Libraries
 
@@ -26,7 +26,7 @@ class DicomFile(BaseFile):
         self.provenance['protocol'] = img.SeriesDescription
         self.provenance['seriesuid'] = img.SeriesInstanceUID
         self.provenance['filesInSeries'] = [self.path]
-        self.provenance['duration'] = timedelta(seconds=img.AcquisitionDuration)
+        self.provenance['duration'] = img.AcquisitionDuration
         self.provenance['subject-position'] = img.PatientPosition
         self.provenance['water-fat-shift'] = img[0x2001, 0x1022].value
         if hasattr(img, 'NumberOfFrames'):
@@ -64,7 +64,7 @@ class DicomFile(BaseFile):
             self.inspect()
         return self.provenance['seriesuid']
 
-    def addFile(self, img):
+    def mergeWith(self, img):
         """
         Add a single DICOM file object to this series.
 
@@ -72,6 +72,8 @@ class DicomFile(BaseFile):
         """
         self.provenance['filesInSeries'].append(img.path)
         self._updateNfilesDependentFields()
+        self.status = 'series-new-file'
+        return self
 
     def _updateNfilesDependentFields(self):
         if (not self.provenance['multiframeDicom']) and 'dimensions' in self.provenance:

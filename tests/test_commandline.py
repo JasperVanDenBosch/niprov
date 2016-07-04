@@ -8,13 +8,6 @@ class CommandlineTests(DependencyInjectionTestBase):
     def setUp(self):
         super(CommandlineTests, self).setUp()
 
-    def test_raises_exception_for_unknown_file(self):
-        from niprov.commandline import Commandline
-        from niprov.exceptions import UnknownFileError
-        cmd = Commandline()
-        with self.assertRaisesRegexp(UnknownFileError, '.* /foo/bar.baz'):
-            cmd.unknownFile('/foo/bar.baz')
-
     def test_Only_prints_if_appropriate_verbosity_setting(self):
         from niprov.commandline import Commandline
         self.dependencies.config.verbosity = 'warning'
@@ -24,21 +17,6 @@ class CommandlineTests(DependencyInjectionTestBase):
             assert not mprint.called
             cmd.log('warning','Watch out!')
             mprint.assert_called_with('[provenance:warning] Watch out!')
-
-    def test_If_on_dryrun_mode_an_unknown_file_is_not_an_error(self):
-        from niprov.commandline import Commandline
-        from niprov.exceptions import UnknownFileError
-        self.dependencies.config.verbosity = 'warning' #default
-        self.dependencies.config.dryrun = False
-        cmd = Commandline(self.dependencies)
-        cmd.log = Mock()
-        cmd.unknownFile('abc')
-        cmd.log.assert_called_with('error','Unknown file: abc', UnknownFileError)
-        self.dependencies.config.dryrun = True
-        cmd = Commandline(self.dependencies)
-        cmd.log = Mock()
-        cmd.unknownFile('abc')
-        cmd.log.assert_called_with('info','Unknown file: abc', UnknownFileError)
 
     def test_exportedToFile_logs_info(self):
         from niprov.commandline import Commandline
@@ -55,4 +33,23 @@ class CommandlineTests(DependencyInjectionTestBase):
         cmd.log = Mock()
         cmd.addUnknownParent('backupfile.x')
         cmd.log.assert_called_with('warning', 'backupfile.x unknown. Adding to provenance')
+
+    def test_fileAdded(self):
+        from niprov.commandline import Commandline
+        self.dependencies.config.verbosity = 'info'
+        cmd = Commandline(self.dependencies)
+        cmd.log = Mock()
+        img = Mock()
+        img.path = 'xyz'
+        img.status = 'new'
+        cmd.fileAdded(img)
+        cmd.log.assert_called_with('info', 'New file: xyz')
+        img.status = 'series-new-file'
+        img.provenance = {'filesInSeries':[1, 2, 3]}
+        img.getSeriesId.return_value = 'series987'
+        cmd.fileAdded(img)
+        cmd.log.assert_called_with('info', 'Added 3rd file to series: series987')
+        img.status = 'new-version'
+        cmd.fileAdded(img)
+        cmd.log.assert_called_with('info', 'Added new version for: xyz')
 

@@ -57,8 +57,7 @@ class ContextApiTests(unittest.TestCase):
         self.assertIsNotNone(self.provenance.get().byLocation(discoveredFile))
         backupFilepath = self.provenance.backup()
         os.remove(self.dbpath) # get rid of existing data.
-        with self.assertRaises(IndexError):
-            self.provenance.get().byLocation(discoveredFile)
+        self.assertIsNone(self.provenance.get().byLocation(discoveredFile))
         self.provenance.importp(backupFilepath)
         self.assertIsNotNone(self.provenance.get().byLocation(discoveredFile))
 
@@ -77,16 +76,16 @@ class ContextApiTests(unittest.TestCase):
 
     def test_Approval(self):
         self.provenance.discover('testdata')
-        self.provenance.markForApproval([os.path.abspath('testdata/dicom/T1.dcm'),
-                                os.path.abspath('testdata/dicom/T2.dcm')])
+        self.provenance.markForApproval(['testdata/parrec/T1.PAR',
+                                'testdata/parrec/T2.PAR'])
         imgs = self.provenance.markedForApproval()
-        self.provenance.approve(os.path.abspath('testdata/dicom/T1.dcm'))
+        self.provenance.approve('testdata/parrec/T1.PAR')
         imgs = self.provenance.markedForApproval()
 
     def test_Comparison(self):
         # Given two PARREC images' provenance records
-        par1 = self.provenance.add(abspath('testdata/parrec/T1.PAR'))[0]
-        par2 = self.provenance.add(abspath('testdata/parrec/T2.PAR'))[0]
+        par1 = self.provenance.add(abspath('testdata/parrec/T1.PAR'))
+        par2 = self.provenance.add(abspath('testdata/parrec/T2.PAR'))
         # Comparing them returns a Diff object with methods testing equality
         self.assertFalse(self.provenance.compare(par1, par2).areEqual())
         # Compare() can also be called as a method on the objects themselves,
@@ -96,11 +95,11 @@ class ContextApiTests(unittest.TestCase):
             par1.compare(par2).assertEqualProtocol()
 
     def test_Search(self):
-        x1, s = self.provenance.add('x1', transient=True,
+        x1 = self.provenance.add('x1', transient=True,
             provenance={'transformation':'needle and thread'})
-        x2, s = self.provenance.add('x2/needle.y', transient=True, 
+        x2 = self.provenance.add('x2/needle.y', transient=True, 
             provenance={'transformation':'needle and thread'})
-        x3, s = self.provenance.add('x3', transient=True, 
+        x3 = self.provenance.add('x3', transient=True, 
             provenance={'transformation':'hammer and tongs'})
         results = self.provenance.search('needle')
         self.assertEqual(len(results), 2)
@@ -114,6 +113,20 @@ class ContextApiTests(unittest.TestCase):
         self.assertIn('DWI', modalities)
         self.assertIn('EEG', modalities)
 
+    def test_Version_history(self):
+        self.provenance.add('f', transient=True, provenance={'a':1})
+        img = self.provenance.get().byLocation('f')
+        self.assertEqual(1, img.provenance['a'])
+        self.provenance.add('f', transient=True, provenance={'a':2})
+        img = self.provenance.get().byLocation('f')
+        self.assertEqual(2, img.provenance['a'])
+        self.assertEqual(1, img.versions[-1]['a'])
+        self.provenance.add('f', transient=True, provenance={'a':3})
+        img = self.provenance.get().byLocation('f')
+        self.assertEqual(3, img.provenance['a'])
+        self.assertEqual(2, img.versions[-1]['a'])
+        self.assertEqual(1, img.versions[-2]['a'])
+ 
 
 if __name__ == '__main__':
     unittest.main()

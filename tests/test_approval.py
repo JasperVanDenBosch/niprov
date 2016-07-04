@@ -10,12 +10,14 @@ class ApprovalTests(DependencyInjectionTestBase):
 
     def test_markForApproval_tells_repo_to_set_approval_to_pending(self):
         import niprov
+        self.locationFactory.completeString.side_effect = lambda f: f
         niprov.markForApproval(['f1','f2'], dependencies=self.dependencies)
         self.repo.updateApproval.assert_any_call('f1','pending')
         self.repo.updateApproval.assert_any_call('f2','pending')
 
     def test_Approve_tells_repo_to_set_approval_to_granted(self):
         import niprov
+        self.locationFactory.completeString.side_effect = lambda f: f
         niprov.approve('fx12', dependencies=self.dependencies)
         self.repo.updateApproval.assert_any_call('fx12','granted')
 
@@ -52,6 +54,7 @@ class ApprovalTests(DependencyInjectionTestBase):
 
     def test_markForApproval_reset_False_means_approved_files_not_marked(self):
         import niprov
+        self.locationFactory.completeString.side_effect = lambda f: f
         img = self.mockImg()
         img.provenance['approval'] = 'granted'
         self.repo.byLocation.return_value = img
@@ -59,6 +62,25 @@ class ApprovalTests(DependencyInjectionTestBase):
         assert not self.repo.updateApproval.called, 'Should not mark approved file'
         niprov.markForApproval(['f1'], reset=True, dependencies=self.dependencies)
         self.repo.updateApproval.assert_any_call('f1','pending')
+
+    def test_markForApproval_errors_if_file_not_found(self):
+        import niprov
+        self.repo.byLocation.return_value = None
+        with self.assertRaisesRegexp(ValueError, 'Unknown file: f2'):
+            niprov.markForApproval(['f2'], dependencies=self.dependencies)
+        assert not self.repo.updateApproval.called, 'Should not mark unknown file'
+
+    def test_markForApproval_completes_filepaths(self):
+        import niprov
+        niprov.markForApproval(['f2'], dependencies=self.dependencies)
+        self.locationFactory.completeString.assert_any_call('f2')
+        self.repo.byLocation.assert_called_with(
+                self.locationFactory.completeString())
+
+    def test_aprove_completes_filepaths(self):
+        import niprov
+        niprov.approve('f2', dependencies=self.dependencies)
+        self.locationFactory.completeString.assert_any_call('f2')
 
     def mockImg(self):
         img = Mock()

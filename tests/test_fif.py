@@ -1,6 +1,6 @@
 import unittest
 from mock import Mock
-from datetime import datetime, timedelta
+from datetime import datetime
 from tests.test_basefile import BaseFileTests
 
 
@@ -25,7 +25,7 @@ class FifTests(BaseFileTests):
         out = self.file.inspect()
         self.assertEqual(out['dimensions'], [123, 91])
         self.assertEqual(out['sampling-frequency'], 200)
-        self.assertEqual(out['duration'], timedelta(seconds=91/200.))
+        self.assertEqual(out['duration'], 91/200.)
 
     def test_Attach_method(self):
         self.file.getProvenance = Mock()

@@ -112,6 +112,17 @@ class ViewTests(DependencyInjectionTestBase):
         self.assertEqual('user', out['category'])
         self.assertEqual(self.query.allUsers(), out['items'])
 
+    def test_If_byId_byLocation_return_None_views_return_404(self):
+        from pyramid.httpexceptions import HTTPNotFound
+        import niprov.views
+        self.request.matchdict = {'host':'her','path':('a','b','c'),
+                                    'id':'1a2b3c'}
+        self.repo.byId.return_value = None
+        self.repo.byLocation.return_value = None
+        self.assertRaises(HTTPNotFound, niprov.views.short, self.request)
+        self.assertRaises(HTTPNotFound, niprov.views.location, self.request)
+        self.assertRaises(HTTPNotFound, niprov.views.pipeline, self.request)
+
 
 
 

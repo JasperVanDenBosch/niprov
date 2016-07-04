@@ -43,14 +43,6 @@ class JsonFileTest(DependencyInjectionTestBase):
         self.filesys.write.assert_called_with(repo.datafile, 
             self.serializer.serializeList())
 
-    def test_knowsByLocation(self):
-        from niprov.jsonfile import JsonFile
-        repo = JsonFile(self.dependencies)
-        repo.byLocation = Mock()
-        self.assertTrue(repo.knowsByLocation(''))
-        repo.byLocation.side_effect = IndexError
-        self.assertFalse(repo.knowsByLocation(''))
-
     def test_byLocation(self):
         from niprov.jsonfile import JsonFile
         repo = JsonFile(self.dependencies)
@@ -60,16 +52,6 @@ class JsonFileTest(DependencyInjectionTestBase):
         repo.all.return_value = [img1, img2]
         out = repo.byLocation('2')
         self.assertEqual(img2, out)
-
-    def test_byLocation_works_for_file_in_series(self):
-        from niprov.jsonfile import JsonFile
-        repo = JsonFile(self.dependencies)
-        img1 = self.imageWithProvenance({'location':'1','path':'a'})
-        img3 = self.imageWithProvenance({'location':'3','filesInSeries':['boo','bah']})
-        repo.all = Mock()
-        repo.all.return_value = [img1, img3]
-        out = repo.byLocation('boo')
-        self.assertEqual(img3, out)
 
     def test_updateApproval(self):
         from niprov.jsonfile import JsonFile
@@ -284,4 +266,26 @@ class JsonFileTest(DependencyInjectionTestBase):
         self.assertIn('green', out)
         self.assertIn('blue', out)
         self.assertEqual(3, len(out))
+
+    def test_getSeries(self):
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        img = Mock()
+        img.getSeriesId.return_value = '2'
+        img1 = self.imageWithProvenance({'seriesuid':'1','path':'a'})
+        img2 = self.imageWithProvenance({'seriesuid':'2','path':'b'})
+        repo.all = Mock()
+        repo.all.return_value = [img1, img2]
+        out = repo.getSeries(img)
+        self.assertEqual(img2, out)
+
+    def test_getSeries_returns_None_right_away_if_no_series_id(self):
+        from niprov.jsonfile import JsonFile
+        repo = JsonFile(self.dependencies)
+        img = Mock()
+        img.getSeriesId.return_value = None
+        repo.all = Mock()
+        out = repo.getSeries(img)
+        assert not repo.all.called, "Should not be called if no series id"
+        self.assertEqual(None, out)
 

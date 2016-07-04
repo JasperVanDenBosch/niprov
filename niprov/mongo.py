@@ -1,5 +1,4 @@
 import pymongo, copy, bson
-from datetime import timedelta
 from niprov.dependencies import Dependencies
 
 
@@ -9,7 +8,6 @@ class MongoRepository(object):
         self.config = dependencies.getConfiguration()
         self.factory = dependencies.getFileFactory()
         self.pictures = dependencies.getPictureCache()
-        self.listener = dependencies.getListener()
         client = pymongo.MongoClient(self.config.database_url)
         self.db = client.get_default_database()
 
@@ -26,31 +24,11 @@ class MongoRepository(object):
             dict: Provenance for one image file.
         """
         record = self.db.provenance.find_one({'location':locationString})
-        if record is None:
-            self.listener.unknownFile(locationString)
-            return
         return self.inflate(record)
 
     def byLocations(self, listOfLocations):
         records = self.db.provenance.find({'location':{'$in':listOfLocations}})
         return [self.inflate(record) for record in records]
-
-    def knowsByLocation(self, locationString):
-        """Whether the file at this location has provenance associated with it.
-
-        Returns:
-            bool: True if provenance is available for that path.
-        """
-        return self.db.provenance.find_one(
-            {'location':locationString}) is not None
-
-    def knows(self, image):
-        """Whether this file has provenance associated with it.
-
-        Returns:
-            bool: True if provenance is available for this image.
-        """
-        return self.knowsByLocation(image.location.toString())
 
     def getSeries(self, image):
         """Get the object that carries provenance for the series that the image 
@@ -64,26 +42,10 @@ class MongoRepository(object):
                          the series.
         """
         seriesUid = image.getSeriesId()
-        record = self.db.provenance.find_one({'seriesuid':seriesUid})
-        if record is None:
-            self.listener.unknownFile('seriesuid: '+str(seriesUid))
-            return
-        return self.inflate(record)
-
-    def knowsSeries(self, image):
-        """Whether this file is part of a series for which provenance 
-        is available.
-
-        Args:
-            image (:class:`.BaseFile`): File for which the series is sought.
-
-        Returns:
-            bool: True if provenance is available for this series.
-        """
-        seriesUid = image.getSeriesId()
         if seriesUid is None:
-            return False
-        return self.db.provenance.find_one({'seriesuid':seriesUid}) is not None
+            return None
+        record = self.db.provenance.find_one({'seriesuid':seriesUid})
+        return self.inflate(record)
 
     def add(self, image):
         """Add the provenance for one file to storage.
@@ -135,9 +97,6 @@ class MongoRepository(object):
 
     def byId(self, uid):
         record = self.db.provenance.find_one({'id':uid})
-        if record is None:
-            self.listener.unknownFile('id: '+str(uid))
-            return
         return self.inflate(record)
 
     def byParents(self, listOfParentLocations):
@@ -164,16 +123,14 @@ class MongoRepository(object):
 
     def deflate(self, img):
         record = copy.deepcopy(img.provenance)
-        if 'duration' in record:
-            record['duration'] = record['duration'].total_seconds()
         snapshotData = self.pictures.getBytes(for_=img)
         if snapshotData:
             record['_snapshot-data'] = bson.Binary(snapshotData)
         return record
 
     def inflate(self, record):
-        if 'duration' in record:
-            record['duration'] = timedelta(seconds=record['duration'])
+        if record is None:
+            return None
         img = self.factory.fromProvenance(record)
         if '_snapshot-data' in record:
             self.pictures.keep(record['_snapshot-data'], for_=img)

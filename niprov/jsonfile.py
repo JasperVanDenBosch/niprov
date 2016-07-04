@@ -54,46 +54,6 @@ class JsonFile(object):
             return []
         return self.json.deserializeList(jsonstr)
 
-    def knowsByLocation(self, locationString):
-        """Whether the file at this path has provenance associated with it.
-
-        Returns:
-            bool: True if provenance is available for that path.
-        """
-        try:
-            self.byLocation(locationString)
-        except IndexError:
-            return False
-        return True
-
-    def knows(self, image):
-        """Whether this file has provenance associated with it.
-
-        Returns:
-            bool: True if provenance is available for this image.
-        """
-        try:
-            self.byLocation(image.path)
-        except IndexError:
-            return False
-        return True
-
-    def knowsSeries(self, image):
-        """Whether the series that this file is part of has provenance 
-        associated with it.
-
-        Args:
-            image (:class:`.BaseFile`): File for which the series is sought.
-
-        Returns:
-            bool: True if provenance is available for this series.
-        """
-        try:
-            self.getSeries(image)
-        except IndexError:
-            return False
-        return True
-
     def byLocation(self, locationString):
         """Get the provenance for a file at the given location. 
 
@@ -109,11 +69,6 @@ class JsonFile(object):
         for image in self.all():
             if image.location.toString() == locationString:
                 return image
-            elif 'filesInSeries' in image.provenance and (
-                locationString in image.provenance['filesInSeries']):
-                return image
-        else:
-            raise IndexError('No file with that path known.')
 
     def byLocations(self, listOfLocations):
         return [f for f in self.all() if f.location.toString() in listOfLocations]
@@ -128,15 +83,13 @@ class JsonFile(object):
         Returns:
             :class:`.DicomFile`: Image object that caries provenance for the series.
         """
-        if image.getSeriesId() is None:
-            raise IndexError('Image has no series id.')
         seriesId = image.getSeriesId()
+        if seriesId is None:
+            return None
         for image in self.all():
             if 'seriesuid' in image.provenance and (
                 image.provenance['seriesuid'] == seriesId):
                 return image
-        else:
-            raise IndexError('No provenance record for that series.')
 
     def updateApproval(self, fpath, approvalStatus):
         img = self.byLocation(fpath)
@@ -161,8 +114,6 @@ class JsonFile(object):
         for image in self.all():
             if image.provenance['id'] == uid:
                 return image
-        else:
-            raise IndexError('No file with that path known.')
 
     def byParents(self, listOfParentLocations):
         return [f for f in self.all() if set(listOfParentLocations).intersection(

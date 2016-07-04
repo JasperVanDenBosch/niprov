@@ -1,15 +1,11 @@
-import json
-import copy
-from datetime import datetime, timedelta
+import json, copy
+from datetime import datetime
 from niprov.format import Format
 
 
 class JsonFormat(Format):
     """Helper to convert provenance data to and from json encoded strings.
     """
-
-    datetimeFields = ['acquired','created','added']
-    timedeltaFields = ['duration']
 
     def __init__(self, dependencies):
         super(JsonFormat, self).__init__(dependencies)
@@ -27,7 +23,8 @@ class JsonFormat(Format):
         Returns:
             str: Json version of the provenance.
         """
-        return json.dumps(self._deflate(record.provenance))
+        flat = self._deflate(record.provenance)
+        return json.dumps(flat, cls=DateTimeAwareJSONEncoder)
 
     def deserialize(self, jsonRecord):
         """
@@ -41,7 +38,7 @@ class JsonFormat(Format):
         Returns:
             dict: Python dictionary of the provenance.
         """
-        provenance = self._inflate(json.loads(jsonRecord))
+        provenance = json.loads(jsonRecord, cls=DateTimeAwareJSONDecoder)
         return self.file.fromProvenance(provenance)
 
     def serializeList(self, listOfRecords):
@@ -56,7 +53,7 @@ class JsonFormat(Format):
             str: Json version of the provenance items.
         """
         flatRecords = [self._deflate(r.provenance) for r in listOfRecords]
-        return json.dumps(flatRecords)
+        return json.dumps(flatRecords, cls=DateTimeAwareJSONEncoder)
 
     def deserializeList(self, jsonListOfRecords):
         """
@@ -70,19 +67,11 @@ class JsonFormat(Format):
         Returns:
             list: Python list of dictionaries of the provenance.
         """
-        flatRecords = json.loads(jsonListOfRecords)
-        provenanceList = [self._inflate(r) for r in flatRecords]
+        provenanceList = json.loads(jsonListOfRecords, cls=DateTimeAwareJSONDecoder)
         return [self.file.fromProvenance(p) for p in provenanceList]
 
     def _deflate(self, record):
-        isoformat = "%Y-%m-%dT%H:%M:%S.%f"
         flatRecord = copy.deepcopy(record)
-        for field in self.datetimeFields:
-            if field in record:
-                flatRecord[field] = record[field].strftime(isoformat)
-        for field in self.timedeltaFields:
-            if field in record:
-                flatRecord[field] = record[field].total_seconds()
         if 'args' in record:
             flatRecord['args'] = [self._strcust(a) for a in record['args']]
         if 'kwargs' in record:
@@ -93,19 +82,52 @@ class JsonFormat(Format):
             del flatRecord['_id']
         return flatRecord
 
-    def _inflate(self, flatRecord):
-        isoformat = "%Y-%m-%dT%H:%M:%S.%f"
-        record = flatRecord
-        for field in self.datetimeFields:
-            if field in record:
-                record[field] = datetime.strptime(record[field], isoformat)
-        for field in self.timedeltaFields:
-            if field in record:
-                record[field] = timedelta(seconds=record[field])
-        return record
-
     def _strcust(self, val):
         """Stringify an object that is not of a simple type."""
         if not isinstance(val, (str, unicode, int, float, bool, type(None))):
             return str(val)
         return val
+
+# Taken from http://taketwoprogramming.blogspot.com/2009/06/subclassing-jsonencoder-and-jsondecoder.html
+
+class DateTimeAwareJSONEncoder(json.JSONEncoder):
+    """ 
+    Converts a python object, where datetime and timedelta objects are converted
+    into objects that can be decoded using the DateTimeAwareJSONDecoder.
+    """
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return {
+                '__type__' : 'datetime',
+                'year' : obj.year,
+                'month' : obj.month,
+                'day' : obj.day,
+                'hour' : obj.hour,
+                'minute' : obj.minute,
+                'second' : obj.second,
+                'microsecond' : obj.microsecond,
+            }
+
+        else:
+            return json.JSONEncoder.default(self, obj)
+
+class DateTimeAwareJSONDecoder(json.JSONDecoder):
+    """ 
+    Converts a json string, where datetime and timedelta objects were converted
+    into objects using the DateTimeAwareJSONEncoder, back into a python object.
+    """
+
+    def __init__(self, **kwargs):
+        json.JSONDecoder.__init__(self, object_hook=self.dict_to_object)
+
+    def dict_to_object(self, d):
+        if '__type__' not in d:
+            return d
+
+        type = d.pop('__type__')
+        if type == 'datetime':
+            return datetime(**d)
+        else:
+            # Oops... better put this back together.
+            d['__type__'] = type
+            return d

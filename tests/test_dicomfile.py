@@ -1,6 +1,6 @@
 import unittest
 from mock import Mock, MagicMock, PropertyMock
-from datetime import datetime, timedelta
+from datetime import datetime
 from tests.test_basefile import BaseFileTests
 
 
@@ -34,8 +34,10 @@ class DicomTests(BaseFileTests):
         self.assertEqual(self.file.getSeriesId(), self.img.SeriesInstanceUID)
         self.assertIn(self.file.path, self.file.provenance['filesInSeries'])
         newFile = Mock()
-        self.file.addFile(newFile)
+        out = self.file.mergeWith(newFile)
         self.assertIn(newFile.path, self.file.provenance['filesInSeries'])
+        self.assertEqual(self.file, out)
+        self.assertEqual('series-new-file', self.file.status)
 
     def test_Gets_dimensions(self):
         out = self.file.inspect()
@@ -43,12 +45,12 @@ class DicomTests(BaseFileTests):
         del(self.img.NumberOfFrames)
         out = self.file.inspect()
         self.assertEqual(out['dimensions'], [11, 12, 1])
-        self.file.addFile(Mock())
+        self.file.mergeWith(Mock())
         self.assertEqual(out['dimensions'], [11, 12, 2])
 
     def test_Gets_other_fields(self):
         out = self.file.inspect()
-        self.assertEqual(out['duration'], timedelta(seconds=65.04713439941406))
+        self.assertEqual(out['duration'], 65.04713439941406)
         self.assertEqual(out['subject-position'], 'HFS')
         self.assertEqual(out['water-fat-shift'], 1.1173381805419922)
 
@@ -59,7 +61,7 @@ class DicomTests(BaseFileTests):
         self.assertNotIn('dimensions', out)
         del(self.img.NumberOfFrames)
         out = self.file.inspect()
-        self.file.addFile(Mock())
+        self.file.mergeWith(Mock())
         assert not self.listener.fileError.called
 
     def test_Determines_modality(self):

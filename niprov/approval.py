@@ -13,12 +13,16 @@ def markForApproval(files, reset=False, dependencies=Dependencies()):
             by default.
     """
     repository = dependencies.getRepository()
+    location = dependencies.getLocationFactory()
     for filepath in files:
+        loc = location.completeString(filepath)
         if not reset:
-            image = repository.byLocation(filepath)
+            image = repository.byLocation(loc)
+            if image is None:
+                raise ValueError('Unknown file: '+filepath)
             if image.provenance.get('approval') == 'granted':
                 continue
-        repository.updateApproval(filepath,'pending')
+        repository.updateApproval(loc,'pending')
 
 def markedForApproval(dependencies=Dependencies()):
     """List files marked for approval by a human.
@@ -35,8 +39,9 @@ def approve(filepath, dependencies=Dependencies()):
     Args:
         filepath (str): Path to the tracked file that has been found valid.
     """
-    repository = dependencies.getRepository() 
-    repository.updateApproval(filepath,'granted')
+    loc = dependencies.getLocationFactory().completeString(filepath)
+    repository = dependencies.getRepository()
+    repository.updateApproval(loc, 'granted')
 
 def selectApproved(files, dependencies=Dependencies()):
     """Return only files that have approval status 'granted'.

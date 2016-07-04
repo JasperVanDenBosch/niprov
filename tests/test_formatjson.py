@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 import unittest
 from mock import Mock
-from datetime import datetime, timedelta
+from datetime import datetime
 import json
 from tests.ditest import DependencyInjectionTestBase
 
@@ -19,27 +19,6 @@ class SerializerTests(DependencyInjectionTestBase):
         if 'location' in prov:
             img.location.toString.return_value = prov['location']
         return img
-
-    def test_serialize_makes_time_fields_a_string(self):
-        from niprov.formatjson import JsonFormat  
-        serializer = JsonFormat(self.dependencies)
-        record = {}
-        record['acquired'] = datetime.now()
-        record['created'] = datetime.now()
-        record['added'] = datetime.now()
-        out = serializer.serializeSingle(self.imageWithProvenance(record))
-        self.assertEqual(json.loads(out)['acquired'], 
-            record['acquired'].isoformat())
-        self.assertEqual(json.loads(out)['created'], 
-            record['created'].isoformat())
-
-    def test_serialize_makes_timedelta_fields_a_float(self):
-        from niprov.formatjson import JsonFormat  
-        serializer = JsonFormat(self.dependencies)
-        record = {}
-        record['duration'] = timedelta(seconds=12.34)
-        out = serializer.serializeSingle(self.imageWithProvenance(record))
-        self.assertEqual(json.loads(out)['duration'], 12.34)
 
     def test_serialize_makes_args_kwargs_values_strings(self):
         from niprov.formatjson import JsonFormat  
@@ -66,38 +45,6 @@ class SerializerTests(DependencyInjectionTestBase):
         out = serializer.deserialize(jsonrecord)
         self.assertEqual(img1.provenance, out.provenance)
 
-    def test_deserialize_makes_time_field_a_datetime_object(self):
-        from niprov.formatjson import JsonFormat  
-        serializer = JsonFormat(self.dependencies)
-        record = {}
-        acquired = datetime.now()
-        record['acquired'] = acquired.isoformat()      
-        created = datetime.now()
-        record['created'] = created.isoformat()      
-        out = serializer.deserialize(json.dumps(record))
-        self.assertEqual(out.provenance['acquired'], acquired)
-        self.assertEqual(out.provenance['created'], created)
-
-    def test_deserialize_makes_timedelta_field_a_timedelta_object(self):
-        from niprov.formatjson import JsonFormat  
-        serializer = JsonFormat(self.dependencies)
-        record = {}
-        record['duration'] = 23.45
-        out = serializer.deserialize(json.dumps(record))
-        self.assertEqual(out.provenance['duration'], timedelta(seconds=23.45))
-
-    def test_serializeList_makes_time_field_a_string(self):
-        from niprov.formatjson import JsonFormat  
-        serializer = JsonFormat(self.dependencies)
-        record = {}
-        record['acquired'] = datetime.now()
-        record['created'] = datetime.now()
-        out = serializer.serializeList([self.imageWithProvenance(record)])
-        self.assertEqual(json.loads(out)[0]['acquired'], 
-            record['acquired'].isoformat())
-        self.assertEqual(json.loads(out)[0]['created'], 
-            record['created'].isoformat())
-
     def test_swallows_object_ids(self):
         from bson.objectid import ObjectId
         from niprov.formatjson import JsonFormat  
@@ -106,5 +53,17 @@ class SerializerTests(DependencyInjectionTestBase):
         record['_id'] = ObjectId('564168f2fb481f480891263c')
         out = serializer.serializeList([self.imageWithProvenance(record)])
         self.assertNotIn('_id', json.loads(out)[0])
+
+    def test_Deals_with_versions(self):
+        from niprov.formatjson import JsonFormat  
+        serializer = JsonFormat(self.dependencies)
+        record = {}
+        dtnow = datetime.now()
+        record['_versions'] = [{'acquired':dtnow}, 
+                              {'added':dtnow}]
+        jsonStr = serializer.serializeSingle(self.imageWithProvenance(record))
+        out = serializer.deserialize(jsonStr)
+        self.assertEqual(out.provenance['_versions'][-1]['added'], dtnow)
+        self.assertEqual(out.provenance['_versions'][-2]['acquired'], dtnow)
 
 

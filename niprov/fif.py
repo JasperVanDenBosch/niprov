@@ -1,5 +1,5 @@
 from __future__ import division
-from datetime import datetime, timedelta
+from datetime import datetime
 from niprov.basefile import BaseFile
 from niprov.libraries import Libraries
 
@@ -31,7 +31,7 @@ class FifFile(BaseFile):
         T = img.last_samp - img.first_samp + 1
         provenance['dimensions'] = [img.info['nchan'], T]
         provenance['sampling-frequency'] = img.info['sfreq']
-        provenance['duration'] = timedelta(seconds=T/img.info['sfreq'])
+        provenance['duration'] = T/img.info['sfreq']
         provenance['modality'] = 'MEG'
         return provenance
 

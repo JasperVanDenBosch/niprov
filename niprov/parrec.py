@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 import numpy
 from niprov.basefile import BaseFile
 from niprov.libraries import Libraries
@@ -31,7 +31,7 @@ class ParrecFile(BaseFile):
         provenance['epi-factor'] = info['epi_factor']
         provenance['magnetization-transfer-contrast'] = bool(info['mtc'])
         provenance['diffusion'] = bool(info['diffusion'])
-        provenance['duration'] = timedelta(seconds=info['scan_duration'])
+        provenance['duration'] = info['scan_duration']
         provenance['water-fat-shift'] = info['water_fat_shift']
         # per-image
         img0info = img.header.image_defs[0]

@@ -1,3 +1,4 @@
+import copy
 from niprov.dependencies import Dependencies
 import niprov.comparing
 
@@ -18,6 +19,7 @@ class BaseFile(object):
             self.provenance = {}
         self.provenance.update(self.location.toDictionary())
         self.path = self.provenance['path']
+        self.status = 'new'
 
     def inspect(self):
         self.provenance['size'] = self.filesystem.getsize(self.path)
@@ -47,6 +49,10 @@ class BaseFile(object):
     def parents(self):
         return self.provenance.get('parents', [])
 
+    @property
+    def versions(self):
+        return self.provenance.get('_versions', [])
+
     def compare(self, other):
         return niprov.comparing.compare(self, other, self.dependencies)
 
@@ -60,4 +66,13 @@ class BaseFile(object):
 
     def getSnapshotFilepath(self):
         return self.pictures.getFilepath(for_=self)
+
+    def keepVersionsFromPrevious(self, previous):
+        history = previous.provenance.get('_versions', [])
+        prevprov = copy.copy(previous.provenance)
+        if '_versions' in prevprov:
+            del prevprov['_versions']
+        history.append(prevprov)
+        self.provenance['_versions'] = history
+        self.status = 'new-version'
 

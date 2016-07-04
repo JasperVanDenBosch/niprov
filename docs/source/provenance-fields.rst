@@ -170,7 +170,7 @@ When the data was collected.
 duration
 --------
 
-Duration of the acquisition as python datetime.timedelta
+Duration of the acquisition in seconds.
 
 .. _field-subject:
 

@@ -1,5 +1,5 @@
 from tests.ditest import DependencyInjectionTestBase
-from mock import Mock
+from mock import Mock, sentinel
 from datetime import datetime
 
 class BaseFileTests(DependencyInjectionTestBase):
@@ -107,3 +107,23 @@ class BaseFileTests(DependencyInjectionTestBase):
                                 provenance={'modality':'magic'})
         img.inspect()
         self.assertEqual(img.provenance['modality'], 'magic')
+
+    def test_On_construction_has_status_new(self):
+        img = self.constructor(self.path, dependencies=self.dependencies)
+        self.assertEqual(img.status, 'new')
+
+    def test_keepVersionsFromPrevious(self):
+        img = self.constructor(self.path, dependencies=self.dependencies)
+        prev = Mock()
+        prev.provenance = {'y':1501, '_versions':[{'y':1499},{'y':1500}]}
+        img.keepVersionsFromPrevious(prev)
+        self.assertEqual('new-version', img.status)
+        self.assertEqual(3, len(img.provenance['_versions']))
+        self.assertEqual({'y':1501}, img.provenance['_versions'][-1])
+        self.assertEqual({'y':1500}, img.provenance['_versions'][-2])
+        self.assertEqual({'y':1499}, img.provenance['_versions'][-3])
+
+    def test_versions_property_access(self):
+        img = self.constructor(self.path, dependencies=self.dependencies)
+        img.provenance = {'_versions':sentinel.versions}
+        self.assertEqual(img.provenance['_versions'], img.versions)

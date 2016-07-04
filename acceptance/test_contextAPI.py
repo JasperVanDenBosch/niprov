@@ -113,7 +113,6 @@ class ContextApiTests(unittest.TestCase):
         self.assertIn('DWI', modalities)
         self.assertIn('EEG', modalities)
 
-    @unittest.skipIf("TRAVIS" in os.environ, "Work in progress.")
     def test_Version_history(self):
         self.provenance.add('f', transient=True, provenance={'a':1})
         img = self.provenance.get().byLocation('f')

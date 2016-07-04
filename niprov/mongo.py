@@ -1,5 +1,4 @@
 import pymongo, copy, bson
-from datetime import timedelta
 from niprov.dependencies import Dependencies
 
 
@@ -124,8 +123,6 @@ class MongoRepository(object):
 
     def deflate(self, img):
         record = copy.deepcopy(img.provenance)
-        if 'duration' in record:
-            record['duration'] = record['duration'].total_seconds()
         snapshotData = self.pictures.getBytes(for_=img)
         if snapshotData:
             record['_snapshot-data'] = bson.Binary(snapshotData)
@@ -134,8 +131,6 @@ class MongoRepository(object):
     def inflate(self, record):
         if record is None:
             return None
-        if 'duration' in record:
-            record['duration'] = timedelta(seconds=record['duration'])
         img = self.factory.fromProvenance(record)
         if '_snapshot-data' in record:
             self.pictures.keep(record['_snapshot-data'], for_=img)

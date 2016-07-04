@@ -1,6 +1,6 @@
 from __future__ import division
 from struct import unpack
-from datetime import datetime, time, timedelta
+from datetime import datetime
 from niprov.basefile import BaseFile
 
 
@@ -23,7 +23,7 @@ class NeuroscanFile(BaseFile):
         sfreq = unpack('H', header.rate)[0]
         provenance['sampling-frequency'] = sfreq
         provenance['dimensions'] = [nchannels, numsamples]
-        provenance['duration'] = timedelta(seconds=numsamples/sfreq)
+        provenance['duration'] = numsamples/sfreq
         acqstring = (header.date+' '+header.time).translate(None, '\x00')
         dtformat = '%d/%m/%y %H:%M:%S'
         provenance['acquired'] = datetime.strptime(acqstring, dtformat)

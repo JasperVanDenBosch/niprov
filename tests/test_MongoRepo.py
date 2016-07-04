@@ -1,6 +1,5 @@
 import unittest
 from mock import Mock, patch, sentinel
-from datetime import timedelta
 from tests.ditest import DependencyInjectionTestBase
 
 
@@ -156,21 +155,6 @@ class MongoRepoTests(DependencyInjectionTestBase):
         self.fileFactory.fromProvenance.assert_any_call('p1')
         self.fileFactory.fromProvenance.assert_any_call('p2')
         self.assertEqual(['img_p1', 'img_p2'], out)
-
-    def test_Converts_timedelta_to_float_when_serializing(self):
-        self.setupRepo()
-        img = Mock()
-        img.provenance = {'a':1, 'duration':timedelta(seconds=67.89)}
-        self.repo.add(img)
-        self.db.provenance.insert_one.assert_called_with(
-            {'a':1, 'duration':67.89})
-
-    def test_Converts_duration_to_timedelta_when_deserializing(self):
-        self.setupRepo()
-        self.db.provenance.find_one.return_value = {'a':3, 'duration':89.01}
-        out = self.repo.byLocation('/p/f1')
-        self.fileFactory.fromProvenance.assert_called_with(
-            {'a':3, 'duration':timedelta(seconds=89.01)})
 
     def test_Obtains_optional_snapshot_data_from_cache_when_serializing(self):
         self.pictureCache.getBytes.return_value = sentinel.snapbytes

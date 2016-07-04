@@ -1,15 +1,11 @@
-import json
-import copy
-from datetime import datetime, timedelta
+import json, copy
+from datetime import datetime
 from niprov.format import Format
 
 
 class JsonFormat(Format):
     """Helper to convert provenance data to and from json encoded strings.
     """
-
-    datetimeFields = []#['acquired','created','added']
-    timedeltaFields = []#['duration']
 
     def __init__(self, dependencies):
         super(JsonFormat, self).__init__(dependencies)
@@ -112,14 +108,6 @@ class DateTimeAwareJSONEncoder(json.JSONEncoder):
                 'microsecond' : obj.microsecond,
             }
 
-        elif isinstance(obj, timedelta):
-            return {
-                '__type__' : 'timedelta',
-                'days' : obj.days,
-                'seconds' : obj.seconds,
-                'microseconds' : obj.microseconds,
-          }
-
         else:
             return json.JSONEncoder.default(self, obj)
 
@@ -139,8 +127,6 @@ class DateTimeAwareJSONDecoder(json.JSONDecoder):
         type = d.pop('__type__')
         if type == 'datetime':
             return datetime(**d)
-        elif type == 'timedelta':
-            return timedelta(**d)
         else:
             # Oops... better put this back together.
             d['__type__'] = type

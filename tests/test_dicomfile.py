@@ -1,6 +1,6 @@
 import unittest
 from mock import Mock, MagicMock, PropertyMock
-from datetime import datetime, timedelta
+from datetime import datetime
 from tests.test_basefile import BaseFileTests
 
 
@@ -50,7 +50,7 @@ class DicomTests(BaseFileTests):
 
     def test_Gets_other_fields(self):
         out = self.file.inspect()
-        self.assertEqual(out['duration'], timedelta(seconds=65.04713439941406))
+        self.assertEqual(out['duration'], 65.04713439941406)
         self.assertEqual(out['subject-position'], 'HFS')
         self.assertEqual(out['water-fat-shift'], 1.1173381805419922)
 

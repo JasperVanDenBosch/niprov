@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 import unittest
 from mock import Mock
-from datetime import datetime, timedelta
+from datetime import datetime
 import json
 from tests.ditest import DependencyInjectionTestBase
 
@@ -60,11 +60,10 @@ class SerializerTests(DependencyInjectionTestBase):
         record = {}
         dtnow = datetime.now()
         record['versions'] = [{'acquired':dtnow}, 
-                              {'duration':timedelta(seconds=23.45)}]
+                              {'added':dtnow}]
         jsonStr = serializer.serializeSingle(self.imageWithProvenance(record))
         out = serializer.deserialize(jsonStr)
-        self.assertEqual(out.provenance['versions'][-1]['duration'], 
-            timedelta(seconds=23.45))
+        self.assertEqual(out.provenance['versions'][-1]['added'], dtnow)
         self.assertEqual(out.provenance['versions'][-2]['acquired'], dtnow)
 
 

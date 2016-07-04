@@ -17,6 +17,7 @@
 
 <a href="${request.route_url('pipeline',id=image.provenance.get('id'))}">view pipeline
     <img class="linkicon" src="${request.static_url('niprov:static/pipeline-link.svg')}" alt="pipeline"/></a>
+<a href="#versions">versions</a>
 
 % if image.getSnapshotFilepath():
     <img class="snapshot" src="${request.static_url(image.getSnapshotFilepath())}" alt="snapshot"/>
@@ -48,6 +49,17 @@
     <dt>number of files</dt><dd>${len(image.provenance['filesInSeries'])}</dd>
 % endif
 </dl>
+
+<h2 id="versions">versions</h2>
+<ol>
+% if '_versions' in image.provenance:
+% for version in image.provenance['_versions']:
+    <li>
+        <span class="datetime">${version['added']}</span>
+    </li>
+% endfor
+% endif
+</ol>
 
 <script type="text/javascript" src="${request.static_url('niprov:static/niprov.js')}"></script>
 

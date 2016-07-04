@@ -34,3 +34,22 @@ class CommandlineTests(DependencyInjectionTestBase):
         cmd.addUnknownParent('backupfile.x')
         cmd.log.assert_called_with('warning', 'backupfile.x unknown. Adding to provenance')
 
+    def test_fileAdded(self):
+        from niprov.commandline import Commandline
+        self.dependencies.config.verbosity = 'info'
+        cmd = Commandline(self.dependencies)
+        cmd.log = Mock()
+        img = Mock()
+        img.path = 'xyz'
+        img.status = 'new'
+        cmd.fileAdded(img)
+        cmd.log.assert_called_with('info', 'New file: xyz')
+        img.status = 'series-new-file'
+        img.provenance = {'filesInSeries':[1, 2, 3]}
+        img.getSeriesId.return_value = 'series987'
+        cmd.fileAdded(img)
+        cmd.log.assert_called_with('info', 'Added 3rd file to series: series987')
+        img.status = 'new-version'
+        cmd.fileAdded(img)
+        cmd.log.assert_called_with('info', 'Added new version for: xyz')
+

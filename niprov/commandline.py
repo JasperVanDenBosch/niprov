@@ -14,13 +14,17 @@ class Commandline(object):
         self.verbosity = dependencies.config.verbosity
         assert self.verbosity in self.vlevels, "Unknown verbosity value"
 
-    def fileFound(self, image):
-        self.log('info', 'New file: {0}'.format(image.path))
-
-    def fileFoundInSeries(self, img, series):
-        template = 'Adding {0} file to series: {1}'
-        nfiles = len(series.provenance['filesInSeries'])
-        self.log('info', template.format(ordinal(nfiles), series.getSeriesId()))
+    def fileAdded(self, image):
+        if image.status == 'new':
+            self.log('info', 'New file: {0}'.format(image.path))
+        if image.status == 'series-new-file':
+            template = 'Added {0} file to series: {1}'
+            nfiles = len(image.provenance['filesInSeries'])
+            self.log('info', template.format(ordinal(nfiles), image.getSeriesId()))
+        if image.status == 'new-version':
+            template = 'Added {0} file to series: {1}'
+            nfiles = len(image.provenance['filesInSeries'])
+            self.log('info', 'Added new version for: {}'.format(image.path))
 
     def missingDependencyForImage(self, lib, fpath):
         template = 'Missing python package "{0}" to read file: {1}'        
@@ -36,9 +40,6 @@ class Commandline(object):
             'based on [{2}]')
         self.log('info', template.format(', '.join(new), transform, 
             ', '.join(parents)))
-
-    def knownFile(self, fpath):
-        self.log('info', 'File already known: '+fpath)
 
     def renamedDicom(self, fpath):
         self.log('info', 'Renamed dicom file: '+fpath)

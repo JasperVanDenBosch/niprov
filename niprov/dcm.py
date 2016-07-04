@@ -64,7 +64,7 @@ class DicomFile(BaseFile):
             self.inspect()
         return self.provenance['seriesuid']
 
-    def addFile(self, img):
+    def mergeWith(self, img):
         """
         Add a single DICOM file object to this series.
 

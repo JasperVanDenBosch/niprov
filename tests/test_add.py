@@ -139,7 +139,7 @@ class AddTests(DependencyInjectionTestBase):
         self.repo.byLocation.return_value = None
         self.repo.getSeries.return_value = series
         image = self.add('p/afile.f')
-        assert not series.addFile.called
+        assert not series.mergeWith.called
         self.img.keepVersionsFromPrevious.assert_called_with(series)
         self.repo.update.assert_any_call(self.img)
 

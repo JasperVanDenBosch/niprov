@@ -34,7 +34,7 @@ class DicomTests(BaseFileTests):
         self.assertEqual(self.file.getSeriesId(), self.img.SeriesInstanceUID)
         self.assertIn(self.file.path, self.file.provenance['filesInSeries'])
         newFile = Mock()
-        out = self.file.addFile(newFile)
+        out = self.file.mergeWith(newFile)
         self.assertIn(newFile.path, self.file.provenance['filesInSeries'])
         self.assertEqual(self.file, out)
         self.assertEqual('series-new-file', self.file.status)
@@ -45,7 +45,7 @@ class DicomTests(BaseFileTests):
         del(self.img.NumberOfFrames)
         out = self.file.inspect()
         self.assertEqual(out['dimensions'], [11, 12, 1])
-        self.file.addFile(Mock())
+        self.file.mergeWith(Mock())
         self.assertEqual(out['dimensions'], [11, 12, 2])
 
     def test_Gets_other_fields(self):
@@ -61,7 +61,7 @@ class DicomTests(BaseFileTests):
         self.assertNotIn('dimensions', out)
         del(self.img.NumberOfFrames)
         out = self.file.inspect()
-        self.file.addFile(Mock())
+        self.file.mergeWith(Mock())
         assert not self.listener.fileError.called
 
     def test_Determines_modality(self):

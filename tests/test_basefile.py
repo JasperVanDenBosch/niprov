@@ -107,3 +107,7 @@ class BaseFileTests(DependencyInjectionTestBase):
                                 provenance={'modality':'magic'})
         img.inspect()
         self.assertEqual(img.provenance['modality'], 'magic')
+
+    def test_On_construction_has_status_new(self):
+        img = self.constructor(self.path, dependencies=self.dependencies)
+        self.assertEqual(img.status, 'new')

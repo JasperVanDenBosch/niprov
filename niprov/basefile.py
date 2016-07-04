@@ -18,6 +18,7 @@ class BaseFile(object):
             self.provenance = {}
         self.provenance.update(self.location.toDictionary())
         self.path = self.provenance['path']
+        self.status = 'new'
 
     def inspect(self):
         self.provenance['size'] = self.filesystem.getsize(self.path)

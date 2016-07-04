@@ -22,8 +22,6 @@ class Commandline(object):
             nfiles = len(image.provenance['filesInSeries'])
             self.log('info', template.format(ordinal(nfiles), image.getSeriesId()))
         if image.status == 'new-version':
-            template = 'Added {0} file to series: {1}'
-            nfiles = len(image.provenance['filesInSeries'])
             self.log('info', 'Added new version for: {}'.format(image.path))
 
     def missingDependencyForImage(self, lib, fpath):

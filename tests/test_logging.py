@@ -7,7 +7,7 @@ class LoggingTests(DependencyInjectionTestBase):
 
     def setUp(self):
         super(LoggingTests, self).setUp()
-        self.repo.knowsByLocation.return_value = True
+        #self.repo.byLocation.return_value = True
         self.opts = Mock()
         self.opts.dryrun = False
         img = Mock()
@@ -29,7 +29,7 @@ class LoggingTests(DependencyInjectionTestBase):
             self.provenancesAdded.append(provenance)
             self.newimg = Mock()
             self.newimg.provenance = {'acquired':location}
-            return (self.newimg, 'test')
+            return self.newimg
         self.dependencies.reconfigureOrGetConfiguration.return_value = self.opts
         patcher = patch('niprov.logging.add')
         self.add = patcher.start()
@@ -132,7 +132,7 @@ class LoggingTests(DependencyInjectionTestBase):
         self.assertEqual(self.provenancesAdded[1]['parents'], ['l:p1','l:p2'])
 
     def test_Add_parent_if_parent_unknown(self):
-        self.repo.knowsByLocation.return_value = False
+        self.repo.byLocation.return_value = None
         self.locationFactory.completeString.side_effect = lambda p: 'l:'+p
         provenance = self.log('new', 'trans', 'parentpath')
         self.add.assert_any_call('l:parentpath')
@@ -141,17 +141,15 @@ class LoggingTests(DependencyInjectionTestBase):
     def test_Uses_validated_location_for_parent_lookup(self):
         self.locationFactory.completeString.side_effect = lambda p: 'l:'+p
         provenance = self.log('new', 'trans', 'parentpath')
-        self.repo.knowsByLocation.assert_called_with('l:parentpath')
         self.repo.byLocation.assert_called_with('l:parentpath')
 
     def test_If_parent_unknown_uses_add_return_value(self):
         """In this case the parent provenance should be obtained from
         what add() returns.
         """
-        self.repo.knowsByLocation.return_value = False
+        self.repo.byLocation.return_value = None
         parent = 'unknown/parent/path.f'
         provenance = self.log('new', 'trans', [parent])
-        assert not self.repo.byLocation.called
         loggedFileProv = self.provenancesAdded[1] # [0]: parent [1]: newly logged
         ## add function is mocked to set 'acquired' field to location passed
         ## since acquired is an inheritable field, it should show up in kid:

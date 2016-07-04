@@ -85,8 +85,8 @@ class ContextApiTests(unittest.TestCase):
 
     def test_Comparison(self):
         # Given two PARREC images' provenance records
-        par1 = self.provenance.add(abspath('testdata/parrec/T1.PAR'))[0]
-        par2 = self.provenance.add(abspath('testdata/parrec/T2.PAR'))[0]
+        par1 = self.provenance.add(abspath('testdata/parrec/T1.PAR'))
+        par2 = self.provenance.add(abspath('testdata/parrec/T2.PAR'))
         # Comparing them returns a Diff object with methods testing equality
         self.assertFalse(self.provenance.compare(par1, par2).areEqual())
         # Compare() can also be called as a method on the objects themselves,
@@ -96,11 +96,11 @@ class ContextApiTests(unittest.TestCase):
             par1.compare(par2).assertEqualProtocol()
 
     def test_Search(self):
-        x1, s = self.provenance.add('x1', transient=True,
+        x1 = self.provenance.add('x1', transient=True,
             provenance={'transformation':'needle and thread'})
-        x2, s = self.provenance.add('x2/needle.y', transient=True, 
+        x2 = self.provenance.add('x2/needle.y', transient=True, 
             provenance={'transformation':'needle and thread'})
-        x3, s = self.provenance.add('x3', transient=True, 
+        x3 = self.provenance.add('x3', transient=True, 
             provenance={'transformation':'hammer and tongs'})
         results = self.provenance.search('needle')
         self.assertEqual(len(results), 2)

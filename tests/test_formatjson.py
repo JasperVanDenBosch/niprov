@@ -59,11 +59,11 @@ class SerializerTests(DependencyInjectionTestBase):
         serializer = JsonFormat(self.dependencies)
         record = {}
         dtnow = datetime.now()
-        record['versions'] = [{'acquired':dtnow}, 
+        record['_versions'] = [{'acquired':dtnow}, 
                               {'added':dtnow}]
         jsonStr = serializer.serializeSingle(self.imageWithProvenance(record))
         out = serializer.deserialize(jsonStr)
-        self.assertEqual(out.provenance['versions'][-1]['added'], dtnow)
-        self.assertEqual(out.provenance['versions'][-2]['acquired'], dtnow)
+        self.assertEqual(out.provenance['_versions'][-1]['added'], dtnow)
+        self.assertEqual(out.provenance['_versions'][-2]['acquired'], dtnow)
 
 

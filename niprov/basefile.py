@@ -51,7 +51,7 @@ class BaseFile(object):
 
     @property
     def versions(self):
-        return self.provenance.get('versions', [])
+        return self.provenance.get('_versions', [])
 
     def compare(self, other):
         return niprov.comparing.compare(self, other, self.dependencies)
@@ -68,11 +68,11 @@ class BaseFile(object):
         return self.pictures.getFilepath(for_=self)
 
     def keepVersionsFromPrevious(self, previous):
-        history = previous.provenance.get('versions', [])
+        history = previous.provenance.get('_versions', [])
         prevprov = copy.copy(previous.provenance)
-        if 'versions' in prevprov:
-            del prevprov['versions']
+        if '_versions' in prevprov:
+            del prevprov['_versions']
         history.append(prevprov)
-        self.provenance['versions'] = history
+        self.provenance['_versions'] = history
         self.status = 'new-version'
 

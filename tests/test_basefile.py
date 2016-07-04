@@ -115,15 +115,15 @@ class BaseFileTests(DependencyInjectionTestBase):
     def test_keepVersionsFromPrevious(self):
         img = self.constructor(self.path, dependencies=self.dependencies)
         prev = Mock()
-        prev.provenance = {'y':1501, 'versions':[{'y':1499},{'y':1500}]}
+        prev.provenance = {'y':1501, '_versions':[{'y':1499},{'y':1500}]}
         img.keepVersionsFromPrevious(prev)
         self.assertEqual('new-version', img.status)
-        self.assertEqual(3, len(img.provenance['versions']))
-        self.assertEqual({'y':1501}, img.provenance['versions'][-1])
-        self.assertEqual({'y':1500}, img.provenance['versions'][-2])
-        self.assertEqual({'y':1499}, img.provenance['versions'][-3])
+        self.assertEqual(3, len(img.provenance['_versions']))
+        self.assertEqual({'y':1501}, img.provenance['_versions'][-1])
+        self.assertEqual({'y':1500}, img.provenance['_versions'][-2])
+        self.assertEqual({'y':1499}, img.provenance['_versions'][-3])
 
     def test_versions_property_access(self):
         img = self.constructor(self.path, dependencies=self.dependencies)
-        img.provenance = {'versions':sentinel.versions}
-        self.assertEqual(img.provenance['versions'], img.versions)
+        img.provenance = {'_versions':sentinel.versions}
+        self.assertEqual(img.provenance['_versions'], img.versions)

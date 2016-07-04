@@ -37,6 +37,7 @@ class DicomTests(BaseFileTests):
         out = self.file.addFile(newFile)
         self.assertIn(newFile.path, self.file.provenance['filesInSeries'])
         self.assertEqual(self.file, out)
+        self.assertEqual('series-new-file', self.file.status)
 
     def test_Gets_dimensions(self):
         out = self.file.inspect()

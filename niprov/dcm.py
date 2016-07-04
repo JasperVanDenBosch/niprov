@@ -72,6 +72,7 @@ class DicomFile(BaseFile):
         """
         self.provenance['filesInSeries'].append(img.path)
         self._updateNfilesDependentFields()
+        self.status = 'series-new-file'
         return self
 
     def _updateNfilesDependentFields(self):

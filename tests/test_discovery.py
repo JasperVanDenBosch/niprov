@@ -11,7 +11,9 @@ class DiscoveryTests(unittest.TestCase):
         self.listener = Mock()
         self.filt = Mock()
         self.add = Mock()
-        self.add.return_value = (Mock(), 'new')
+        img = Mock()
+        img.status = 'new'
+        self.add.return_value = img
         self.dependencies = Mock()
         self.dependencies.getFilesystem.return_value = self.filesys
         self.dependencies.getListener.return_value = self.listener
@@ -41,9 +43,14 @@ class DiscoveryTests(unittest.TestCase):
 
     def test_Gives_listener_summary(self):
         self.filesys.walk.return_value = [('root',[],['a','b','c','d','e','f','g','h'])]
-        a,b,c,d,e,f,g,h = [(Mock(), s) for s in ['new','new','series','series',
-            'series','failed','known','known']]
-        self.add.side_effect = [a,b,c,d,e,f,g,h]
+        statuses = ['new','new','series-new-file','series-new-file', 
+            'series-new-file','failed','new-version','new-version']
+        images = []
+        for s in statuses:
+            img = Mock()
+            img.status = s
+            images.append(img)
+        self.add.side_effect = images
         self.discover('root')
         self.listener.discoveryFinished.assert_called_with(nnew=2, nadded=3, nfailed=1, ntotal=8)
 

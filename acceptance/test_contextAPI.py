@@ -126,6 +126,9 @@ class ContextApiTests(unittest.TestCase):
         self.assertEqual(3, img.provenance['a'])
         self.assertEqual(2, img.versions[-1]['a'])
         self.assertEqual(1, img.versions[-2]['a'])
+
+    def test_If_no_parent_provided_found_copy_considered_parent(self):
+        self.fail()
  
 
 if __name__ == '__main__':

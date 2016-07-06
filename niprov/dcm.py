@@ -75,9 +75,11 @@ class DicomFile(BaseFile):
         self.status = 'series-new-file'
         return self
 
+    def hasFile(self, other):
+        return other.path in self.provenance['filesInSeries']
+
     def _updateNfilesDependentFields(self):
         if (not self.provenance['multiframeDicom']) and 'dimensions' in self.provenance:
             nfiles = len(self.provenance['filesInSeries'])
             self.provenance['dimensions'][2] = nfiles
-        
-        
+

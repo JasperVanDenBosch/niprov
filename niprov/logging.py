@@ -2,6 +2,7 @@
 # -*- coding: UTF-8 -*-
 from niprov.dependencies import Dependencies
 from niprov.adding import add
+from niprov.inheriting import inheritFrom
 import copy
 
 
@@ -62,22 +63,6 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
         provenance = {}
 
     #gather provenance common to all new files
-    inheritableFields = [
-    'acquired',
-    'subject',
-    'protocol',
-    'technique',
-    'repetition-time',
-    'epi-factor',
-    'magnetization-transfer-contrast',
-    'diffusion',
-    'echo-time',
-    'flip-angle',
-    'inversion-time',
-    'duration',
-    'subject-position',
-    'water-fat-shift',
-    ]
     parents = [location.completeString(p) for p in parents]
     commonProvenance = provenance
     commonProvenance['parents'] = parents
@@ -92,9 +77,8 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
     if parent is None:
         parent = add(parents[0])
         listener.addUnknownParent(parents[0])
-    for field in inheritableFields:
-        if field in parent.provenance:
-            commonProvenance[field] = parent.provenance[field]
+
+    inheritFrom(commonProvenance, parent.provenance)
 
     # do things specific to each new file
     newImages = []

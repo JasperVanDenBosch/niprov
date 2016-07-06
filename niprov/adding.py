@@ -4,6 +4,7 @@ import os, errno
 import shortuuid
 from datetime import datetime
 from niprov.dependencies import Dependencies
+from niprov.inheriting import inheritFrom
 
 
 def add(filepath, transient=False, provenance=None, 
@@ -68,7 +69,7 @@ def add(filepath, transient=False, provenance=None,
     if not provenance.get('parents', []):
         for copy in query.copiesOf(img):
             if not copy.location == img.location:
-                img.inheritFrom(copy)
+                inheritFrom(img.provenance, copy.provenance)
                 img.provenance['parents'] = [copy.location.toString()]
                 img.provenance['copy-as-parent'] = True
                 listener.usingCopyAsParent(copy)

@@ -23,7 +23,8 @@ class AddTests(DependencyInjectionTestBase):
 
     def add(self, path, **kwargs):
         from niprov.adding import add
-        return add(path, dependencies=self.dependencies, **kwargs)
+        with patch('niprov.adding.inheritFrom') as self.inheritFrom:
+            return add(path, dependencies=self.dependencies, **kwargs)
 
     def assertNotCalledWith(self, m, *args, **kwargs):
         c = call(*args, **kwargs)
@@ -164,7 +165,7 @@ class AddTests(DependencyInjectionTestBase):
         copy.provenance = {'location':'copy-location'}
         self.query.copiesOf.return_value = [self.img, copy]
         out = self.add('p/afile.f')
-        self.img.inheritFrom.assert_called_with(copy)
+        self.inheritFrom.assert_called_with(self.img.provenance, copy.provenance)
         self.listener.usingCopyAsParent.assert_called_with(copy)
         self.assertEqual(copy.location.toString(), out.provenance['parents'][0])
         self.assertEqual(True, out.provenance['copy-as-parent'])
@@ -173,7 +174,7 @@ class AddTests(DependencyInjectionTestBase):
         self.img.provenance = {}
         self.query.copiesOf.return_value = [self.img]
         out = self.add('p/afile.f')
-        assert not self.img.inheritFrom.called
+        assert not self.inheritFrom.called
         assert not self.listener.usingCopyAsParent.called
         self.assertNotIn('parents', out.provenance)
         self.assertNotIn('copy-as-parent', out.provenance)

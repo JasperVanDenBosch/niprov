@@ -22,7 +22,7 @@ except (IOError, ImportError):
    README = ''
 
 setup(name='niprov',
-      version='0.4.1',
+      version='0.5',
       author='Jasper J.F. van den Bosch',
       author_email='japsai@gmail.com',
       description='provenance for neuroimaging data',

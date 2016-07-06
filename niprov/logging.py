@@ -75,7 +75,7 @@ def log(new, transformation, parents, code=None, logtext=None, transient=False,
         commonProvenance['logtext'] = logtext
     parent = repository.byLocation(parents[0])
     if parent is None:
-        parent = add(parents[0])
+        parent = add(parents[0], dependencies=dependencies)
         listener.addUnknownParent(parents[0])
 
     inheritFrom(commonProvenance, parent.provenance)

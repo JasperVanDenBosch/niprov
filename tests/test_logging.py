@@ -98,7 +98,7 @@ class LoggingTests(DependencyInjectionTestBase):
         self.repo.byLocation.return_value = None
         self.locationFactory.completeString.side_effect = lambda p: 'l:'+p
         provenance = self.log('new', 'trans', 'parentpath')
-        self.add.assert_any_call('l:parentpath')
+        self.add.assert_any_call('l:parentpath', dependencies=self.dependencies)
         self.listener.addUnknownParent.assert_called_with('l:parentpath')
 
     def test_Uses_validated_location_for_parent_lookup(self):

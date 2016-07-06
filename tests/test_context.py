@@ -43,5 +43,22 @@ class ContextTests(DependencyInjectionTestBase):
         self.niprov.importing.importp.assert_called_with('fpath',
             self.dependencies)
 
+    def test_print(self):
+        self.context.print_('images')
+        self.niprov.exporting.print_.assert_called_with('images', False, 
+            self.dependencies)
+
+    def test_record(self):
+        self.context.record('cmd', 'new', 'parents', True, 'args', 'kwargs', 
+            'user', 'opts')
+        self.niprov.recording.record.assert_called_with('cmd', 'new', 
+            'parents', True, 'args', 'kwargs', 'user', 'opts',
+            self.dependencies)
+
+    def test_view(self):
+        self.context.view('images', pipeline=True)
+        self.niprov.exporting.view.assert_called_with('images', True, 
+            self.dependencies)
+
 
 

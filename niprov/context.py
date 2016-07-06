@@ -61,17 +61,19 @@ class ProvenanceContext(object):
         """See :py:mod:`niprov.approval`  """
         return niprov.approval.markedForApproval(dependencies=self.deps)
 
-    def print_(self, *args, **kwargs):
+    def print_(self, images, pipeline=False):
         """See :py:mod:`niprov.exporting`  """
-        return niprov.exporting.print_(*args, dependencies=self.deps, **kwargs)
+        return niprov.exporting.print_(images, pipeline, self.deps)
 
     def renameDicoms(self, dicomdir):
         """See :py:mod:`niprov.renaming`  """
         return niprov.renaming.renameDicoms(dicomdir, dependencies=self.deps)
 
-    def record(self, *args, **kwargs):
+    def record(self, command, new=None, parents=None, transient=False, 
+        args=None, kwargs=None, user=None, opts=None):
         """See :py:mod:`niprov.recording`  """
-        return niprov.recording.record(*args, dependencies=self.deps, **kwargs)
+        return niprov.recording.record(command, new, parents, transient, 
+            args, kwargs, user, opts, self.deps)
 
     def search(self, text):
         """See :py:mod:`niprov.searching`  """
@@ -81,6 +83,7 @@ class ProvenanceContext(object):
         """See :py:mod:`niprov.approval`  """
         return niprov.approval.selectApproved(files, dependencies=self.deps)
 
-    def view(self, *args, **kwargs):
+    def view(self, images, pipeline=False):
         """See :py:mod:`niprov.exporting`  """
-        return niprov.exporting.view(*args, dependencies=self.deps, **kwargs)
+        return niprov.exporting.view(images, pipeline, self.deps)
+

@@ -53,3 +53,15 @@ class CommandlineTests(DependencyInjectionTestBase):
         cmd.fileAdded(img)
         cmd.log.assert_called_with('info', 'Added new version for: xyz')
 
+    def test_usingCopyAsParent(self):
+        from niprov.commandline import Commandline
+        self.dependencies.config.verbosity = 'info'
+        cmd = Commandline(self.dependencies)
+        cmd.log = Mock()
+        copy = Mock()
+        copy.location = 'moon:/copy/location'
+        cmd.usingCopyAsParent(copy)
+        cmd.log.assert_called_with('warning', 
+            'Used provenance from copy found at '+str(copy.location))
+        
+

@@ -136,7 +136,7 @@ class ContextApiTests(unittest.TestCase):
         child = self.provenance.log('temp/child.f', 'op2', 'temp/copy.f')
         self.assertEqual(child.provenance['subject'], 'Jane Doe')
         copy = self.provenance.get().byLocation('temp/copy.f')
-        self.assertIn(copy.provenance['parents'][0], ['Jane Doe'])
+        self.assertIn('temp/orig.f', copy.provenance['parents'][0])
  
 
 if __name__ == '__main__':

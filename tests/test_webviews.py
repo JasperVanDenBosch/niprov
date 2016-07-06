@@ -23,13 +23,17 @@ class ViewTests(DependencyInjectionTestBase):
         out = niprov.views.short(self.request)
         self.repo.byId.assert_called_with('1a2b3c')
         self.assertEqual(self.repo.byId(), out['image'])
+        self.query.copiesOf.assert_called_with(out['image'])
+        self.assertEqual(self.query.copiesOf(), out['copies'])
 
     def test_by_full_location(self):
         import niprov.views
         self.request.matchdict = {'host':'her','path':('a','b','c')}
         out = niprov.views.location(self.request)
-        self.repo.byLocation.assert_called_with('her:/a/b/c')
-        self.assertEqual(self.repo.byLocation(), out['image'])
+        self.query.byLocation.assert_called_with('her:/a/b/c')
+        self.query.copiesOf.assert_called_with(out['image'])
+        self.assertEqual(self.query.byLocation(), out['image'])
+        self.assertEqual(self.query.copiesOf(), out['copies'])
 
     def test_stats(self):
         import niprov.views
@@ -118,7 +122,7 @@ class ViewTests(DependencyInjectionTestBase):
         self.request.matchdict = {'host':'her','path':('a','b','c'),
                                     'id':'1a2b3c'}
         self.repo.byId.return_value = None
-        self.repo.byLocation.return_value = None
+        self.query.byLocation.return_value = None
         self.assertRaises(HTTPNotFound, niprov.views.short, self.request)
         self.assertRaises(HTTPNotFound, niprov.views.location, self.request)
         self.assertRaises(HTTPNotFound, niprov.views.pipeline, self.request)

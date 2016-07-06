@@ -68,3 +68,11 @@ class LocationTests(DependencyInjectionTestBase):
                 self.assertEqual('/absolute/path', loc.path)
                 self.assertEqual('KITT:/absolute/path', str(loc))
 
+    def test_location_equals(self):
+        from niprov.location import Location
+        loc1 = Location('relative/path')
+        loc2 = Location('relative/path')
+        loc3 = Location('relative/other/path')
+        self.assertEqual(loc1, loc2)
+        self.assertNotEqual(loc1, loc3)
+

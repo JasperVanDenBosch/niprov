@@ -4,6 +4,7 @@ import os, errno
 import shortuuid
 from datetime import datetime
 from niprov.dependencies import Dependencies
+from niprov.inheriting import inheritFrom
 
 
 def add(filepath, transient=False, provenance=None, 
@@ -41,6 +42,7 @@ def add(filepath, transient=False, provenance=None,
     repository = dependencies.getRepository()
     listener = dependencies.getListener()
     filesys = dependencies.getFilesystem()
+    query = dependencies.getQuery()
 
     if provenance is None:
         provenance = {}
@@ -63,6 +65,15 @@ def add(filepath, transient=False, provenance=None,
             return img
         if config.attach:
             img.attach(config.attach_format)
+
+    if not provenance.get('parents', []):
+        for copy in query.copiesOf(img):
+            if not copy.location == img.location:
+                inheritFrom(img.provenance, copy.provenance)
+                img.provenance['parents'] = [copy.location.toString()]
+                img.provenance['copy-as-parent'] = True
+                listener.usingCopyAsParent(copy)
+                break
 
     previousVersion = repository.byLocation(img.location.toString())
     series = repository.getSeries(img)

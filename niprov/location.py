@@ -29,3 +29,12 @@ class Location(object):
 
     def toString(self):
         return ':'.join([self.hostname, self.path])
+
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return str(self) == str(other)
+        else:
+            return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)

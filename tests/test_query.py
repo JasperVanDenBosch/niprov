@@ -120,5 +120,21 @@ class QueryTest(DependencyInjectionTestBase):
         self.assertEqual('project', q.getFields()[0].name)
         self.assertTrue(q.getFields()[0].all)
 
+    def test_copiesOf_returns_empty_list_for_size_0_file(self):
+        from niprov.querying import Query
+        target = Mock()
+        target.provenance = {'size':0}
+        results = Query(self.dependencies).copiesOf(target)
+        self.assertEqual(0, len(results))
+
+    def test_copiesOf(self):
+        from niprov.querying import Query
+        target = Mock()
+        target.provenance = {'hash':'a7b8c9', 'size':1}
+        q = Query(self.dependencies).copiesOf(target)
+        self.assertEqual(1, len(q.getFields()))
+        self.assertEqual('hash', q.getFields()[0].name)
+        self.assertEqual('a7b8c9', q.getFields()[0].value)
+
 
 

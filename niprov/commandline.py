@@ -14,6 +14,10 @@ class Commandline(object):
         self.verbosity = dependencies.config.verbosity
         assert self.verbosity in self.vlevels, "Unknown verbosity value"
 
+    def usingCopyAsParent(self, copy):
+        loc = str(copy.location)
+        self.log('warning', 'Used provenance from copy found at '+loc)
+
     def fileAdded(self, image):
         if image.status == 'new':
             self.log('info', 'New file: {0}'.format(image.path))

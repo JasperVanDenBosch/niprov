@@ -17,20 +17,21 @@ def latest(request):
 def short(request):
     sid = request.matchdict['id']
     repository = request.dependencies.getRepository()
+    query = request.dependencies.getQuery()
     image = repository.byId(sid)
     if not image:
         raise HTTPNotFound
-    return {'image': image}
+    return {'image': image, 'copies': query.copiesOf(image)}
 
 @view_config(route_name='location', renderer='templates/single.mako')
 def location(request):
     path = os.sep + os.path.join(*request.matchdict['path'])
     loc = request.matchdict['host'] + ':' + path
-    repository = request.dependencies.getRepository()
-    image = repository.byLocation(loc)
+    query = request.dependencies.getQuery()
+    image = query.byLocation(loc)
     if not image:
         raise HTTPNotFound
-    return {'image': image}
+    return {'image': image, 'copies': query.copiesOf(image)}
 
 @view_config(route_name='stats', renderer='templates/stats.mako')
 def stats(request):

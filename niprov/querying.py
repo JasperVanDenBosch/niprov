@@ -77,3 +77,12 @@ class Query(object):
     def allUsers(self):
         self.fields.append(self._fieldAllValues('user'))
         return self
+
+    def copiesOf(self, target):
+        checksum = target.provenance.get('hash', None)
+        filesize = target.provenance.get('size', 0)
+        if checksum and filesize > 0:
+            self.fields.append(self._fieldHasValue('hash', checksum))
+        else:
+            self.cachedResults = []
+        return self

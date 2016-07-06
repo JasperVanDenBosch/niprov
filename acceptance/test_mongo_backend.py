@@ -8,8 +8,8 @@ PASSWORD = 'uU0mpDXtQXeL6wku'
 class MongoTests(unittest.TestCase):
 
     def setUp(self):
-        from niprov import Context
-        self.provenance = Context()
+        from niprov import ProvenanceContext
+        self.provenance = ProvenanceContext()
         self.fullURL = URL.format(PASSWORD)
         self.provenance.config.database_type = 'MongoDB'
         self.provenance.config.database_url = self.fullURL

@@ -7,8 +7,8 @@ class ContextTests(DependencyInjectionTestBase):
 
     def setUp(self):
         super(ContextTests, self).setUp()
-        from niprov import Context
-        self.context = Context()
+        from niprov import ProvenanceContext
+        self.context = ProvenanceContext()
         self.context.deps = self.dependencies
 
     def test_get(self):

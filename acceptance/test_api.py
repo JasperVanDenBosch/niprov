@@ -18,16 +18,16 @@ class ApiTests(unittest.TestCase):
     def test_Discover(self):
         import niprov
         niprov.discover('testdata')
-        img = niprov.Context().get().byLocation(os.path.abspath('testdata/dicom/T1.dcm'))
+        img = niprov.ProvenanceContext().get().byLocation(os.path.abspath('testdata/dicom/T1.dcm'))
         self.assertEqual(img.provenance['dimensions'], [80, 80, 10])
-        img = niprov.Context().get().byLocation(os.path.abspath('testdata/eeg/stub.cnt'))
+        img = niprov.ProvenanceContext().get().byLocation(os.path.abspath('testdata/eeg/stub.cnt'))
         self.assertEqual(img.provenance['subject'], 'Jane Doe')
 
     def test_Export_terminal(self):
         import niprov
         niprov.discover('testdata')
         pth = os.path.abspath('testdata/dicom/T1.dcm')
-        provenance = niprov.Context().get().byLocation(pth)
+        provenance = niprov.ProvenanceContext().get().byLocation(pth)
         niprov.print_(provenance)
 
     def test_Log(self):
@@ -36,7 +36,7 @@ class ApiTests(unittest.TestCase):
         newfile = os.path.abspath('temp/smoothed.test')
         self.touch(newfile)
         niprov.log(newfile, 'test', os.path.abspath('testdata/eeg/stub.cnt'))
-        img = niprov.Context().get().byLocation(newfile)
+        img = niprov.ProvenanceContext().get().byLocation(newfile)
         self.assertEqual(img.provenance['subject'], 'Jane Doe')
         self.assertEqual(img.provenance['size'], os.path.getsize(newfile))
 
@@ -44,7 +44,7 @@ class ApiTests(unittest.TestCase):
         import niprov
         niprov.discover('testdata')
         pth = os.path.abspath('testdata/dicom/T1.dcm')
-        provenance = niprov.Context().get().byLocation(pth)
+        provenance = niprov.ProvenanceContext().get().byLocation(pth)
         text = niprov.export(provenance, 'direct','narrated')
         self.assertEqual(text, ("This is a T1 image. It was recorded August 5, " 
             "2014. The participant's name is 05aug14test. It is 158KB in size. "))
@@ -74,7 +74,7 @@ class ApiTests(unittest.TestCase):
     def test_bySubject(self):
         import niprov
         niprov.discover('testdata')
-        provenance = niprov.Context().get().bySubject('05aug14test')
+        provenance = niprov.ProvenanceContext().get().bySubject('05aug14test')
         niprov.print_(provenance)
 
     def createExtensionlessFiles(self):

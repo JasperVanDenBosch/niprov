@@ -3,7 +3,7 @@ from niprov.config import Configuration
 import niprov
 
 
-class Context(object):
+class ProvenanceContext(object):
 
     def __init__(self):
         self.config = Configuration()

@@ -72,8 +72,8 @@ Web browser
 By running the command `provenance serve` you can start a mini webserver in the
 background, and browse images in your webbrowser:
 
-![niprov_search](https://cloud.githubusercontent.com/assets/1508492/16635983/2c4c78fe-438a-11e6-868d-51d26c9956cf.png)
-![niprov_details](https://cloud.githubusercontent.com/assets/1508492/16635948/f962ff1c-4389-11e6-958b-59a8fd9de9cd.png)
-![niprov_pipeline](https://cloud.githubusercontent.com/assets/1508492/16635949/faa0c8b4-4389-11e6-87ae-87dce26c9973.png)
+![niprov-search](https://cloud.githubusercontent.com/assets/1508492/16635983/2c4c78fe-438a-11e6-868d-51d26c9956cf.png)
+![niprov-details](https://cloud.githubusercontent.com/assets/1508492/16635948/f962ff1c-4389-11e6-958b-59a8fd9de9cd.png)
+![niprov-pipeline](https://cloud.githubusercontent.com/assets/1508492/16635949/faa0c8b4-4389-11e6-87ae-87dce26c9973.png)
 
 

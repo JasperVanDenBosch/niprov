@@ -9,9 +9,9 @@ class ProvenanceContext(object):
         self.config = Configuration()
         self.deps = Dependencies(self.config)
 
-    def add(self, filepath, **kwargs):
-        """See :py:mod:`niprov.config`  """
-        return niprov.adding.add(filepath, dependencies=self.deps, **kwargs)
+    def add(self, filepath, transient=False, provenance=None):
+        """See :py:mod:`niprov.adding`  """
+        return niprov.adding.add(filepath, transient, provenance, self.deps)
 
     def compare(self, file1, file2):
         """See :py:mod:`niprov.comparing`  """

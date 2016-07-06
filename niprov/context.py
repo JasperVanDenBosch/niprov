@@ -17,9 +17,9 @@ class ProvenanceContext(object):
         """See :py:mod:`niprov.approval`  """
         return niprov.approval.approve(filepath, dependencies=self.deps)
 
-    def backup(self, *args, **kwargs):
+    def backup(self):
         """See :py:mod:`niprov.exporting`  """
-        return niprov.exporting.backup(*args, dependencies=self.deps, **kwargs)
+        return niprov.exporting.backup(self.deps)
 
     def compare(self, file1, file2):
         """See :py:mod:`niprov.comparing`  """
@@ -29,25 +29,29 @@ class ProvenanceContext(object):
         """See :py:mod:`niprov.discovery`  """
         return niprov.discovery.discover(root, dependencies=self.deps)
 
-    def export(self, *args, **kwargs):
+    def export(self, images, medium, form, pipeline=False):
         """See :py:mod:`niprov.exporting`  """
-        return niprov.exporting.export(*args, dependencies=self.deps, **kwargs)
+        return niprov.exporting.export(images, medium, form, pipeline, 
+            self.deps)
 
     def get(self):
         """See :py:mod:`niprov.querying`  """
         return self.deps.getQuery()
 
-    def importp(self, *args, **kwargs):
+    def importp(self, fpath):
         """See :py:mod:`niprov.importing`  """
-        return niprov.importing.importp(*args, dependencies=self.deps, **kwargs)
+        return niprov.importing.importp(fpath, self.deps)
 
     def inspect(self, location):
         """See :py:mod:`niprov.inspection`  """
         return niprov.inspection.inspect(location, dependencies=self.deps)
 
-    def log(self, *args, **kwargs):
+    def log(self, new, transformation, parents, code=None, logtext=None, 
+            transient=False, script=None, user=None, provenance=None, 
+            opts=None):
         """See :py:mod:`niprov.logging`  """
-        return niprov.logging.log(*args, dependencies=self.deps, **kwargs)
+        return niprov.logging.log(new, transformation, parents, code, logtext,
+            transient, script, user, provenance, opts, self.deps)
 
     def markForApproval(self, files):
         """See :py:mod:`niprov.approval`  """

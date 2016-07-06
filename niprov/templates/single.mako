@@ -15,9 +15,10 @@
 <%! import os %>
 <h1>${os.path.basename(image.provenance['path'])}</h1>
 
-<a href="${request.route_url('pipeline',id=image.provenance.get('id'))}">view pipeline
+<a href="${request.route_url('pipeline',id=image.provenance.get('id'))}">pipeline
     <img class="linkicon" src="${request.static_url('niprov:static/pipeline-link.svg')}" alt="pipeline"/></a>
 <a href="#versions">versions</a>
+<a href="#copies">copies</a>
 
 % if image.getSnapshotFilepath():
     <img class="snapshot" src="${request.static_url(image.getSnapshotFilepath())}" alt="snapshot"/>
@@ -49,6 +50,15 @@
     <dt>number of files</dt><dd>${len(image.provenance['filesInSeries'])}</dd>
 % endif
 </dl>
+
+<h2 id="copies">copies</h2>
+<ul>
+% for copy in copies:
+    <li>
+        <a href="${request.route_url('location',host=copy.provenance.get('hostname'),path=copy.provenance.get('path'))}">${copy.provenance.get('location')}</a>
+    </li>
+% endfor
+</ul>
 
 <h2 id="versions">versions</h2>
 <ol>

@@ -1,5 +1,5 @@
-from niprov import Context
-provenance = Context()
+from niprov import ProvenanceContext
+provenance = ProvenanceContext()
 (rawstru, s) = provenance.add('testdata/dicom/T1.dcm')
 (rawbold, s) = provenance.add('testdata/parrec/T2_.PAR')
 (rawevnt, s) = provenance.add('events.log', transient=True)

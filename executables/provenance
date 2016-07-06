@@ -107,7 +107,7 @@ elif args.command == 'record':
 elif args.command == 'add':
     niprov.add(args.new, transient=args.transient)
 elif args.command == 'export':
-    query = niprov.Context().get()
+    query = niprov.ProvenanceContext().get()
     if args.file:
         provenance = query.byLocation(args.file)
     elif args.subject:

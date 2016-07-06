@@ -1,6 +1,5 @@
-import unittest
-from mock import Mock, patch, call
-import os
+import unittest, os
+from mock import Mock, patch, call, sentinel
 from tests.ditest import DependencyInjectionTestBase
 
 
@@ -10,6 +9,7 @@ class AddTests(DependencyInjectionTestBase):
         super(AddTests, self).setUp()
         self.config.dryrun = False
         self.repo.byLocation.return_value = None
+        self.query.copiesOf.return_value = []
         self.img = Mock()
         self.lastProvenance = None
         def locAt(loc, provenance):
@@ -142,4 +142,41 @@ class AddTests(DependencyInjectionTestBase):
         assert not series.mergeWith.called
         self.img.keepVersionsFromPrevious.assert_called_with(series)
         self.repo.update.assert_any_call(self.img)
+
+    def test_copiesOf_not_called_before_inspect(self):
+        def testIfInspectedAndReturnEptyList(img):
+            img.inspect.assert_called_with()
+            return []
+        self.query.copiesOf.side_effect = testIfInspectedAndReturnEptyList
+        image = self.add('p/afile.f')
+
+    def test_getSeries_not_called_before_inspect(self):
+        self.repo.getSeries.side_effect = lambda img: img.inspect.assert_called_with()
+        image = self.add('p/afile.f')
+
+    def test_copiesOf_not_called_if_parent_available(self):
+        image = self.add('p/afile.f', provenance={'parents':[sentinel.parent]})
+        assert not self.query.copiesOf.called
+
+    def test_Found_copy_set_as_parent_inherits_and_flags_and_informs_listener(self):
+        self.img.provenance = {}
+        copy = Mock()
+        copy.provenance = {'location':'copy-location'}
+        self.query.copiesOf.return_value = [self.img, copy]
+        out = self.add('p/afile.f')
+        self.img.inheritFrom.assert_called_with(copy)
+        self.listener.usingCopyAsParent.assert_called_with(copy)
+        self.assertEqual(copy.location.toString(), out.provenance['parents'][0])
+        self.assertEqual(True, out.provenance['copy-as-parent'])
+
+    def test_If_only_copy_is_same_location_ignores_it(self):
+        self.img.provenance = {}
+        self.query.copiesOf.return_value = [self.img]
+        out = self.add('p/afile.f')
+        assert not self.img.inheritFrom.called
+        assert not self.listener.usingCopyAsParent.called
+        self.assertNotIn('parents', out.provenance)
+        self.assertNotIn('copy-as-parent', out.provenance)
+
+        
 

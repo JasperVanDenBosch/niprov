@@ -34,40 +34,61 @@
 <a href="http://dx.doi.org/10.5281/zenodo.46136"><img src="https://zenodo.org/badge/doi/10.5281/zenodo.46136.svg" alt="DOI"></a>
 <a href="https://twitter.com/niprovenance"><img src="https://img.shields.io/twitter/follow/niprovenance.svg?style=social" alt="Twitter"></a></p>
 
-<p>See the <a href="http://niprov.readthedocs.org/">full online documentation</a> (or <a href="https://media.readthedocs.org/pdf/niprov/latest/niprov.pdf">pdf</a>) and <a href="https://pypi.python.org/pypi/niprov">PyPi package</a> and follow <a href="https://twitter.com/niprovenance">niprov on twitter</a>!</p>
+<p>Ever encountered a file of which you weren’t sure what analysis steps it had gone through? 
+Ever wanted to know what types of data you have available for a subject in one overview? 
+Automatically document an analysis pipeline?</p>
 
-<p>To inspect image files, install <code>nibabel</code>,<code>mne</code> and/or <code>pydicom</code>.</p>
+<p>Provenance is meta-data that tracks the ‘history’ of a file, and niprov is a python program to create, store and publish provenance for brain imaging files.</p>
 
-<p>A list with all provenance attributes collected can be found <a href="http://niprov.readthedocs.org/en/latest/provenance-fields.html">here</a>.</p>
+<p>A list with all provenance attributes collected can be found <a href="http://niprov.readthedocs.org/en/latest/provenance-fields.html">here</a>.
+Read more in the <a href="http://niprov.readthedocs.org/">full online documentation</a> (or <a href="https://media.readthedocs.org/pdf/niprov/latest/niprov.pdf">pdf</a>).
+For additional detailed information on image files, install <code>nibabel</code>,<code>mne</code> and/or <code>pydicom</code>.</p>
 
 <h2>
 <a id="commandline-usage" class="anchor" href="#commandline-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Commandline Usage</h2>
 
-<p><em>Look for image files below the current directory, inspect them and store the obtained provenance metadata:</em></p>
+<p>Install niprov:</p>
 
-<div class="highlight highlight-source-shell"><pre>provenance discover <span class="pl-c1">.</span></pre></div>
+<div class="highlight highlight-source-shell"><pre>pip install niprov</pre></div>
 
-<p><em>Run a transformation command and log it as provenance for the new file:</em></p>
+<p>Look for existing image files in your data directory:</p>
+
+<div class="highlight highlight-source-shell"><pre>provenance discover /my/data/directory</pre></div>
+
+<p>Run a transformation command and log it as provenance for the new file:</p>
 
 <div class="highlight highlight-source-shell"><pre>provenance record mcflirt -in t1flip_all_orig -out t1all_reg -refvol 0</pre></div>
 
-<p><em>Alternatively, log the provenance after running the command:</em></p>
+<p>Store provenance of known MEG files as an xml file:</p>
 
-<div class="highlight highlight-source-shell"><pre>provenance log <span class="pl-s"><span class="pl-pds">'</span>motion correction<span class="pl-pds">'</span></span> --new fmri-3dmc.nii --parent fmri.nii </pre></div>
-
-<p><em>Publish provenance of known files for subject 'John Doe' as an html file:</em></p>
-
-<div class="highlight highlight-source-shell"><pre>provenance report --subject <span class="pl-s"><span class="pl-pds">"</span>John Doe<span class="pl-pds">"</span></span> --html</pre></div>
+<div class="highlight highlight-source-shell"><pre>provenance <span class="pl-k">export</span> --modality <span class="pl-s"><span class="pl-pds">"</span>MEG<span class="pl-pds">"</span></span> --xml</pre></div>
 
 <h2>
 <a id="python-api" class="anchor" href="#python-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Python API</h2>
 
 <div class="highlight highlight-source-python"><pre><span class="pl-k">import</span> niprov
-niprov.discover(<span class="pl-s"><span class="pl-pds">'</span>.<span class="pl-pds">'</span></span>)
-analysispackage.correctmotion(<span class="pl-v">input</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>JD-fmri.nii<span class="pl-pds">'</span></span>, <span class="pl-v">output</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>JD-fmri-3dmc.nii<span class="pl-pds">'</span></span>)
-niprov.log(<span class="pl-s"><span class="pl-pds">'</span>JD-fmri.nii<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>motion correction<span class="pl-pds">'</span></span>, [<span class="pl-s"><span class="pl-pds">'</span>JD-fmri-3dmc.nii<span class="pl-pds">'</span></span>])
-niprov.record(<span class="pl-s"><span class="pl-pds">'</span>mcflirt -in t1flip_all_orig -out t1all_reg -refvol 0<span class="pl-pds">'</span></span>)
-files <span class="pl-k">=</span> niprov.report(<span class="pl-v">forSubject</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>John Doe<span class="pl-pds">'</span></span>)</pre></div>
+provenance <span class="pl-k">=</span> niprov.ProvenanceContext()
+
+<span class="pl-c"># Log an analysis step:</span>
+someAnalysisPackage.correctmotion(<span class="pl-v">input</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>JD-fmri.nii<span class="pl-pds">'</span></span>, <span class="pl-v">output</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>JD-fmri-3dmc.nii<span class="pl-pds">'</span></span>)
+provenance.log(<span class="pl-s"><span class="pl-pds">'</span>JD-fmri.nii<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>motion correction<span class="pl-pds">'</span></span>, [<span class="pl-s"><span class="pl-pds">'</span>JD-fmri-3dmc.nii<span class="pl-pds">'</span></span>])
+
+<span class="pl-c"># Loop over images of John Smith and display a preview:</span>
+<span class="pl-k">for</span> image <span class="pl-k">in</span> provenance.get().bySubject(<span class="pl-s"><span class="pl-pds">'</span>John Smith<span class="pl-pds">'</span></span>):
+    image.viewSnapshot() 
+
+<span class="pl-c"># Make sure two files were acquired with the same parameters:</span>
+img1.compare(img2).assertEqualProtocol()</pre></div>
+
+<h2>
+<a id="web-browser" class="anchor" href="#web-browser" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Web browser</h2>
+
+<p>By running the command <code>provenance serve</code> you can start a mini webserver in the
+background, and browse images in your webbrowser:</p>
+
+<p><img src="https://cloud.githubusercontent.com/assets/1508492/16635983/2c4c78fe-438a-11e6-868d-51d26c9956cf.png" alt="niprov_search">
+<img src="https://cloud.githubusercontent.com/assets/1508492/16635948/f962ff1c-4389-11e6-958b-59a8fd9de9cd.png" alt="niprov_details">
+<img src="https://cloud.githubusercontent.com/assets/1508492/16635949/faa0c8b4-4389-11e6-87ae-87dce26c9973.png" alt="niprov_pipeline"></p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/ilogue/niprov">niprov</a> is maintained by <a href="https://github.com/ilogue">ilogue</a>.</span>

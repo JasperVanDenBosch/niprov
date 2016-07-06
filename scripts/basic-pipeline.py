@@ -1,5 +1,5 @@
-from niprov import Context
-provenance = Context()
+from niprov import ProvenanceContext
+provenance = ProvenanceContext()
 (rawimg, s) = provenance.add('testdata/eeg/stub.cnt')
 (g1c1, s) = provenance.log('g1c1','action', str(rawimg.location), transient=True) #new, transformation, parents
 (g1c2, s) = provenance.log('g1c2','action', str(rawimg.location), transient=True) #new, transformation, parents

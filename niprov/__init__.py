@@ -6,7 +6,7 @@ from niprov.adding import add
 from niprov.renaming import renameDicoms
 from niprov.approval import (markForApproval, markedForApproval, approve, 
     selectApproved)
-from niprov.context import Context
+from niprov.context import ProvenanceContext
 from niprov.config import Configuration
 from niprov.webapp import serve
 from niprov.exporting import export, print_, backup, view

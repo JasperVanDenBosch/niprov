@@ -3,15 +3,15 @@ import os, shutil
 from os.path import abspath
 
 
-class ContextApiTests(unittest.TestCase):
+class ProvenanceContextApiTests(unittest.TestCase):
 
     def setUp(self):
         self.dbpath = os.path.expanduser(os.path.join('~','provenance_test.json'))
         if os.path.exists(self.dbpath):
             os.remove(self.dbpath)
         os.mkdir('temp')
-        from niprov import Context
-        self.provenance = Context()
+        from niprov import ProvenanceContext
+        self.provenance = ProvenanceContext()
         self.provenance.config.database_type = 'file'
         self.provenance.config.database_url = self.dbpath
 

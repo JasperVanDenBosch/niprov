@@ -10,8 +10,8 @@ class TerminalApiTests(unittest.TestCase):
         if os.path.exists(self.dbpath):
             os.remove(self.dbpath)
         os.mkdir('temp')
-        from niprov import Context
-        self.provenance = Context()
+        from niprov import ProvenanceContext
+        self.provenance = ProvenanceContext()
         self.provenance.config.database_type = 'file'
         self.provenance.config.database_url = self.dbpath
         self.provenance.config.verbose = False

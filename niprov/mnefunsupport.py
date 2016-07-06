@@ -13,7 +13,7 @@ This module provides handlers to attach to mnefun events.
 """
 import os
 from niprov.dependencies import Dependencies
-from niprov import Context
+from niprov import ProvenanceContext
 
 
 def handler(text, func, out, params, dependencies=Dependencies()):
@@ -27,7 +27,7 @@ def handler(text, func, out, params, dependencies=Dependencies()):
     """
     listener = dependencies.getListener()
     libs = dependencies.getLibraries()
-    provenance = Context()
+    provenance = ProvenanceContext()
     funcname = func.func_name
     listener.mnefunEventReceived(funcname)
     paramdict = {}

@@ -128,7 +128,15 @@ class ContextApiTests(unittest.TestCase):
         self.assertEqual(1, img.versions[-2]['a'])
 
     def test_If_no_parent_provided_found_copy_considered_parent(self):
-        self.fail()
+        self.provenance.add('testdata/eeg/stub.cnt')
+        self.touch('temp/orig.f')
+        self.provenance.log('temp/orig.f', 'op1', 'testdata/eeg/stub.cnt')
+        shutil.copy('temp/orig.f', 'temp/copy.f')
+        self.touch('temp/child.f')
+        child = self.provenance.log('temp/child.f', 'op2', 'temp/copy.f')
+        self.assertEqual(child.provenance['subject'], 'Jane Doe')
+        copy = self.provenance.get().byLocation('temp/copy.f')
+        self.assertIn(copy.provenance['parents'][0], ['Jane Doe'])
  
 
 if __name__ == '__main__':

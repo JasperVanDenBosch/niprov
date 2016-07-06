@@ -23,13 +23,16 @@ class SerializerTests(DependencyInjectionTestBase):
     def test_serialize_makes_args_kwargs_values_strings(self):
         from niprov.formatjson import JsonFormat  
         class CustomType(object):
-            pass
+            def __str__(self):
+                return '<CustomType object>'
         serializer = JsonFormat(self.dependencies)
         record = {}
         ct1 = CustomType()
         ct2 = CustomType()
+        ct3 = CustomType()
         record['args'] = [1.23, ct1]
         record['kwargs'] = {'one':ct2, 'two':4.56}
+        record['_versions'] = [{'args':[7.89, ct3]}]
         out = serializer.serializeSingle(self.imageWithProvenance(record))
         self.assertEqual(json.loads(out)['args'], 
             [1.23, str(ct1)])
@@ -51,8 +54,10 @@ class SerializerTests(DependencyInjectionTestBase):
         serializer = JsonFormat(self.dependencies)
         record = {}
         record['_id'] = ObjectId('564168f2fb481f480891263c')
+        record['_versions'] = [{'_id':ObjectId('564168f2fb481f480891263c')}]
         out = serializer.serializeList([self.imageWithProvenance(record)])
         self.assertNotIn('_id', json.loads(out)[0])
+        self.assertNotIn('_id', json.loads(out)[0]['_versions'][0])
 
     def test_Deals_with_versions(self):
         from niprov.formatjson import JsonFormat  

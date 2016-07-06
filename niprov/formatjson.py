@@ -72,14 +72,19 @@ class JsonFormat(Format):
 
     def _deflate(self, record):
         flatRecord = copy.deepcopy(record)
-        if 'args' in record:
-            flatRecord['args'] = [self._strcust(a) for a in record['args']]
-        if 'kwargs' in record:
-            kwargs = record['kwargs']
-            flatRecord['kwargs'] = {k: self._strcust(kwargs[k]) 
-                for k in kwargs.keys()}
-        if '_id' in record:
-            del flatRecord['_id']
+        def deflateOne(prov):
+            if 'args' in prov:
+                prov['args'] = [self._strcust(a) for a in prov['args']]
+            if 'kwargs' in prov:
+                kwargs = prov['kwargs']
+                prov['kwargs'] = {k: self._strcust(kwargs[k]) 
+                    for k in kwargs.keys()}
+            if '_id' in prov:
+                del prov['_id']
+            return prov
+        deflateOne(flatRecord)
+        for version in flatRecord.get('_versions', []):
+            deflateOne(version)
         return flatRecord
 
     def _strcust(self, val):

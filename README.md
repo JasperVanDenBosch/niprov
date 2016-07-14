@@ -9,7 +9,7 @@ provenance for neuroimaging data
 [![Code Quality](https://scrutinizer-ci.com/g/ilogue/niprov/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ilogue/niprov/?branch=master)
 
 [![Research software impact](http://depsy.org/api/package/pypi/niprov/badge.svg)](http://depsy.org/package/python/niprov)
-[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.46136.svg)](http://dx.doi.org/10.5281/zenodo.46136)
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.57177.svg)](http://dx.doi.org/10.5281/zenodo.57177)
 [![Twitter](https://img.shields.io/twitter/follow/niprovenance.svg?style=social)](https://twitter.com/niprovenance)
 
 Ever encountered a file of which you weren’t sure what analysis steps it had gone through? 

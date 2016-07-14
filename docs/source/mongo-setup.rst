@@ -26,3 +26,8 @@ Configure mongodb:
 
     sudo service mongod restart
 
+Allow access to mongodb from IP addresses in the range 123.45.67.0/24:
+::
+
+    sudo ufw allow from 123.45.67.0/24 to any port 27017
+

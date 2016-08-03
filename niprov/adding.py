@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-import os, errno
+import os, errno, pkg_resources
 import shortuuid
 from datetime import datetime
 from niprov.dependencies import Dependencies
@@ -49,6 +49,8 @@ def add(filepath, transient=False, provenance=None,
     provenance['transient'] = transient
     provenance['added'] = datetime.now()
     provenance['id'] = shortuuid.uuid()[:6]
+    vparts = pkg_resources.get_distribution("niprov").version.split('.')
+    provenance['version-added'] = float(vparts[0] + '.' + ''.join(vparts[1:]))
 
     img = file.locatedAt(filepath, provenance=provenance)
     if config.dryrun:

@@ -17,6 +17,8 @@ Overview of provenance attributes collected:
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-added`                          | yes         | yes         | yes     | yes   | yes | yes |
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
+| :ref:`field-version-added`                  | yes         | yes         | yes     | yes   | yes | yes |
++---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-size`                           | yes         | yes         | yes     | yes   | yes | yes |
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-hash`                           | yes         | yes         | yes     | yes   | yes | yes |
@@ -122,6 +124,15 @@ added
 -----
 
 Date and time that the provenance for this file was registered.
+
+.. _field-verion-added:
+
+version-added
+-------------
+
+A floating point number reflecting the niprov version used to create the
+provenance record.
+
 
 .. _field-size:
 

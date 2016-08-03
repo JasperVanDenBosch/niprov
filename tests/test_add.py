@@ -179,5 +179,13 @@ class AddTests(DependencyInjectionTestBase):
         self.assertNotIn('parents', out.provenance)
         self.assertNotIn('copy-as-parent', out.provenance)
 
+    def test_Adds_niprov_version(self):
+        with patch('niprov.adding.pkg_resources') as pkgres:
+            dist = Mock()
+            dist.version = '5.4.1'
+            pkgres.get_distribution.return_value = dist
+            image = self.add('p/afile.f')
+        self.assertEqual(self.lastProvenance['version-added'], 5.41)
+
         
 

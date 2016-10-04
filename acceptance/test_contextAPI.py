@@ -137,7 +137,15 @@ class ProvenanceContextApiTests(unittest.TestCase):
         self.assertEqual(child.provenance['subject'], 'Jane Doe')
         copy = self.provenance.get().byLocation('temp/copy.f')
         self.assertIn('temp/orig.f', copy.provenance['parents'][0])
- 
+
+    def test_Differentiates_Fifs(self):
+        fiftypes = ('ave','cov','epo','fwd','trans')
+        for ftype in fiftypes:
+            pth = os.path.abspath('testdata/fif/test-{}.fif'.format(ftype))
+            img = self.provenance.add(pth)
+            img.inspect()
+
+
 
 if __name__ == '__main__':
     unittest.main()

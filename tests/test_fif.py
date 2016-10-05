@@ -46,6 +46,18 @@ class FifTests(BaseFileTests):
     def test_Preserves_modality_if_inherited(self):
         pass # Doesn't have to preserve
 
+    def test_Tries_different_mne_access_functions_or_fails_silently(self):
+        self.libs.mne.io.read_raw_fif.side_effect = ValueError
+        self.libs.mne.read_cov.side_effect = ValueError
+        self.libs.mne.read_epochs.side_effect = ValueError
+        self.libs.mne.read_evokeds.side_effect = ValueError
+        out = self.file.inspect()
+        self.libs.mne.io.read_raw_fif.assert_called_with(self.path, 
+                                                         allow_maxshield=True)
+        self.libs.mne.read_cov.assert_called_with(self.path)
+        self.libs.mne.read_epochs.assert_called_with(self.path)
+        self.libs.mne.read_evokeds.assert_called_with(self.path)
+
     def setupMne(self):
         TS = 1422522595.76096
         self.acquired = datetime.fromtimestamp(TS)
@@ -59,7 +71,7 @@ class FifTests(BaseFileTests):
             'description':'existing bla bla'}
         self.img.first_samp = 10
         self.img.last_samp = 100
-        self.libs.mne.io.Raw.return_value = self.img
+        self.libs.mne.io.read_raw_fif.return_value = self.img
         self.libs.mne.io.read_info.return_value = self.img.info
         self.libs.hasDependency.return_value = True
 

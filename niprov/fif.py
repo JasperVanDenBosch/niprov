@@ -1,4 +1,5 @@
 from __future__ import division
+import logging
 from datetime import datetime
 from functools import partial
 from niprov.basefile import BaseFile
@@ -27,7 +28,8 @@ class FifFile(BaseFile):
             'evo': self.libs.mne.read_evokeds,
             'raw': partial(self.libs.mne.io.read_raw_fif, allow_maxshield=True),
         }
-
+        oldLevel = logging.getLogger('mne').getEffectiveLevel()
+        logging.getLogger('mne').setLevel(logging.ERROR)
         for ftype, readfif in ftypes.items():
             try:
                 img = readfif(self.path)
@@ -36,6 +38,7 @@ class FifFile(BaseFile):
                 continue
         else:
             ftype = 'other'
+        logging.getLogger('mne').setLevel(oldLevel)
 
         if ftype == 'raw':
             sub = img.info['subject_info']

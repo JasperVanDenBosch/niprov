@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from niprov.logging import log
+from niprov.plogging import log
 from niprov.dependencies import Dependencies
 from niprov.config import Configuration
 from capturing import OutputCapture

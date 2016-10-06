@@ -25,7 +25,7 @@ class ContextTests(DependencyInjectionTestBase):
     def test_log(self):
         self.context.log('new', 'trf', 'parents', 'code', 'logtext', False,
             'script', 'user', {'prov':1}, 'opts')
-        self.niprov.logging.log.assert_called_with('new', 'trf', 'parents', 
+        self.niprov.plogging.log.assert_called_with('new', 'trf', 'parents', 
             'code', 'logtext', False, 'script', 'user', {'prov':1}, 'opts',
             self.dependencies)
 

@@ -22,8 +22,11 @@ class FifFile(BaseFile):
                     Return
         """
         ftypes = {
+            'cov': self.libs.mne.read_cov,
+            'epo': self.libs.mne.read_epochs,
+            'evo': self.libs.mne.read_evokeds,
             'raw': partial(self.libs.mne.io.read_raw_fif, allow_maxshield=True),
-            'other': lambda p: None}
+        }
 
         for ftype, readfif in ftypes.items():
             try:
@@ -31,6 +34,8 @@ class FifFile(BaseFile):
                 break
             except ValueError:
                 continue
+        else:
+            ftype = 'other'
 
         if ftype == 'raw':
             sub = img.info['subject_info']

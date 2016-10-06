@@ -1,4 +1,6 @@
+numpy
+scipy
+matplotlib
 pydicom
 nibabel
 mne
-matplotlib

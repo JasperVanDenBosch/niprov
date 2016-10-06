@@ -52,6 +52,7 @@ class FifFile(BaseFile):
             provenance['sampling-frequency'] = img.info['sfreq']
             provenance['duration'] = T/img.info['sfreq']
 
+        provenance['mne-type'] = ftype
         provenance['modality'] = 'MEG'
         return provenance
 

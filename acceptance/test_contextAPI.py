@@ -139,11 +139,17 @@ class ProvenanceContextApiTests(unittest.TestCase):
         self.assertIn('temp/orig.f', copy.provenance['parents'][0])
 
     def test_Differentiates_Fifs(self):
-        fiftypes = ('ave','cov','epo','fwd','trans')
-        for ftype in fiftypes:
+        fiftypes = {'ave': {},
+                    'cov': {},
+                    'epo': {'mne-type':'epo', 'highpass':0.10000000149},
+                    'fwd':{},
+                    'trans':{}}
+        for ftype, fields in fiftypes.items():
             pth = os.path.abspath('testdata/fif/test-{}.fif'.format(ftype))
             img = self.provenance.add(pth)
-            img.inspect()
+            for field, expectedValue in fields.items():
+                self.assertIn(field, img.provenance)
+                self.assertEqual(img.provenance[field], expectedValue)
 
 
 

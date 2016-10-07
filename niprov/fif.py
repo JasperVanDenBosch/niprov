@@ -78,12 +78,17 @@ class FifFile(BaseFile):
         Attach the current provenance to the file by appending it as a
         json-encoded string to the 'description' header field.
 
+        This is only attempted if the file has been inspect()-ed and
+        has been determined to be a raw fif file.
+
         Args:
             form (str): Data format in which to serialize provenance. Defaults 
                 to 'json'.
         """
-        info = self.libs.mne.io.read_info(self.path)
-        provstr = self.getProvenance(form)
-        info['description'] = info['description']+' NIPROV:'+provstr
-        self.libs.mne.io.write_info(self.path, info)
+        if 'fif-type' in self.provenance:
+            if self.provenance['fif-type'] == 'raw':
+                info = self.libs.mne.io.read_info(self.path)
+                provstr = self.getProvenance(form)
+                info['description'] = info['description']+' NIPROV:'+provstr
+                self.libs.mne.io.write_info(self.path, info)
 

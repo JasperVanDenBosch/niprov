@@ -37,6 +37,7 @@ class FifTests(BaseFileTests):
 
     def test_Attach_method(self):
         self.setupRawFile()
+        self.file.inspect()
         self.file.getProvenance = Mock()
         self.file.getProvenance.return_value = 'serial prov'
         self.file.attach('json')
@@ -47,6 +48,14 @@ class FifTests(BaseFileTests):
             self.img.info['description'])
         self.libs.mne.io.write_info.assert_called_with(self.file.path, 
             self.img.info)
+
+    def test_Attach_method_doesnt_do_anything_on_non_raw_files(self):
+        self.setupEpochsFile()
+        self.file.getProvenance = Mock()
+        self.file.attach('json')
+        assert not self.libs.mne.io.read_info.called
+        assert not self.file.getProvenance.called
+        assert not self.libs.mne.io.write_info.called
 
     def test_Determines_modality(self):
         out = self.file.inspect()

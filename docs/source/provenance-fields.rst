@@ -61,6 +61,14 @@ Overview of provenance attributes collected:
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-sampling-frequency`             |             | inherited   |         |       | yes | yes |
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
+| :ref:`field-fif-type`                       |             |             |         |       | yes |     |
++---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
+| :ref:`field-lowpass`                        |             |             |         |       | yes |     |
++---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
+| :ref:`field-highpass`                       |             |             |         |       | yes |     |
++---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
+| :ref:`field-bad-channels`                   |             |             |         |       | yes |     |
++---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-seriesuid`                      |             |             |         | yes   |     |     |
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-filesInSeries`                  |             |             |         | yes   |     |     |
@@ -125,7 +133,7 @@ added
 
 Date and time that the provenance for this file was registered.
 
-.. _field-verion-added:
+.. _field-version-added:
 
 version-added
 -------------
@@ -280,6 +288,34 @@ sampling-frequency
 ------------------
 
 How many samples were acquired per second.
+
+.. _field-fif-type:
+
+fif-type
+--------
+
+Type of MNE fiff file. One of 'raw', 'ave', 'epo', 'cov', 'fwd' or 'trans'.
+
+.. _field-lowpass:
+
+lowpass
+-------
+
+Cutoff frequency of the lowpass filter applied, in Hz.
+
+.. _field-highpass:
+
+highpass
+--------
+
+Cutoff frequency of the highpass filter applied, in Hz.
+
+.. _field-bad-channels:
+
+bad-channels
+------------
+
+Names of channels/sensors marked as bad.
 
 .. _field-seriesuid:
 

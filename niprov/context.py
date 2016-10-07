@@ -49,8 +49,8 @@ class ProvenanceContext(object):
     def log(self, new, transformation, parents, code=None, logtext=None, 
             transient=False, script=None, user=None, provenance=None, 
             opts=None):
-        """See :py:mod:`niprov.logging`  """
-        return niprov.logging.log(new, transformation, parents, code, logtext,
+        """See :py:mod:`niprov.plogging`  """
+        return niprov.plogging.log(new, transformation, parents, code, logtext,
             transient, script, user, provenance, opts, self.deps)
 
     def markForApproval(self, files):

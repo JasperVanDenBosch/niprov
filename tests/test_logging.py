@@ -31,16 +31,16 @@ class LoggingTests(DependencyInjectionTestBase):
             self.newimg.provenance = {'parentfield':location}
             return self.newimg
         self.dependencies.reconfigureOrGetConfiguration.return_value = self.opts
-        patcher = patch('niprov.logging.add')
+        patcher = patch('niprov.plogging.add')
         self.add = patcher.start()
         self.add.side_effect = wrapProv
         self.addCleanup(patcher.stop)
 
     def log(self, *args, **kwargs):
-        import niprov.logging
-        with patch('niprov.logging.inheritFrom') as self.inheritFrom:
+        import niprov.plogging
+        with patch('niprov.plogging.inheritFrom') as self.inheritFrom:
             self.inheritFrom.side_effect = lambda p, p2: p
-            return niprov.logging.log(*args, dependencies=self.dependencies, opts=self.opts, 
+            return niprov.plogging.log(*args, dependencies=self.dependencies, opts=self.opts, 
                     **kwargs)
 
     def test_Returns_img(self):

@@ -14,6 +14,8 @@ class FifTests(BaseFileTests):
         self.libs.mne.read_cov.side_effect = ValueError
         self.libs.mne.read_epochs.side_effect = ValueError
         self.libs.mne.read_evokeds.side_effect = ValueError
+        self.libs.mne.read_forward_solution.side_effect = ValueError
+        self.libs.mne.read_trans.side_effect = ValueError
         self.dependencies.getLibraries.return_value = self.libs
         from niprov.fif import FifFile
         self.constructor = FifFile
@@ -60,6 +62,8 @@ class FifTests(BaseFileTests):
         self.libs.mne.read_cov.assert_called_with(self.path)
         self.libs.mne.read_epochs.assert_called_with(self.path)
         self.libs.mne.read_evokeds.assert_called_with(self.path)
+        self.libs.mne.read_forward_solution.assert_called_with(self.path)
+        self.libs.mne.read_trans.assert_called_with(self.path)
         self.assertEqual(out['fif-type'], 'other')
 
     def test_epochs(self):
@@ -76,6 +80,22 @@ class FifTests(BaseFileTests):
         out = self.file.inspect()
         self.assertEqual(out['fif-type'], 'ave')
         self.assertEqual(out['dimensions'], [3, 306, 455])
+
+    def test_covariance(self):
+        self.setupCovarianceFile()
+        out = self.file.inspect()
+        self.assertEqual(out['fif-type'], 'cov')
+        self.assertEqual(out['dimensions'], [365, 365])
+
+    def test_forward(self):
+        self.setupForwardFile()
+        out = self.file.inspect()
+        self.assertEqual(out['fif-type'], 'fwd')
+
+    def test_trans(self):
+        self.setupTransFile()
+        out = self.file.inspect()
+        self.assertEqual(out['fif-type'], 'trans')
 
     def setupRawFile(self):
         TS = 1422522595.76096
@@ -111,4 +131,20 @@ class FifTests(BaseFileTests):
         self.img.data = numpy.zeros((306,455))
         self.libs.mne.read_evokeds.side_effect = None
         self.libs.mne.read_evokeds.return_value = [self.img, self.img, self.img]
+
+    def setupCovarianceFile(self):
+        self.img = Mock()
+        self.img.data = numpy.zeros((365,365))
+        self.libs.mne.read_cov.side_effect = None
+        self.libs.mne.read_cov.return_value = self.img
+
+    def setupForwardFile(self):
+        self.img = Mock()
+        self.libs.mne.read_forward_solution.side_effect = None
+        self.libs.mne.read_forward_solution.return_value = self.img
+
+    def setupTransFile(self):
+        self.img = Mock()
+        self.libs.mne.read_trans.side_effect = None
+        self.libs.mne.read_trans.return_value = self.img
 

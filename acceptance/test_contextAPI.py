@@ -139,7 +139,7 @@ class ProvenanceContextApiTests(unittest.TestCase):
         self.assertIn('temp/orig.f', copy.provenance['parents'][0])
 
     def test_Differentiates_Fifs(self):
-        fiftypes = {'ave': {},
+        fiftypes = {'ave': {'fif-type':'ave', 'dimensions':[2,401,701]},
                     'cov': {},
                     'epo': {'fif-type':'epo', 'highpass':0.10000000149011612},
                     'fwd':{},

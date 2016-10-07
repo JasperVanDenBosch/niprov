@@ -71,6 +71,12 @@ class FifTests(BaseFileTests):
         self.assertEqual(out['bad-channels'],['MEG666', 'ECG999'])
         self.assertEqual(out['dimensions'], [7, 455])
 
+    def test_evokeds(self):
+        self.setupEvokedsFile()
+        out = self.file.inspect()
+        self.assertEqual(out['fif-type'], 'ave')
+        self.assertEqual(out['dimensions'], [3, 306, 455])
+
     def setupRawFile(self):
         TS = 1422522595.76096
         self.acquired = datetime.fromtimestamp(TS)
@@ -98,4 +104,11 @@ class FifTests(BaseFileTests):
         self.img.times = numpy.zeros((455,1))
         self.libs.mne.read_epochs.side_effect = None
         self.libs.mne.read_epochs.return_value = self.img
+
+    def setupEvokedsFile(self):
+        self.img = Mock()
+        self.img.info = {}
+        self.img.data = numpy.zeros((306,455))
+        self.libs.mne.read_evokeds.side_effect = None
+        self.libs.mne.read_evokeds.return_value = [self.img, self.img, self.img]
 

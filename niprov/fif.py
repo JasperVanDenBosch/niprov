@@ -25,7 +25,7 @@ class FifFile(BaseFile):
         ftypes = {
             'cov': self.libs.mne.read_cov,
             'epo': self.libs.mne.read_epochs,
-            'evo': self.libs.mne.read_evokeds,
+            'ave': self.libs.mne.read_evokeds,
             'raw': partial(self.libs.mne.io.read_raw_fif, allow_maxshield=True),
         }
         oldLevel = logging.getLogger('mne').getEffectiveLevel()
@@ -33,6 +33,8 @@ class FifFile(BaseFile):
         for ftype, readfif in ftypes.items():
             try:
                 img = readfif(self.path)
+                if img == []:
+                    continue
                 break
             except ValueError:
                 continue
@@ -57,6 +59,10 @@ class FifFile(BaseFile):
             provenance['highpass'] = img.info['highpass']
             provenance['bad-channels'] = img.info['bads']
             provenance['dimensions'] = [img.events.shape[0], img.times.shape[0]]
+
+        if ftype == 'ave':
+            nEvokeds = len(img)
+            provenance['dimensions'] = [nEvokeds] + list(img[0].data.shape)
 
         provenance['fif-type'] = ftype
         provenance['modality'] = 'MEG'

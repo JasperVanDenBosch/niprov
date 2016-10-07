@@ -141,7 +141,7 @@ class ProvenanceContextApiTests(unittest.TestCase):
     def test_Differentiates_Fifs(self):
         fiftypes = {'ave': {},
                     'cov': {},
-                    'epo': {'mne-type':'epo', 'highpass':0.10000000149},
+                    'epo': {'fif-type':'epo', 'highpass':0.10000000149011612},
                     'fwd':{},
                     'trans':{}}
         for ftype, fields in fiftypes.items():

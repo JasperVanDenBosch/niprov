@@ -1,4 +1,4 @@
-import unittest
+import unittest, numpy
 from mock import Mock
 from datetime import datetime
 from tests.test_basefile import BaseFileTests
@@ -60,15 +60,16 @@ class FifTests(BaseFileTests):
         self.libs.mne.read_cov.assert_called_with(self.path)
         self.libs.mne.read_epochs.assert_called_with(self.path)
         self.libs.mne.read_evokeds.assert_called_with(self.path)
+        self.assertEqual(out['fif-type'], 'other')
 
     def test_epochs(self):
         self.setupEpochsFile()
         out = self.file.inspect()
-        self.assertEqual(out['mne-type'], 'epo')
+        self.assertEqual(out['fif-type'], 'epo')
         self.assertEqual(out['lowpass'],40.0)
         self.assertEqual(out['highpass'],0.10000000149) 
         self.assertEqual(out['bad-channels'],['MEG666', 'ECG999'])
-        self.assertEqual(out['dimensions'], [1, 999])
+        self.assertEqual(out['dimensions'], [7, 455])
 
     def setupRawFile(self):
         TS = 1422522595.76096
@@ -92,10 +93,9 @@ class FifTests(BaseFileTests):
         self.img.info = {
             'lowpass': 40.0,
             'highpass': 0.10000000149, 
-            'bad-channels': ['MEG666', 'ECG999']}
+            'bads': ['MEG666', 'ECG999']}
+        self.img.events = numpy.zeros((7,3))
+        self.img.times = numpy.zeros((455,1))
         self.libs.mne.read_epochs.side_effect = None
         self.libs.mne.read_epochs.return_value = self.img
-        
-
-
 

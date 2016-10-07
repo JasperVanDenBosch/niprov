@@ -52,7 +52,13 @@ class FifFile(BaseFile):
             provenance['sampling-frequency'] = img.info['sfreq']
             provenance['duration'] = T/img.info['sfreq']
 
-        provenance['mne-type'] = ftype
+        if ftype == 'epo':
+            provenance['lowpass'] = img.info['lowpass']
+            provenance['highpass'] = img.info['highpass']
+            provenance['bad-channels'] = img.info['bads']
+            provenance['dimensions'] = [img.events.shape[0], img.times.shape[0]]
+
+        provenance['fif-type'] = ftype
         provenance['modality'] = 'MEG'
         return provenance
 

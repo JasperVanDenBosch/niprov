@@ -38,12 +38,12 @@ Submodules
    niprov.formatxml
    niprov.hashing
    niprov.importing
+   niprov.inheriting
    niprov.inspection
    niprov.jsonfile
    niprov.libraries
    niprov.location
    niprov.locationfactory
-   niprov.logging
    niprov.mediumdirect
    niprov.mediumfactory
    niprov.mediumfile
@@ -56,6 +56,7 @@ Submodules
    niprov.pictures
    niprov.pipeline
    niprov.pipelinefactory
+   niprov.plogging
    niprov.querying
    niprov.recording
    niprov.renaming

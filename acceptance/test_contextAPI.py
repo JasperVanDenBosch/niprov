@@ -142,11 +142,14 @@ class ProvenanceContextApiTests(unittest.TestCase):
         """
         The fields tested here are just a subset.
         """
+        PROJDESC = 'ECG-planar-999--0.080-0.080-PCA-01'
         fiftypes = {'ave': {'fif-type':'ave', 'dimensions':[2,401,701]},
                     'cov': {'fif-type':'cov', 'dimensions':[366, 366]},
                     'epo': {'fif-type':'epo', 'highpass':0.10000000149011612},
                     'fwd': {'fif-type':'fwd'},
-                    'trans': {'fif-type':'trans'}}
+                    'trans': {'fif-type':'trans'},
+                    'proj' : {'fif-type':'proj',
+                              'projection-description':PROJDESC}}
         for ftype, fields in fiftypes.items():
             pth = os.path.abspath('testdata/fif/test-{}.fif'.format(ftype))
             img = self.provenance.add(pth)

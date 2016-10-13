@@ -22,17 +22,19 @@ class FifFile(BaseFile):
                     inspect file
                     Return
         """
-        ftypes = {
-            'cov': self.libs.mne.read_cov,
-            'epo': self.libs.mne.read_epochs,
-            'ave': self.libs.mne.read_evokeds,
-            'fwd': self.libs.mne.read_forward_solution,
-            'trans': self.libs.mne.read_trans,
-            'raw': partial(self.libs.mne.io.read_raw_fif, allow_maxshield=True),
-        }
+        ftypes = [
+            ('cov', self.libs.mne.read_cov),
+            ('epo', self.libs.mne.read_epochs),
+            ('ave', self.libs.mne.read_evokeds),
+            ('fwd', self.libs.mne.read_forward_solution),
+            ('trans', self.libs.mne.read_trans),
+            ('raw', partial(self.libs.mne.io.read_raw_fif,
+                            allow_maxshield=True)),
+            ('proj', self.libs.mne.read_proj),
+        ]
         oldLevel = logging.getLogger('mne').getEffectiveLevel()
         logging.getLogger('mne').setLevel(logging.ERROR)
-        for ftype, readfif in ftypes.items():
+        for ftype, readfif in ftypes:
             try:
                 img = readfif(self.path)
                 if img == []:
@@ -68,6 +70,9 @@ class FifFile(BaseFile):
 
         if ftype == 'cov':
             provenance['dimensions'] = list(img.data.shape)
+
+        if ftype == 'proj':
+            provenance['projection-description'] = img[0]['desc']
 
         provenance['fif-type'] = ftype
         provenance['modality'] = 'MEG'

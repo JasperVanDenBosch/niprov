@@ -29,6 +29,7 @@ class FifFile(BaseFile):
             'fwd': self.libs.mne.read_forward_solution,
             'trans': self.libs.mne.read_trans,
             'raw': partial(self.libs.mne.io.read_raw_fif, allow_maxshield=True),
+            'proj': self.libs.mne.read_proj,
         }
         oldLevel = logging.getLogger('mne').getEffectiveLevel()
         logging.getLogger('mne').setLevel(logging.ERROR)

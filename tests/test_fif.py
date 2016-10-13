@@ -16,6 +16,7 @@ class FifTests(BaseFileTests):
         self.libs.mne.read_evokeds.side_effect = ValueError
         self.libs.mne.read_forward_solution.side_effect = ValueError
         self.libs.mne.read_trans.side_effect = ValueError
+        self.libs.mne.read_proj.side_effect =  ValueError
         self.dependencies.getLibraries.return_value = self.libs
         from niprov.fif import FifFile
         self.constructor = FifFile
@@ -73,6 +74,7 @@ class FifTests(BaseFileTests):
         self.libs.mne.read_evokeds.assert_called_with(self.path)
         self.libs.mne.read_forward_solution.assert_called_with(self.path)
         self.libs.mne.read_trans.assert_called_with(self.path)
+        self.libs.mne.read_proj.assert_called_with(self.path)
         self.assertEqual(out['fif-type'], 'other')
 
     def test_epochs(self):

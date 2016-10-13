@@ -109,6 +109,12 @@ class FifTests(BaseFileTests):
         self.assertEqual(out['fif-type'], 'trans')
 
 
+    def test_proj(self):
+        self.setupProjFile()
+        out = self.file.inspect()
+        self.assertEqual(out['fif-type'], 'proj')
+        self.assertEqual(out['projection-description'], 'Mars')
+
     def test_mnepy_read_funcs_throw_ioerror(self):
         self.libs.mne.read_trans.side_effect = IOError
         out = self.file.inspect()
@@ -166,3 +172,7 @@ class FifTests(BaseFileTests):
         self.libs.mne.read_trans.side_effect = None
         self.libs.mne.read_trans.return_value = self.img
 
+    def setupProjFile(self):
+        self.img = {'desc' : 'Mars'}
+        self.libs.mne.read_proj.side_effect = None
+        self.libs.mne.read_proj.return_value = self.img

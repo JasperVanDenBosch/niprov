@@ -70,6 +70,9 @@ class FifFile(BaseFile):
         if ftype == 'cov':
             provenance['dimensions'] = list(img.data.shape)
 
+        if ftype == 'proj':
+            provenance['projection-description'] = img['desc']
+
         provenance['fif-type'] = ftype
         provenance['modality'] = 'MEG'
         return provenance

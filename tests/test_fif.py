@@ -106,6 +106,13 @@ class FifTests(BaseFileTests):
         out = self.file.inspect()
         self.assertEqual(out['fif-type'], 'trans')
 
+
+    def test_mnepy_read_funcs_throw_ioerror(self):
+        self.libs.mne.read_trans.side_effect = IOError
+        out = self.file.inspect()
+        self.libs.mne.read_trans.assert_called_with(self.path)
+
+
     def setupRawFile(self):
         TS = 1422522595.76096
         self.acquired = datetime.fromtimestamp(TS)

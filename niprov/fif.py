@@ -38,7 +38,7 @@ class FifFile(BaseFile):
                 if img == []:
                     continue
                 break
-            except ValueError:
+            except (ValueError, IOError):
                 continue
         else:
             ftype = 'other'

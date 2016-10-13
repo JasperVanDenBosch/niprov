@@ -69,6 +69,8 @@ Overview of provenance attributes collected:
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-bad-channels`                   |             |             |         |       | yes |     |
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
+| :ref:`field-projection-description`         |             |             |         |       | yes |     |
++---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-seriesuid`                      |             |             |         | yes   |     |     |
 +---------------------------------------------+-------------+-------------+---------+-------+-----+-----+
 | :ref:`field-filesInSeries`                  |             |             |         | yes   |     |     |
@@ -316,6 +318,14 @@ bad-channels
 ------------
 
 Names of channels/sensors marked as bad.
+
+.. _field-projection-description:
+
+projection-description
+----------------------
+
+Description of projection vectors in the data file.
+
 
 .. _field-seriesuid:
 

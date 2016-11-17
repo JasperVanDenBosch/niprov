@@ -33,8 +33,8 @@ class Camera(object):
         if not self.libs.hasDependency('pyplot'):
             return tookSnapshot
         plt = self.libs.pyplot
-        interactiveMode = plt.isinteractive()
-        if interactiveMode:
+        interactiveModeWasOn = plt.isinteractive()
+        if interactiveModeWasOn:
             # Turn off interactive mode since we don't want to open windows
             # while attempting to plot snapshots.
             plt.ioff()
@@ -56,7 +56,7 @@ class Camera(object):
         except Exception as e:
             pass
         finally:
-            if interactiveMode:
+            if interactiveModeWasOn:
                 ## Turn interactive mode back on.
                 plt.ion()
         return tookSnapshot

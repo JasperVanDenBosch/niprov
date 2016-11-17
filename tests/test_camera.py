@@ -44,5 +44,27 @@ class CameraTests(DependencyInjectionTestBase):
         self.libs.pyplot.subplots.return_value = [Mock(), [Mock()]*3]
         self.assertTrue(camera.takeSnapshot(numpy.zeros([3,3,3]), Mock()))
 
+    def test_If_interactive_mode_is_on_temporarily_switches_it_off(self):
+        from niprov.camera import Camera
+        camera = Camera(self.dependencies)
+        self.libs.pyplot.isinteractive.return_value = True
+        camera.takeSnapshot(numpy.zeros([3,3,3]), Mock())
+        self.libs.pyplot.ioff.assert_called_with()
+
+    def test_Interactive_mode_switched_back_on_even_if_exception_thrown(self):
+        from niprov.camera import Camera
+        camera = Camera(self.dependencies)
+        self.libs.pyplot.isinteractive.return_value = True
+        self.libs.pyplot.subplots.side_effect = ValueError
+        camera.takeSnapshot(numpy.zeros([3,3,3]), Mock())
+        self.libs.pyplot.ion.assert_called_with()
+
+    def test_If_interactive_mode_is_off_leave_it_off(self):
+        from niprov.camera import Camera
+        camera = Camera(self.dependencies)
+        self.libs.pyplot.isinteractive.return_value = False
+        camera.takeSnapshot(numpy.zeros([3,3,3]), Mock())
+        assert not self.libs.pyplot.ion.called
+
 
 

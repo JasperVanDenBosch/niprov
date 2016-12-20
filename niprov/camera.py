@@ -29,9 +29,15 @@ class Camera(object):
             data (numpy.ndarray): Array of 2, 3 or 4 dimensions with image data.
             on (str or file-like object): Where to save figure to.
         """
+        tookSnapshot = False
         if not self.libs.hasDependency('pyplot'):
-            return False
+            return tookSnapshot
         plt = self.libs.pyplot
+        interactiveModeWasOn = plt.isinteractive()
+        if interactiveModeWasOn:
+            # Turn off interactive mode since we don't want to open windows
+            # while attempting to plot snapshots.
+            plt.ioff()
 
         try:
             ndims = len(data.shape)
@@ -46,6 +52,11 @@ class Camera(object):
                 axs[d].tick_params(axis='both', which='major', labelsize=8)
             plt.tight_layout()
             plt.savefig(on)
+            tookSnapshot = True
         except Exception as e:
-            return False
-        return True
+            pass
+        finally:
+            if interactiveModeWasOn:
+                ## Turn interactive mode back on.
+                plt.ion()
+        return tookSnapshot

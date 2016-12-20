@@ -1,0 +1,2 @@
+## For development purposes, this backend of matplotlib works in many environments.
+backend : Agg
